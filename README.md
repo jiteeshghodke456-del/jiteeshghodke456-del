@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&height=300&color=0:0B0F14,45:15202B,100:312E2B&text=Jiteesh%20Ghodke&fontSize=62&fontAlignY=38&animation=fadeIn&fontColor=F7E7C4&desc=Systems%20Design%20%26%20Architecture%20%7C%20Pune%2C%20India&descAlignY=58&descSize=18" alt="Jiteesh Ghodke profile header" />
+<img src="https://capsule-render.vercel.app/api?type=waving&height=300&color=0:0B0F14,38:17212B,70:312E2B,100:0B0F14&text=Jiteesh%20Ghodke&fontSize=64&fontAlignY=38&animation=fadeIn&fontColor=F7E7C4&desc=Systems%20Design%20%26%20Architecture%20%7C%20Pune%2C%20India&descAlignY=58&descSize=18" alt="Jiteesh Ghodke profile header" />
 
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&size=22&duration=2600&pause=900&color=F5C16C&center=true&vCenter=true&width=920&lines=Systems+Design+%26+Architecture;Building+applications+that+scale;Competitive+programming+and+controlled+mental+strain;Learning+Rust%2C+JavaScript%2C+TypeScript%2C+React%2C+React+Native;Turning+personal+annoyances+into+software" alt="Typing introduction" />
+<img src="https://readme-typing-svg.demolab.com?font=Space+Mono&size=22&duration=2600&pause=850&color=F5C16C&center=true&vCenter=true&width=930&lines=Systems+Design+%26+Architecture;Low-level+details%2C+high-level+architecture;Competitive+programming+as+a+personality+tax;Learning+Rust%2C+JavaScript%2C+TypeScript%2C+React%2C+React+Native;Building+tools+because+subscriptions+got+too+confident" alt="Typing introduction" />
 
 <br />
 <br />
@@ -17,7 +17,7 @@
   <img src="https://img.shields.io/badge/X%20%2F%20Twitter-F472B6?style=for-the-badge&logo=x&logoColor=111111" alt="X / Twitter" />
 </a>
 <a href="https://codeforces.com/profile/SobaDango">
-  <img src="https://img.shields.io/badge/Codeforces-SobaDango-98C379?style=for-the-badge&logo=codeforces&logoColor=111111" alt="Codeforces profile" />
+  <img src="https://img.shields.io/badge/Codeforces-98C379?style=for-the-badge&logo=codeforces&logoColor=111111" alt="Codeforces" />
 </a>
 <img src="https://img.shields.io/badge/Portfolio-coming%20soon-F5C16C?style=for-the-badge&logo=vercel&logoColor=111111" alt="Portfolio coming soon" />
 
@@ -57,6 +57,14 @@ currently_learning:
   - React
   - React Native
 
+currently_building:
+  - Atelier
+  - Stenokun
+  - Unbiased AI Detection
+  - Tiffinology
+  - Quippiq
+  - Krushi Sarthi
+
 open_to:
   - internships
   - freelance work
@@ -73,31 +81,50 @@ ask_me_about:
     <td width="58%">
       <h3>Workbench</h3>
       <p>
-        I like systems: how they are designed, where they crack, what they do under pressure, and whether
-        the code still makes sense when opened during the traditional debugging hour of 2 AM.
+        I like systems: the little decisions, the big diagrams, the weird failure modes, and the moment
+        a simple idea returns wearing a distributed-systems hat.
       </p>
       <p>
-        I am drawn to both low-level design and high-level architecture. The details matter, the shape matters,
-        and the part where everything suddenly fails in production is usually where the education begins.
+        I build because I want my digital life to feel handmade. Also because some apps charge monthly
+        for things my stubbornness considers a personal insult.
       </p>
     </td>
     <td width="42%">
       <h3>Operating Notes</h3>
       <ul>
-        <li><strong>Current mode:</strong> scalable apps and competitive programming</li>
-        <li><strong>Learning track:</strong> Rust, JS, TS, React, React Native</li>
-        <li><strong>Default instinct:</strong> if I need the software, I will probably try building it</li>
-        <li><strong>Offline reset:</strong> table tennis, boxing practice, football with friends</li>
+        <li><strong>Mode:</strong> scalable apps, system design, Codeforces</li>
+        <li><strong>Learning:</strong> Rust, JS, TS, React, React Native</li>
+        <li><strong>Social graph:</strong> sparse, but not deprecated</li>
+        <li><strong>Offline patch notes:</strong> table tennis, boxing, football</li>
       </ul>
+    </td>
+  </tr>
+</table>
+
+## Field Notes
+
+<table>
+  <tr>
+    <td width="33%">
+      <h3>Systems</h3>
+      <p>I want to know why the thing works, why it stops working, and why the diagram lied so confidently.</p>
+    </td>
+    <td width="33%">
+      <h3>Codeforces</h3>
+      <p>Voluntary suffering, but with ratings. A very civilized way to lose arguments to arrays.</p>
+    </td>
+    <td width="33%">
+      <h3>Loneliness</h3>
+      <p>Low traffic social life. Great uptime. Questionable user growth. We ship improvements anyway.</p>
     </td>
   </tr>
 </table>
 
 ## Build Philosophy
 
-I want more of my digital life to be handmade. If an app is too expensive, too annoying, or too convinced it deserves a subscription, I start looking at free tiers, open source tools, and how much sleep I am willing to lose. This has been described as "ambition". It may also be a mild infrastructure problem.
+I want to wake up excited, make useful software, learn the bits I do not understand yet, and sleep tired for the correct reasons. Weaknesses are useful logs. Embarrassment is just telemetry with better lighting.
 
-The goal is simple: learn deeply, build useful things, get better at system design, and end the day tired for the correct reasons.
+The long-term plan is simple: build the tools I need, understand the systems I use, and become difficult to replace for reasons other than "knows where the config file is buried."
 
 ---
 
@@ -112,7 +139,7 @@ The goal is simple: learn deeply, build useful things, get better at system desi
 
 ![React Native](https://img.shields.io/badge/React%20Native-learning-111111?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Systems Design](https://img.shields.io/badge/Systems%20Design-focus-F5C16C?style=for-the-badge&logo=diagramsdotnet&logoColor=111111)
-[![Competitive Programming](https://img.shields.io/badge/Codeforces-SobaDango-98C379?style=for-the-badge&logo=codeforces&logoColor=111111)](https://codeforces.com/profile/SobaDango)
+[![Codeforces](https://img.shields.io/badge/Codeforces-active-98C379?style=for-the-badge&logo=codeforces&logoColor=111111)](https://codeforces.com/profile/SobaDango)
 
 </div>
 
@@ -124,15 +151,15 @@ The goal is simple: learn deeply, build useful things, get better at system desi
   <tr>
     <td width="33%">
       <h3>Scalable Apps</h3>
-      <p>Building applications that can grow without immediately becoming a cautionary tale.</p>
+      <p>Building things that survive more than three users and one optimistic demo.</p>
     </td>
     <td width="33%">
       <h3>System Design</h3>
-      <p>Studying how good systems are structured, how bad systems happen, and how to avoid joining the second category.</p>
+      <p>Learning the difference between "it works" and "it works when reality arrives."</p>
     </td>
     <td width="33%">
       <h3>Competitive Programming</h3>
-      <p>Solving problems until the brain files a complaint, then solving one more because apparently that is the hobby.</p>
+      <p>Practicing problem solving, pattern recognition, and emotional damage with syntax highlighting.</p>
     </td>
   </tr>
 </table>
@@ -150,31 +177,37 @@ The goal is simple: learn deeply, build useful things, get better at system desi
       <p><code>systems</code> <code>productivity</code> <code>personal tooling</code></p>
     </td>
     <td width="50%">
-      <h3>Unbiased AI Detection</h3>
-      <p><img src="https://img.shields.io/badge/status-in%20the%20lab-7DD3FC?style=flat-square" alt="In the lab" /></p>
-      <p>Exploring fairer ways to reason about AI-generated content without giving confident nonsense a blazer.</p>
-      <p><code>ai</code> <code>classification</code> <code>fairness</code></p>
+      <h3>Stenokun</h3>
+      <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
+      <p>A new build entering the queue. The queue is not okay, but it has accepted its fate.</p>
+      <p><code>coming soon</code> <code>experiments</code> <code>systems</code></p>
     </td>
   </tr>
   <tr>
     <td width="50%">
+      <h3>Unbiased AI Detection</h3>
+      <p><img src="https://img.shields.io/badge/status-in%20the%20lab-7DD3FC?style=flat-square" alt="In the lab" /></p>
+      <p>Exploring fairer ways to reason about AI-generated content without handing confidence a crown.</p>
+      <p><code>ai</code> <code>classification</code> <code>fairness</code></p>
+    </td>
+    <td width="50%">
       <h3>Tiffinology</h3>
       <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
-      <p>A food and tiffin idea waiting for the backlog to behave like a civilized document.</p>
+      <p>A food and tiffin idea waiting for the backlog to stop behaving like a drawer full of cables.</p>
       <p><code>marketplace</code> <code>food</code> <code>local systems</code></p>
     </td>
+  </tr>
+  <tr>
     <td width="50%">
       <h3>Quippiq</h3>
       <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
       <p>A fast-moving product idea with the name already doing some of the networking.</p>
       <p><code>product</code> <code>mobile</code> <code>experiments</code></p>
     </td>
-  </tr>
-  <tr>
-    <td colspan="2">
+    <td width="50%">
       <h3>Krushi Sarthi</h3>
       <p><img src="https://img.shields.io/badge/status-concept%20%2B%20build-98C379?style=flat-square" alt="Concept and build" /></p>
-      <p>An AI-powered advisory system for farmers, focused on accessible, timely, and practical agricultural guidance.</p>
+      <p>An AI-powered advisory system for farmers, focused on accessible, timely, and practical guidance.</p>
       <p><code>ai</code> <code>agriculture</code> <code>advisory systems</code></p>
     </td>
   </tr>
@@ -246,6 +279,6 @@ The goal is simple: learn deeply, build useful things, get better at system desi
 <br />
 <br />
 
-<sub>Built with system design notes, unfinished ideas, and the quiet optimism of someone opening another terminal.</sub>
+<sub>Built with system design notes, suspicious optimism, and the emotional stability of a merge conflict.</sub>
 
 </div>
