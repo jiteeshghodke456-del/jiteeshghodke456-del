@@ -166,6 +166,20 @@ The long-term plan is simple: build the tools I need, understand the systems I u
 
 ---
 
+## Codeforces Tetris
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris.svg" alt="Codeforces Tetris heatmap" />
+
+<br />
+
+<sub>The blocks fall, the verdicts judge, the handle survives.</sub>
+
+</div>
+
+---
+
 ## Featured Builds
 
 <table>
@@ -219,7 +233,7 @@ The long-term plan is simple: build the tools I need, understand the systems I u
 
 <div align="center">
 
-<img src="https://github-profile-trophy.vercel.app/?username=jiteeshghodke456-del&theme=onedark&no-frame=true&no-bg=true&margin-w=8&row=1&column=7" alt="GitHub trophies" />
+<img src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies.svg" alt="GitHub trophies" />
 
 </div>
 
@@ -229,8 +243,8 @@ The long-term plan is simple: build the tools I need, understand the systems I u
 
 <div align="center">
 
-<img height="180" src="https://github-readme-stats.vercel.app/api?username=jiteeshghodke456-del&show_icons=true&hide_border=true&count_private=true&include_all_commits=true&bg_color=0D1117&title_color=F5C16C&text_color=D8DEE9&icon_color=7DD3FC&ring_color=F472B6" alt="GitHub stats" />
-<img height="180" src="https://github-readme-stats.vercel.app/api/top-langs/?username=jiteeshghodke456-del&layout=compact&hide_border=true&bg_color=0D1117&title_color=F5C16C&text_color=D8DEE9" alt="Top languages" />
+<img width="455" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-stats.svg" alt="GitHub stats" />
+<img width="455" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/top-langs.svg" alt="Top languages" />
 
 </div>
 
@@ -259,6 +273,11 @@ The long-term plan is simple: build the tools I need, understand the systems I u
 ## Contribution Snake
 
 <div align="center">
+
+<sub>It eats contributions and grows. Finally, a data structure with ambition.</sub>
+
+<br />
+<br />
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake-dark.svg" />
