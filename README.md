@@ -16,6 +16,9 @@
 <a href="https://x.com/Jiteez_">
   <img src="https://img.shields.io/badge/X%20%2F%20Twitter-F472B6?style=for-the-badge&logo=x&logoColor=111111" alt="X / Twitter" />
 </a>
+<a href="https://codeforces.com/profile/SobaDango">
+  <img src="https://img.shields.io/badge/Codeforces-SobaDango-98C379?style=for-the-badge&logo=codeforces&logoColor=111111" alt="Codeforces profile" />
+</a>
 <img src="https://img.shields.io/badge/Portfolio-coming%20soon-F5C16C?style=for-the-badge&logo=vercel&logoColor=111111" alt="Portfolio coming soon" />
 
 </div>
@@ -42,6 +45,10 @@ current_focus:
   - building applications that scale
   - competitive programming
   - understanding software from the inside out
+
+competitive_programming:
+  platform: Codeforces
+  handle: SobaDango
 
 currently_learning:
   - Rust
@@ -105,7 +112,7 @@ The goal is simple: learn deeply, build useful things, get better at system desi
 
 ![React Native](https://img.shields.io/badge/React%20Native-learning-111111?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Systems Design](https://img.shields.io/badge/Systems%20Design-focus-F5C16C?style=for-the-badge&logo=diagramsdotnet&logoColor=111111)
-![Competitive Programming](https://img.shields.io/badge/Competitive%20Programming-active-98C379?style=for-the-badge&logo=codeforces&logoColor=111111)
+[![Competitive Programming](https://img.shields.io/badge/Codeforces-SobaDango-98C379?style=for-the-badge&logo=codeforces&logoColor=111111)](https://codeforces.com/profile/SobaDango)
 
 </div>
 
