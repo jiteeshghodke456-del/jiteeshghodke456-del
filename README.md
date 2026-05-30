@@ -40,3 +40,36 @@ Focus:
 Currently Learning:
   - Advanced System Design
   - DevOps
+🌐 Connect With Me
+⚡ Tech Stack
+🚀 Current Focus
+🔹 Building scalable web applications
+
+🔹 Improving backend infrastructure
+
+🔹 Exploring new frameworks and libraries
+
+🔹 Open-source contributions
+
+🏆 GitHub Trophies
+📊 GitHub Analytics
+🔥 GitHub Streak
+📈 Contribution Graph
+🐍 Contribution Snake
+🚀 Featured Projects
+📦 Project Name 1
+A brief description of your awesome project. What problem does it solve and what makes it special?
+
+⚙️ Stack
+React Node.js MongoDB TypeScript
+
+✨ Features
+Feature 1
+
+Feature 2
+
+Feature 3
+
+👀 Profile Views
+☕ Support
+⚡ Built with ambition, caffeine, and curiosity.
