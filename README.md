@@ -2,7 +2,7 @@
 
 <img src="https://capsule-render.vercel.app/api?type=waving&height=300&color=0:0B0F14,38:17212B,70:312E2B,100:0B0F14&text=Jiteesh%20Ghodke&fontSize=64&fontAlignY=38&animation=fadeIn&fontColor=F7E7C4&desc=Systems%20Design%20%26%20Architecture%20%7C%20Pune%2C%20India&descAlignY=58&descSize=18" alt="Jiteesh Ghodke profile header" />
 
-<img src="https://readme-typing-svg.demolab.com?font=Space+Mono&size=22&duration=2600&pause=850&color=F5C16C&center=true&vCenter=true&width=930&lines=Systems+Design+%26+Architecture;Low-level+details%2C+high-level+architecture;Competitive+programming+as+a+personality+tax;Learning+Rust%2C+JavaScript%2C+TypeScript%2C+React%2C+React+Native;Building+tools+because+subscriptions+got+too+confident" alt="Typing introduction" />
+<img src="https://readme-typing-svg.demolab.com?font=Space+Mono&size=22&duration=2600&pause=850&color=F5C16C&center=true&vCenter=true&width=930&lines=Systems+Design+%26+Architecture;Low-level+details%2C+high-level+consequences;Competitive+programming%2C+because+peace+was+unavailable;Learning+Rust%2C+JavaScript%2C+TypeScript%2C+React%2C+React+Native;Building+tools+because+subscriptions+got+too+brave" alt="Typing introduction" />
 
 <br />
 <br />
@@ -81,12 +81,12 @@ ask_me_about:
     <td width="58%">
       <h3>Workbench</h3>
       <p>
-        I like systems: the little decisions, the big diagrams, the weird failure modes, and the moment
-        a simple idea returns wearing a distributed-systems hat.
+        I like systems: the small choices, the large consequences, and the quiet moment when a "simple app"
+        returns with a queue, a cache, and an attitude problem.
       </p>
       <p>
-        I build because I want my digital life to feel handmade. Also because some apps charge monthly
-        for things my stubbornness considers a personal insult.
+        I build because I want my digital life to feel handmade. Also because paying monthly for mildly
+        annoying software feels like losing an argument to a modal.
       </p>
     </td>
     <td width="42%">
@@ -94,8 +94,8 @@ ask_me_about:
       <ul>
         <li><strong>Mode:</strong> scalable apps, system design, Codeforces</li>
         <li><strong>Learning:</strong> Rust, JS, TS, React, React Native</li>
-        <li><strong>Social graph:</strong> sparse, but not deprecated</li>
-        <li><strong>Offline patch notes:</strong> table tennis, boxing, football</li>
+        <li><strong>Usually found:</strong> near code, occasionally near people</li>
+        <li><strong>Offline patch notes:</strong> table tennis, boxing, football, pretending that counts as balance</li>
       </ul>
     </td>
   </tr>
@@ -107,24 +107,24 @@ ask_me_about:
   <tr>
     <td width="33%">
       <h3>Systems</h3>
-      <p>I want to know why the thing works, why it stops working, and why the diagram lied so confidently.</p>
+      <p>I want to know why the thing works, why it stops working, and why the diagram was so smug about it.</p>
     </td>
     <td width="33%">
       <h3>Codeforces</h3>
-      <p>Voluntary suffering, but with ratings. A very civilized way to lose arguments to arrays.</p>
+      <p>Voluntary suffering, but with ratings. Very advanced, if you ignore the part where arrays bully me.</p>
     </td>
     <td width="33%">
-      <h3>Loneliness</h3>
-      <p>Low traffic social life. Great uptime. Questionable user growth. We ship improvements anyway.</p>
+      <h3>Self-Building</h3>
+      <p>If I need a tool badly enough, I will try building it. This is either independence or a budgeting issue.</p>
     </td>
   </tr>
 </table>
 
 ## Build Philosophy
 
-I want to wake up excited, make useful software, learn the bits I do not understand yet, and sleep tired for the correct reasons. Weaknesses are useful logs. Embarrassment is just telemetry with better lighting.
+I want to wake up excited, make useful software, learn the bits I do not understand yet, talk to actual humans at least occasionally, and sleep tired for the correct reasons. A modest plan. Historically dangerous.
 
-The long-term plan is simple: build the tools I need, understand the systems I use, and become difficult to replace for reasons other than "knows where the config file is buried."
+The long-term plan is simple: build the tools I need, understand the systems I use, and become difficult to replace for reasons better than "knows where the config file is buried." Weaknesses are useful logs. Embarrassment is telemetry with worse lighting.
 
 ---
 
@@ -151,15 +151,15 @@ The long-term plan is simple: build the tools I need, understand the systems I u
   <tr>
     <td width="33%">
       <h3>Scalable Apps</h3>
-      <p>Building things that survive more than three users and one optimistic demo.</p>
+      <p>Building things that survive more than three users, one demo, and the consequences of my own optimism.</p>
     </td>
     <td width="33%">
       <h3>System Design</h3>
-      <p>Learning the difference between "it works" and "it works when reality arrives."</p>
+      <p>Learning the difference between "it works" and "it works after reality enters the room."</p>
     </td>
     <td width="33%">
       <h3>Competitive Programming</h3>
-      <p>Practicing problem solving, pattern recognition, and emotional damage with syntax highlighting.</p>
+      <p>Practicing problem solving, pattern recognition, and humility delivered by a compiler with no bedside manner.</p>
     </td>
   </tr>
 </table>
@@ -187,13 +187,13 @@ The long-term plan is simple: build the tools I need, understand the systems I u
     <td width="50%">
       <h3>Atelier</h3>
       <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
-      <p>A personal software workspace for turning scattered ideas into calm, usable tools.</p>
+      <p>A personal software workspace for turning scattered ideas into calm tools, before they unionize.</p>
       <p><code>systems</code> <code>productivity</code> <code>personal tooling</code></p>
     </td>
     <td width="50%">
       <h3>Stenokun</h3>
       <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
-      <p>A new build entering the queue. The queue is not okay, but it has accepted its fate.</p>
+      <p>A new build entering the queue. The queue was not consulted, which is normal management behaviour.</p>
       <p><code>coming soon</code> <code>experiments</code> <code>systems</code></p>
     </td>
   </tr>
@@ -201,13 +201,13 @@ The long-term plan is simple: build the tools I need, understand the systems I u
     <td width="50%">
       <h3>Unbiased AI Detection</h3>
       <p><img src="https://img.shields.io/badge/status-in%20the%20lab-7DD3FC?style=flat-square" alt="In the lab" /></p>
-      <p>Exploring fairer ways to reason about AI-generated content without handing confidence a crown.</p>
+      <p>Exploring fairer ways to reason about AI-generated content without giving confidence a fake moustache.</p>
       <p><code>ai</code> <code>classification</code> <code>fairness</code></p>
     </td>
     <td width="50%">
       <h3>Tiffinology</h3>
       <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
-      <p>A food and tiffin idea waiting for the backlog to stop behaving like a drawer full of cables.</p>
+      <p>A food and tiffin idea waiting for the backlog to stop behaving like a drawer full of unlabeled cables.</p>
       <p><code>marketplace</code> <code>food</code> <code>local systems</code></p>
     </td>
   </tr>
@@ -298,6 +298,6 @@ The long-term plan is simple: build the tools I need, understand the systems I u
 <br />
 <br />
 
-<sub>Built with system design notes, suspicious optimism, and the emotional stability of a merge conflict.</sub>
+<sub>Built with system design notes, suspicious optimism, and the social calendar of a background service.</sub>
 
 </div>
