@@ -1,15 +1,15 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&height=260&color=0:0B0F14,45:15202B,100:312E2B&text=Jiteesh%20Ghodke&fontSize=58&fontAlignY=38&fontColor=F7E7C4&desc=Digital%20Atelier%20%7C%20Software%20Craft%20%7C%20Systems%20and%20Interfaces&descAlignY=58&descSize=18&animation=fadeIn" alt="Jiteesh Ghodke profile header" />
+<img src="https://capsule-render.vercel.app/api?type=waving&height=260&color=0:0B0F14,45:15202B,100:312E2B&text=Jiteesh%20Ghodke&fontSize=58&fontAlignY=38&fontColor=F7E7C4&desc=Systems%20Design%20%26%20Architecture%20%7C%20Pune%2C%20India&descAlignY=58&descSize=18&animation=fadeIn" alt="Jiteesh Ghodke profile header" />
 
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&size=20&duration=2800&pause=900&color=F5C16C&center=true&vCenter=true&width=860&lines=Designing+calm+developer+experiences;Building+full-stack+systems;Turning+rough+ideas+into+polished+interfaces;Learning%2C+shipping%2C+and+refining+in+public" alt="Typing introduction" />
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&size=20&duration=2800&pause=900&color=F5C16C&center=true&vCenter=true&width=900&lines=Systems+Design+%26+Architecture;Building+applications+that+scale;Codeforces+until+the+brain+starts+filing+complaints;Learning+Rust+one+borrow+checker+argument+at+a+time;Personal+software%2C+built+because+SaaS+pricing+looked+at+me+funny" alt="Typing introduction" />
 
 <br />
 
-<a href="mailto:YOUR_EMAIL_HERE"><img src="https://img.shields.io/badge/email-F5C16C?style=for-the-badge&logo=gmail&logoColor=111111" alt="Email" /></a>
-<a href="YOUR_LINKEDIN_URL_HERE"><img src="https://img.shields.io/badge/linkedin-7DD3FC?style=for-the-badge&logo=linkedin&logoColor=111111" alt="LinkedIn" /></a>
-<a href="YOUR_PORTFOLIO_URL_HERE"><img src="https://img.shields.io/badge/portfolio-F472B6?style=for-the-badge&logo=vercel&logoColor=111111" alt="Portfolio" /></a>
-<a href="YOUR_X_OR_TWITTER_URL_HERE"><img src="https://img.shields.io/badge/notes-98C379?style=for-the-badge&logo=x&logoColor=111111" alt="Social notes" /></a>
+<a href="https://www.linkedin.com/in/jiteesh-ghodke-642832398/"><img src="https://img.shields.io/badge/LinkedIn-7DD3FC?style=for-the-badge&logo=linkedin&logoColor=111111" alt="LinkedIn" /></a>
+<a href="https://x.com/Jiteez_"><img src="https://img.shields.io/badge/X%20%2F%20Twitter-F472B6?style=for-the-badge&logo=x&logoColor=111111" alt="X / Twitter" /></a>
+<img src="https://img.shields.io/badge/Portfolio-coming%20soon-F5C16C?style=for-the-badge&logo=vercel&logoColor=111111" alt="Portfolio coming soon" />
+<img src="https://komarev.com/ghpvc/?username=jiteeshghodke456-del&style=for-the-badge&color=F5C16C&label=atelier+visits" alt="Profile views" />
 
 </div>
 
@@ -19,87 +19,107 @@
 
 ```yaml
 name: Jiteesh Ghodke
-role: "<your current role / student title>"
-location: "<city, country>"
-signature: "software built with craft, clarity, and momentum"
+location: Pune, India
+role: Systems Design & Architecture
+primary_interest: "how systems work, from internals to architecture"
 
-atelier:
-  building_now:
-    - "<project or product you are currently building>"
-    - "<second current focus>"
+currently:
+  focus:
+    - building applications that scale
+    - competitive programming
   learning:
-    - "<technology / domain you are learning>"
-    - "<another skill you are sharpening>"
+    - Rust
   open_to:
-    - "<internships / freelance / collaboration / open source>"
+    - internships
+    - freelance work
+    - open source
+    - collaborations
+    - cofounding
   ask_me_about:
-    - "<topic 1>"
-    - "<topic 2>"
+    - "how my day was"
 ```
 
 <table>
   <tr>
-    <td width="50%">
+    <td width="58%">
       <h3>Workbench</h3>
       <p>
-        I use this space to turn experiments into shipped projects. Add a short personal intro here:
-        who you are, what you like building, and the kind of engineering problems that keep you curious.
+        I am interested in the full shape of a system: what problem it solves, how it behaves under load,
+        what breaks first, and whether the code will still make sense when someone opens it at 2 AM.
+      </p>
+      <p>
+        I like designing software from both ends: the low-level details that make it solid and the high-level
+        architecture that keeps it alive when real users arrive. Codeforces is where I voluntarily let my brain
+        run into walls for sport.
       </p>
     </td>
-    <td width="50%">
-      <h3>Current Moodboard</h3>
+    <td width="42%">
+      <h3>Operating Notes</h3>
       <ul>
-        <li><strong>Focus:</strong> <code>&lt;backend / frontend / AI / DevOps / mobile&gt;</code></li>
-        <li><strong>Project:</strong> <code>&lt;main thing you are building&gt;</code></li>
-        <li><strong>Learning:</strong> <code>&lt;course, stack, or concept&gt;</code></li>
-        <li><strong>Goal:</strong> <code>&lt;your next milestone&gt;</code></li>
+        <li><strong>Current focus:</strong> scalable apps and competitive programming</li>
+        <li><strong>Learning:</strong> Rust</li>
+        <li><strong>Default instinct:</strong> if I need a tool badly enough, I will probably try building it</li>
+        <li><strong>Offline mode:</strong> table tennis, boxing practice, football with friends</li>
       </ul>
     </td>
   </tr>
 </table>
 
-## Tool Palette
+## Build Philosophy
 
-<!-- Replace, remove, or reorder these badges once you give me your exact stack. -->
+I want my digital life to be increasingly handmade. If I do not want to pay for an app, I will try building it. If a SaaS price makes eye contact for too long, I start checking free tiers and GitHub repos. The goal is not to avoid paying for good software; the goal is to understand enough to make what I need with my own hands.
+
+I am trying to become the kind of engineer who wakes up excited, ships useful things, learns from the broken parts, and ends the day properly tired.
+
+## Tool Palette
 
 <div align="center">
 
-![JavaScript](https://img.shields.io/badge/JavaScript-111111?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
-![TypeScript](https://img.shields.io/badge/TypeScript-111111?style=for-the-badge&logo=typescript&logoColor=3178C6)
-![React](https://img.shields.io/badge/React-111111?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Node.js](https://img.shields.io/badge/Node.js-111111?style=for-the-badge&logo=nodedotjs&logoColor=5FA04E)
 ![Python](https://img.shields.io/badge/Python-111111?style=for-the-badge&logo=python&logoColor=FFD43B)
-![MongoDB](https://img.shields.io/badge/MongoDB-111111?style=for-the-badge&logo=mongodb&logoColor=47A248)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-111111?style=for-the-badge&logo=postgresql&logoColor=4169E1)
+![C](https://img.shields.io/badge/C-111111?style=for-the-badge&logo=c&logoColor=A8B9CC)
+![C++](https://img.shields.io/badge/C%2B%2B-111111?style=for-the-badge&logo=cplusplus&logoColor=00599C)
+![HTML5](https://img.shields.io/badge/HTML5-111111?style=for-the-badge&logo=html5&logoColor=E34F26)
+![CSS3](https://img.shields.io/badge/CSS3-111111?style=for-the-badge&logo=css3&logoColor=1572B6)
+![JavaScript](https://img.shields.io/badge/JavaScript-111111?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
+![Rust](https://img.shields.io/badge/Rust-learning-F5C16C?style=for-the-badge&logo=rust&logoColor=111111)
 ![Git](https://img.shields.io/badge/Git-111111?style=for-the-badge&logo=git&logoColor=F05032)
-![Docker](https://img.shields.io/badge/Docker-111111?style=for-the-badge&logo=docker&logoColor=2496ED)
+![GitHub](https://img.shields.io/badge/GitHub-111111?style=for-the-badge&logo=github&logoColor=FFFFFF)
 ![Linux](https://img.shields.io/badge/Linux-111111?style=for-the-badge&logo=linux&logoColor=FCC624)
 
 </div>
 
-## Featured Builds
+## Systems I Want To Build
 
 <table>
   <tr>
     <td width="50%">
-      <h3><a href="PROJECT_1_URL_HERE">Project Name 01</a></h3>
-      <p>One clean sentence about what this project does and why it matters.</p>
-      <p><code>React</code> <code>Node.js</code> <code>MongoDB</code></p>
-      <ul>
-        <li>Highlight the main user-facing feature.</li>
-        <li>Highlight the technical decision you are proud of.</li>
-        <li>Highlight the measurable outcome or lesson.</li>
-      </ul>
+      <h3>Atelier</h3>
+      <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
+      <p>A personal software workspace for turning scattered ideas into tools that feel deliberate, useful, and calm.</p>
     </td>
     <td width="50%">
-      <h3><a href="PROJECT_2_URL_HERE">Project Name 02</a></h3>
-      <p>One clean sentence about what this project does and why it matters.</p>
-      <p><code>TypeScript</code> <code>Express</code> <code>PostgreSQL</code></p>
-      <ul>
-        <li>Highlight the main user-facing feature.</li>
-        <li>Highlight the technical decision you are proud of.</li>
-        <li>Highlight the measurable outcome or lesson.</li>
-      </ul>
+      <h3>Unbiased AI Detection</h3>
+      <p><img src="https://img.shields.io/badge/status-in%20the%20lab-7DD3FC?style=flat-square" alt="In the lab" /></p>
+      <p>Exploring fairer ways to reason about AI-generated content without making confident nonsense look official.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>Tiffinology</h3>
+      <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
+      <p>A food and tiffin idea waiting patiently for the day my backlog stops behaving like a public transport queue.</p>
+    </td>
+    <td width="50%">
+      <h3>Quippiq</h3>
+      <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
+      <p>A fast-moving product idea with the name already doing half the networking.</p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <h3>Krushi Sarthi</h3>
+      <p><img src="https://img.shields.io/badge/status-concept%20%2B%20build-98C379?style=flat-square" alt="Concept and build" /></p>
+      <p>An AI-powered advisory system for farmers, focused on making agricultural guidance more accessible, timely, and practical.</p>
     </td>
   </tr>
 </table>
@@ -123,23 +143,12 @@ atelier:
 
 ## Notes From The Bench
 
-<!-- Replace these with real notes, blog posts, demos, or learning logs. -->
-
-- `2026` - <a href="POST_OR_DEMO_URL_HERE">A short note about something I learned or shipped</a>
-- `2026` - <a href="POST_OR_DEMO_URL_HERE">A build log, tutorial, demo, or project write-up</a>
-- `2026` - <a href="POST_OR_DEMO_URL_HERE">Another note from your engineering journey</a>
-
-## Collaboration
-
-I am interested in work that combines thoughtful interfaces with reliable systems. If you are building something useful, experimental, or unusually polished, this is a good place to add the kind of collaboration you want.
+- Build logs, demos, and write-ups are coming soon.
+- Portfolio is also coming soon, which is developer language for "I have redesigned it in my head twelve times."
+- If you are building something useful, experimental, or unusually polished, I am open to internships, freelance work, open source, collaborations, and cofounding conversations.
 
 <div align="center">
 
-<img src="https://komarev.com/ghpvc/?username=jiteeshghodke456-del&style=for-the-badge&color=F5C16C&label=atelier+visits" alt="Profile views" />
-
-<br />
-<br />
-
-<sub>Built as a living profile README. Replace the placeholders, keep the craft.</sub>
+<sub>Systems, software, and a suspicious amount of late-night ambition.</sub>
 
 </div>
