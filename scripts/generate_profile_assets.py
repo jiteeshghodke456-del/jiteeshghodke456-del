@@ -141,6 +141,84 @@ def metric_card(x: int, y: int, width: int, label: str, value: object, accent: s
   <text x="{x + 16}" y="{y + 48}" class="number">{esc(value)}</text>"""
 
 
+def render_terminal_intro(path: pathlib.Path) -> None:
+    lines = [
+        ("whoami", "Jiteesh Ghodke - systems design &amp; architecture"),
+        ("focus", "scalable systems | competitive programming | self-built software"),
+        ("learning", "Rust | JavaScript | TypeScript | React | React Native"),
+        ("building", "Atelier | Stenokun | Unbiased AI Detection"),
+        ("", "Tiffinology | Quippiq | Krushi Sarthi"),
+        ("status", "mostly near code; occasionally near people"),
+    ]
+    rows = []
+    y = 98
+    delay = 0.25
+    for command, output in lines:
+        if command:
+            rows.append(
+                f"""
+  <g opacity="0">
+    <text x="44" y="{y}" class="prompt">jiteesh@atelier:~$</text>
+    <text x="220" y="{y}" class="command">{esc(command)}</text>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;{delay / 8:.3f};{(delay + 0.25) / 8:.3f};1" dur="8s" repeatCount="indefinite"/>
+  </g>"""
+            )
+            y += 25
+            delay += 0.42
+
+        rows.append(
+            f"""
+  <g opacity="0">
+    <text x="44" y="{y}" class="output">{output}</text>
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;{delay / 8:.3f};{(delay + 0.25) / 8:.3f};1" dur="8s" repeatCount="indefinite"/>
+  </g>"""
+        )
+        y += 34
+        delay += 0.42
+
+    body = f"""<svg width="920" height="390" viewBox="0 0 920 390" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated terminal introduction for Jiteesh Ghodke">
+  <defs>
+    <linearGradient id="terminal-bg" x1="0" y1="0" x2="920" y2="390" gradientUnits="userSpaceOnUse">
+      <stop stop-color="{PALETTE['bg']}"/>
+      <stop offset="0.62" stop-color="{PALETTE['panel']}"/>
+      <stop offset="1" stop-color="#15131A"/>
+    </linearGradient>
+    <linearGradient id="title-bar" x1="0" y1="0" x2="920" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="{PALETTE['panel_2']}"/>
+      <stop offset="0.55" stop-color="#211E20"/>
+      <stop offset="1" stop-color="{PALETTE['panel']}"/>
+    </linearGradient>
+    <clipPath id="screen">
+      <rect x="18" y="58" width="884" height="314" rx="0"/>
+    </clipPath>
+  </defs>
+  <style>
+    .window-title {{ font: 600 12px 'Space Mono', 'SFMono-Regular', Consolas, monospace; fill: {PALETTE['muted']}; }}
+    .prompt {{ font: 600 15px 'Space Mono', 'SFMono-Regular', Consolas, monospace; fill: {PALETTE['green']}; }}
+    .command {{ font: 600 15px 'Space Mono', 'SFMono-Regular', Consolas, monospace; fill: {PALETTE['gold']}; }}
+    .output {{ font: 500 15px 'Space Mono', 'SFMono-Regular', Consolas, monospace; fill: {PALETTE['text']}; }}
+  </style>
+  <rect x="1" y="1" width="918" height="388" rx="17" fill="url(#terminal-bg)" stroke="{PALETTE['border']}" stroke-width="2"/>
+  <path d="M18 18C18 8.6 25.6 1 35 1H885C894.4 1 902 8.6 902 18V58H18V18Z" fill="url(#title-bar)"/>
+  <circle cx="42" cy="30" r="6" fill="{PALETTE['pink']}"/>
+  <circle cx="64" cy="30" r="6" fill="{PALETTE['gold']}"/>
+  <circle cx="86" cy="30" r="6" fill="{PALETTE['green']}"/>
+  <text x="460" y="35" class="window-title" text-anchor="middle">jiteesh@atelier - ~/profile</text>
+  <g clip-path="url(#screen)">
+    {''.join(rows)}
+    <rect x="44" y="354" width="9" height="17" rx="1" fill="{PALETTE['cream']}">
+      <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="18" y="62" width="884" height="2" fill="{PALETTE['blue']}" opacity="0.12">
+      <animate attributeName="y" values="62;368;62" dur="7s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+  <rect x="18" y="58" width="884" height="314" fill="none" stroke="{PALETTE['blue']}" opacity="0.08"/>
+</svg>
+"""
+    path.write_text(body, encoding="utf-8")
+
+
 def render_github_stats(path: pathlib.Path, username: str, user: dict, repos: list[dict], languages: collections.Counter[str]) -> None:
     stars = sum(int(repo.get("stargazers_count") or 0) for repo in repos)
     forks = sum(int(repo.get("forks_count") or 0) for repo in repos)
@@ -343,6 +421,7 @@ def main() -> int:
     user, repos, languages = fetch_github(args.github_user, github_token)
     submissions = fetch_codeforces(args.codeforces_handle)
 
+    render_terminal_intro(out_dir / "about-terminal.svg")
     render_github_stats(out_dir / "github-stats.svg", args.github_user, user, repos, languages)
     render_top_languages(out_dir / "top-langs.svg", languages)
     render_trophies(out_dir / "trophies.svg", user, repos, languages)
