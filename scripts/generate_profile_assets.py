@@ -42,6 +42,63 @@ CODEFORCES_COLORS = {
     "OTHER": "#6B7280",
 }
 
+PROJECTS = [
+    {
+        "name": "Atelier",
+        "status": "COMING SOON",
+        "category": "PERSONAL SYSTEMS",
+        "description": "A calm workspace for turning unruly ideas into practical software.",
+        "aside": "Current risk: building the tool before finishing the task.",
+        "accent": PALETTE["gold"],
+        "symbol": "A",
+    },
+    {
+        "name": "Stenokun",
+        "status": "COMING SOON",
+        "category": "SYSTEMS EXPERIMENT",
+        "description": "Moving from architecture notes and diagrams into working code.",
+        "aside": "Naming complete. The easy two percent is thriving.",
+        "accent": PALETTE["blue"],
+        "symbol": "S",
+    },
+    {
+        "name": "Unbiased AI Detection",
+        "status": "IN THE LAB",
+        "category": "AI / FAIRNESS",
+        "description": "Detection that refuses to confuse confidence with evidence.",
+        "aside": "The model is currently being asked awkward questions.",
+        "accent": PALETTE["pink"],
+        "symbol": "AI",
+    },
+    {
+        "name": "Tiffinology",
+        "status": "COMING SOON",
+        "category": "LOCAL FOOD",
+        "description": "Simpler discovery and ordering for everyday tiffin services.",
+        "aside": "Lunch, but with infrastructure.",
+        "accent": PALETTE["green"],
+        "symbol": "T",
+    },
+    {
+        "name": "Quippiq",
+        "status": "COMING SOON",
+        "category": "MOBILE PRODUCT",
+        "description": "Fast, focused interactions without six onboarding screens.",
+        "aside": "The app may eventually explain its own name.",
+        "accent": "#FF8A65",
+        "symbol": "Q",
+    },
+    {
+        "name": "Krushi Sarthi",
+        "status": "CONCEPT + BUILD",
+        "category": "AGRI ADVISORY",
+        "description": "Practical AI guidance for farmers and everyday decisions.",
+        "aside": "Useful first. Impressive second.",
+        "accent": "#B39DDB",
+        "symbol": "K",
+    },
+]
+
 
 def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
