@@ -126,9 +126,10 @@ class ProfileAssetTests(unittest.TestCase):
 
         for source in sources:
             self.assertIn('class="particle-glyph"', source)
-            self.assertIn('filter="url(#particle-glow)"', source)
             self.assertGreater(source.count("<animate"), 20)
             self.assertIn("#FF7A3D", source)
+            self.assertNotIn('class="particle-glyph" filter=', source)
+            self.assertNotIn('class="hero-name" opacity="0"', source)
 
     def test_project_showcases_are_valid_and_colorful(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

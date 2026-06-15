@@ -5,13 +5,13 @@
 **Systems Design & Architecture** · Pune, India
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero-mobile.svg?v=1" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero.svg?v=1" alt="Particle-rendered profile header for Jiteesh Ghodke" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero-mobile.svg?v=2" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero.svg?v=2" alt="Particle-rendered profile header for Jiteesh Ghodke" />
 </picture>
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal-mobile.svg?v=5" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal.svg?v=5" alt="Animated terminal introduction" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal-mobile.svg?v=6" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal.svg?v=6" alt="Animated terminal introduction" />
 </picture>
 
 <a href="https://github.com/jiteeshghodke456-del"><img src="https://img.shields.io/badge/GitHub-090B0F?style=for-the-badge&logo=github&logoColor=white" height="38" alt="GitHub" /></a>
@@ -62,8 +62,8 @@ Each color marks a different kind of problem. The status labels mark how optimis
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase-mobile.svg?v=2" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase.svg?v=2" alt="Particle-rendered showcase of Jiteesh Ghodke's projects" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase-mobile.svg?v=3" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase.svg?v=3" alt="Particle-rendered showcase of Jiteesh Ghodke's projects" />
 </picture>
 
 </div>
@@ -92,8 +92,8 @@ Each color marks a different kind of problem. The status labels mark how optimis
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies-mobile.svg?v=5" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies.svg?v=5" alt="Particle-rendered GitHub trophies" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies-mobile.svg?v=6" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies.svg?v=6" alt="Particle-rendered GitHub trophies" />
 </picture>
 
 <picture>

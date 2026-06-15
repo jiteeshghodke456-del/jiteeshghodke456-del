@@ -354,17 +354,17 @@ def particle_matrix(
         scatter_y = (((index * 11 + column * 3) % 17) - 8) * cell * 0.48
         dissolve_x = (((index * 7 + column) % 13) - 6) * cell * 0.70
         dissolve_y = (((index * 13 + row) % 15) - 7) * cell * 0.62
-        assemble = 0.035 + (index % 12) * 0.007
-        settle = assemble + 0.095
+        disperse = 0.055 + (index % 12) * 0.004
+        assemble = disperse + 0.115
         color = accent if index % 17 == 0 else primary
         particle_opacity = opacity * (0.68 + (index % 4) * 0.09)
-        key_times = f"0;{assemble:.3f};{settle:.3f};0.72;0.90;1"
+        key_times = f"0;{disperse:.3f};{assemble:.3f};0.72;0.90;1"
         transforms = (
-            f"{scatter_x:.1f} {scatter_y:.1f};"
+            f"0 0;"
             f"{scatter_x:.1f} {scatter_y:.1f};"
             f"0 0;0 0;"
             f"{dissolve_x:.1f} {dissolve_y:.1f};"
-            f"{scatter_x:.1f} {scatter_y:.1f}"
+            f"0 0"
         )
         if index % 4 == 0:
             size = cell * (0.30 if index % 8 else 0.40)
@@ -386,15 +386,11 @@ def particle_matrix(
       <animateTransform attributeName="transform" type="translate"
         values="{transforms}" keyTimes="{key_times}"
         dur="{duration:.0f}s" repeatCount="indefinite"/>
-      <animate attributeName="opacity"
-        values="0;0;{particle_opacity:.2f};{particle_opacity:.2f};0.10;0"
-        keyTimes="{key_times}" dur="{duration:.0f}s" repeatCount="indefinite"/>
     {close}"""
         )
 
     return (
-        f'<g id="{esc(prefix)}" class="particle-glyph" '
-        f'filter="url(#particle-glow)">{"".join(particles)}</g>'
+        f'<g id="{esc(prefix)}" class="particle-glyph">{"".join(particles)}</g>'
     )
 
 
@@ -515,24 +511,13 @@ def render_particle_hero(path: pathlib.Path) -> None:
       dur="18s" repeatCount="indefinite"/>
   </rect>
   <text x="68" y="91" class="hero-micro">PROFILE / SYSTEMS / 01</text>
-  <text x="68" y="141" class="hero-name" opacity="0">JITEESH GHODKE
-    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.05;0.11;1"
-      dur="18s" repeatCount="indefinite"/>
+  <text x="68" y="141" class="hero-name">JITEESH GHODKE
     <animate attributeName="x" values="42;42;68;68" keyTimes="0;0.05;0.11;1"
       dur="18s" repeatCount="indefinite"/>
   </text>
-  <text x="68" y="172" class="hero-role" opacity="0">SYSTEMS DESIGN / ARCHITECTURE
-    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.10;0.16;1"
-      dur="18s" repeatCount="indefinite"/>
-  </text>
-  <text x="68" y="214" class="hero-copy" opacity="0">Low-level details. High-level consequences.
-    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.15;0.21;1"
-      dur="18s" repeatCount="indefinite"/>
-  </text>
-  <text x="68" y="239" class="hero-copy" opacity="0">Building systems I can explain when they fail.
-    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.19;0.25;1"
-      dur="18s" repeatCount="indefinite"/>
-  </text>
+  <text x="68" y="172" class="hero-role">SYSTEMS DESIGN / ARCHITECTURE</text>
+  <text x="68" y="214" class="hero-copy">Low-level details. High-level consequences.</text>
+  <text x="68" y="239" class="hero-copy">Building systems I can explain when they fail.</text>
   <text x="68" y="286" class="hero-micro">PUNE / INDIA</text>
   <text x="454" y="286" class="hero-micro" text-anchor="end">DESIGNING FOR SCALE / DEBUGGING THE CONSEQUENCES</text>
   <text x="893" y="166" class="hero-micro" text-anchor="middle"
