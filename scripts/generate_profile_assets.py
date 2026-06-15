@@ -47,8 +47,8 @@ PROJECTS = [
         "name": "Atelier",
         "status": "COMING SOON",
         "category": "PERSONAL SYSTEMS",
-        "description": "A calm workspace for turning unruly ideas into practical software.",
-        "aside": "Current risk: building the tool before finishing the task.",
+        "description": "A calm workspace for unruly ideas and practical software.",
+        "aside": "Risk: building the tool before finishing the task.",
         "accent": PALETTE["gold"],
         "symbol": "A",
     },
@@ -56,7 +56,7 @@ PROJECTS = [
         "name": "Stenokun",
         "status": "COMING SOON",
         "category": "SYSTEMS EXPERIMENT",
-        "description": "Moving from architecture notes and diagrams into working code.",
+        "description": "Architecture notes slowly becoming working code.",
         "aside": "Naming complete. The easy two percent is thriving.",
         "accent": PALETTE["blue"],
         "symbol": "S",
@@ -65,7 +65,7 @@ PROJECTS = [
         "name": "Unbiased AI Detection",
         "status": "IN THE LAB",
         "category": "AI / FAIRNESS",
-        "description": "Detection that refuses to confuse confidence with evidence.",
+        "description": "Fairer detection without confusing confidence for evidence.",
         "aside": "The model is currently being asked awkward questions.",
         "accent": PALETTE["pink"],
         "symbol": "AI",
@@ -74,7 +74,7 @@ PROJECTS = [
         "name": "Tiffinology",
         "status": "COMING SOON",
         "category": "LOCAL FOOD",
-        "description": "Simpler discovery and ordering for everyday tiffin services.",
+        "description": "Simpler discovery and ordering for everyday tiffins.",
         "aside": "Lunch, but with infrastructure.",
         "accent": PALETTE["green"],
         "symbol": "T",
@@ -83,7 +83,7 @@ PROJECTS = [
         "name": "Quippiq",
         "status": "COMING SOON",
         "category": "MOBILE PRODUCT",
-        "description": "Fast, focused interactions without six onboarding screens.",
+        "description": "Fast mobile interactions without six onboarding screens.",
         "aside": "The app may eventually explain its own name.",
         "accent": "#FF8A65",
         "symbol": "Q",
@@ -92,7 +92,7 @@ PROJECTS = [
         "name": "Krushi Sarthi",
         "status": "CONCEPT + BUILD",
         "category": "AGRI ADVISORY",
-        "description": "Practical AI guidance for farmers and everyday decisions.",
+        "description": "Practical AI guidance for farmers and daily decisions.",
         "aside": "Useful first. Impressive second.",
         "accent": "#B39DDB",
         "symbol": "K",
@@ -624,6 +624,139 @@ def render_terminal_mobile(path: pathlib.Path) -> None:
 </svg>
 """
     path.write_text(body, encoding="utf-8")
+
+
+def project_card(
+    project: dict,
+    x: int,
+    y: int,
+    width: int,
+    height: int,
+    mobile: bool = False,
+) -> str:
+    accent = project["accent"]
+    symbol_size = 44 if mobile else 46
+    symbol_x = x + 24
+    symbol_y = y + 24
+    text_x = x + 84
+    title_y = y + 42
+    category_y = y + 67
+    description_y = y + 95
+    aside_y = y + 121
+    status_width = max(92, len(project["status"]) * 7 + 24)
+    status_x = x + width - status_width - 18
+
+    return f"""
+  <g>
+    <rect x="{x}" y="{y}" width="{width}" height="{height}" rx="10"
+      fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
+    <rect x="{x}" y="{y}" width="5" height="{height}" rx="2.5" fill="{accent}"/>
+    <rect x="{symbol_x}" y="{symbol_y}" width="{symbol_size}" height="{symbol_size}" rx="9"
+      fill="{accent}" opacity="0.16"/>
+    <rect x="{symbol_x + 0.5}" y="{symbol_y + 0.5}" width="{symbol_size - 1}" height="{symbol_size - 1}" rx="8.5"
+      stroke="{accent}" opacity="0.72"/>
+    <text x="{symbol_x + symbol_size / 2}" y="{symbol_y + 29}" class="project-symbol"
+      text-anchor="middle" fill="{accent}">{esc(project['symbol'])}</text>
+    <text x="{text_x}" y="{title_y}" class="project-name">{esc(project['name'])}</text>
+    <text x="{text_x}" y="{category_y}" class="project-category" fill="{accent}">{esc(project['category'])}</text>
+    <rect x="{status_x}" y="{y + 18}" width="{status_width}" height="24" rx="12"
+      fill="{accent}" opacity="0.13"/>
+    <text x="{status_x + status_width / 2}" y="{y + 34}" class="project-status"
+      text-anchor="middle" fill="{accent}">{esc(project['status'])}</text>
+    <text x="{x + 24}" y="{description_y}" class="project-description">{esc(project['description'])}</text>
+    <path d="M{x + 24} {y + 108}H{x + width - 24}" stroke="{PALETTE['border']}"/>
+    <text x="{x + 24}" y="{aside_y}" class="project-aside">{esc(project['aside'])}</text>
+    <circle cx="{x + width - 29}" cy="{y + height - 22}" r="4" fill="{accent}">
+      <animate attributeName="opacity" values="0.35;1;0.35" dur="{2.4 + (x + y) % 5 * 0.2:.1f}s" repeatCount="indefinite"/>
+    </circle>
+  </g>"""
+
+
+def render_projects_showcase(path: pathlib.Path) -> None:
+    cards = []
+    for index, project in enumerate(PROJECTS):
+        column = index % 2
+        row = index // 2
+        cards.append(
+            project_card(
+                project,
+                x=24 + column * 448,
+                y=76 + row * 156,
+                width=424,
+                height=140,
+            )
+        )
+
+    body = f"""
+  <defs>
+    <linearGradient id="project-title-accent" x1="24" y1="0" x2="300" y2="0">
+      <stop stop-color="{PALETTE['gold']}"/>
+      <stop offset="0.45" stop-color="{PALETTE['blue']}"/>
+      <stop offset="1" stop-color="{PALETTE['pink']}"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .project-heading {{ font: 700 23px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
+    .project-kicker {{ font: 600 11px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['muted']}; letter-spacing: 0; }}
+    .project-name {{ font: 700 20px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
+    .project-category {{ font: 700 10px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
+    .project-status {{ font: 700 9px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
+    .project-description {{ font: 500 13px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['text']}; }}
+    .project-aside {{ font: italic 12px Georgia, 'Times New Roman', serif; fill: {PALETTE['muted']}; }}
+    .project-symbol {{ font: 800 15px 'Segoe UI', Arial, sans-serif; }}
+    @media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; }} }}
+  </style>
+  <text x="24" y="36" class="project-heading">Projects in various states of becoming real</text>
+  <rect x="24" y="48" width="276" height="3" rx="1.5" fill="url(#project-title-accent)"/>
+  <text x="896" y="38" class="project-kicker" text-anchor="end">USEFUL IDEAS / QUESTIONABLE SLEEP SCHEDULE</text>
+  {''.join(cards)}"""
+    path.write_text(
+        svg_shell(920, 560, body, "Jiteesh Ghodke project showcase"),
+        encoding="utf-8",
+    )
+
+
+def render_projects_showcase_mobile(path: pathlib.Path) -> None:
+    cards = []
+    for index, project in enumerate(PROJECTS):
+        cards.append(
+            project_card(
+                project,
+                x=18,
+                y=86 + index * 154,
+                width=384,
+                height=138,
+                mobile=True,
+            )
+        )
+
+    body = f"""
+  <defs>
+    <linearGradient id="mobile-project-accent" x1="18" y1="0" x2="310" y2="0">
+      <stop stop-color="{PALETTE['gold']}"/>
+      <stop offset="0.45" stop-color="{PALETTE['blue']}"/>
+      <stop offset="1" stop-color="{PALETTE['pink']}"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .project-heading {{ font: 700 21px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
+    .project-kicker {{ font: 600 10px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['muted']}; letter-spacing: 0; }}
+    .project-name {{ font: 700 18px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
+    .project-category {{ font: 700 9px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
+    .project-status {{ font: 700 8px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
+    .project-description {{ font: 500 12px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['text']}; }}
+    .project-aside {{ font: italic 11px Georgia, 'Times New Roman', serif; fill: {PALETTE['muted']}; }}
+    .project-symbol {{ font: 800 14px 'Segoe UI', Arial, sans-serif; }}
+    @media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; }} }}
+  </style>
+  <text x="18" y="36" class="project-heading">Projects becoming real</text>
+  <rect x="18" y="49" width="250" height="3" rx="1.5" fill="url(#mobile-project-accent)"/>
+  <text x="18" y="69" class="project-kicker">USEFUL IDEAS / QUESTIONABLE SLEEP SCHEDULE</text>
+  {''.join(cards)}"""
+    path.write_text(
+        svg_shell(420, 1022, body, "Mobile project showcase"),
+        encoding="utf-8",
+    )
 
 
 def render_github_overview(
@@ -1174,6 +1307,8 @@ def main() -> int:
 
     render_terminal_intro(out_dir / "about-terminal.svg")
     render_terminal_mobile(out_dir / "about-terminal-mobile.svg")
+    render_projects_showcase(out_dir / "projects-showcase.svg")
+    render_projects_showcase_mobile(out_dir / "projects-showcase-mobile.svg")
     render_github_overview(
         out_dir / "github-overview.svg",
         args.github_user,
