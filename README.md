@@ -56,44 +56,16 @@ I like understanding software below the reassuring diagrams: memory, protocols, 
 
 ## Projects
 
-<table>
-  <tr>
-    <td width="50%">
-      <h3>Atelier</h3>
-      <p><code>coming soon</code></p>
-      <p>A personal workspace for turning scattered ideas into practical software.</p>
-    </td>
-    <td width="50%">
-      <h3>Stenokun</h3>
-      <p><code>coming soon</code></p>
-      <p>A product experiment moving from system diagrams into working code.</p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3>Unbiased AI Detection</h3>
-      <p><code>in the lab</code></p>
-      <p>Exploring fairer detection without confusing confidence for evidence.</p>
-    </td>
-    <td width="50%">
-      <h3>Tiffinology</h3>
-      <p><code>coming soon</code></p>
-      <p>A local food and tiffin platform for simpler discovery and ordering.</p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3>Quippiq</h3>
-      <p><code>coming soon</code></p>
-      <p>A mobile-first product experiment built around fast interactions.</p>
-    </td>
-    <td width="50%">
-      <h3>Krushi Sarthi</h3>
-      <p><code>concept + build</code></p>
-      <p>Accessible AI-powered advisory for farmers and everyday decisions.</p>
-    </td>
-  </tr>
-</table>
+Each color marks a different kind of problem. The status labels mark how optimistic I was when naming the folder.
+
+<div align="center">
+
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase-mobile.svg?v=1" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase.svg?v=1" alt="Colorful showcase of Jiteesh Ghodke's projects" />
+</picture>
+
+</div>
 
 ---
 
@@ -103,8 +75,8 @@ I like understanding software below the reassuring diagrams: memory, protocols, 
 
 <a href="https://codeforces.com/profile/SobaDango">
   <picture>
-    <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris-mobile.svg?v=4" />
-    <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris.svg?v=4" alt="Codeforces Tetris heatmap for SobaDango" />
+    <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris-mobile.svg?v=5" />
+    <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris.svg?v=5" alt="Codeforces Tetris heatmap for SobaDango" />
   </picture>
 </a>
 

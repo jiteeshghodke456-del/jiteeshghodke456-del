@@ -14,6 +14,10 @@ from scripts.generate_profile_assets import (
     render_github_activity_mobile,
     render_github_overview,
     render_github_overview_mobile,
+    render_codeforces_tetris,
+    render_codeforces_tetris_mobile,
+    render_projects_showcase,
+    render_projects_showcase_mobile,
     render_terminal_intro,
     render_terminal_mobile,
 )
@@ -101,6 +105,49 @@ class ProfileAssetTests(unittest.TestCase):
             ET.parse(overview_mobile)
             ET.parse(activity)
             ET.parse(activity_mobile)
+
+    def test_project_showcases_are_valid_and_colorful(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            desktop = root / "projects.svg"
+            mobile = root / "projects-mobile.svg"
+            render_projects_showcase(desktop)
+            render_projects_showcase_mobile(mobile)
+            desktop_source = desktop.read_text(encoding="utf-8")
+            ET.parse(desktop)
+            ET.parse(mobile)
+
+        self.assertIn("Georgia", desktop_source)
+        self.assertIn("USEFUL IDEAS", desktop_source)
+        self.assertGreaterEqual(desktop_source.count("project-status"), 7)
+        for color in ("#F5C16C", "#7DD3FC", "#F472B6", "#98C379"):
+            self.assertIn(color, desktop_source)
+
+    def test_codeforces_tetris_replays_at_a_readable_pace(self) -> None:
+        now = int(dt.datetime.now(dt.UTC).timestamp())
+        submissions = [
+            {"creationTimeSeconds": now, "verdict": "OK"},
+            {"creationTimeSeconds": now - 86400, "verdict": "WRONG_ANSWER"},
+        ]
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            desktop = root / "tetris.svg"
+            mobile = root / "tetris-mobile.svg"
+            render_codeforces_tetris(desktop, "SobaDango", submissions)
+            render_codeforces_tetris_mobile(mobile, "SobaDango", submissions)
+            sources = [
+                desktop.read_text(encoding="utf-8"),
+                mobile.read_text(encoding="utf-8"),
+            ]
+            ET.parse(desktop)
+            ET.parse(mobile)
+
+        for source in sources:
+            self.assertIn('dur="14s"', source)
+            self.assertIn('repeatCount="indefinite"', source)
+            self.assertIn('keyTimes="0.0000;', source)
+            self.assertNotIn('fill="freeze"', source)
 
     def test_snake_grows_once_per_consumed_active_day(self) -> None:
         enhanced, count = enhance_svg(SNAKE_FIXTURE)

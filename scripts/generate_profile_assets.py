@@ -645,6 +645,7 @@ def project_card(
     aside_y = y + 121
     status_width = max(92, len(project["status"]) * 7 + 24)
     status_x = x + width - status_width - 18
+    name_class = "project-name project-name-long" if len(project["name"]) > 18 else "project-name"
 
     return f"""
   <g>
@@ -657,7 +658,7 @@ def project_card(
       stroke="{accent}" opacity="0.72"/>
     <text x="{symbol_x + symbol_size / 2}" y="{symbol_y + 29}" class="project-symbol"
       text-anchor="middle" fill="{accent}">{esc(project['symbol'])}</text>
-    <text x="{text_x}" y="{title_y}" class="project-name">{esc(project['name'])}</text>
+    <text x="{text_x}" y="{title_y}" class="{name_class}">{esc(project['name'])}</text>
     <text x="{text_x}" y="{category_y}" class="project-category" fill="{accent}">{esc(project['category'])}</text>
     <rect x="{status_x}" y="{y + 18}" width="{status_width}" height="24" rx="12"
       fill="{accent}" opacity="0.13"/>
@@ -699,6 +700,7 @@ def render_projects_showcase(path: pathlib.Path) -> None:
     .project-heading {{ font: 700 23px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
     .project-kicker {{ font: 600 11px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['muted']}; letter-spacing: 0; }}
     .project-name {{ font: 700 20px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
+    .project-name-long {{ font-size: 18px; }}
     .project-category {{ font: 700 10px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
     .project-status {{ font: 700 9px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
     .project-description {{ font: 500 13px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['text']}; }}
@@ -742,6 +744,7 @@ def render_projects_showcase_mobile(path: pathlib.Path) -> None:
     .project-heading {{ font: 700 21px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
     .project-kicker {{ font: 600 10px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['muted']}; letter-spacing: 0; }}
     .project-name {{ font: 700 18px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
+    .project-name-long {{ font-size: 16px; }}
     .project-category {{ font: 700 9px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
     .project-status {{ font: 700 8px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
     .project-description {{ font: 500 12px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['text']}; }}
@@ -1110,6 +1113,36 @@ def verdict_key(submission: dict) -> str:
     return verdict if verdict in CODEFORCES_COLORS else "OTHER"
 
 
+def tetris_drop_animation(
+    y: int,
+    fall: int,
+    opacity: float,
+    order: int,
+    total: int,
+    row: int,
+) -> str:
+    cycle = 14.0
+    progress = order / max(1, total - 1)
+    drop_start = 0.55 + progress * 4.7 + row * 0.025
+    drop_end = drop_start + 1.1
+    hold_end = 11.8
+    fade_end = 12.35
+    reset_end = 12.36
+    key_times = ";".join(
+        f"{value / cycle:.4f}"
+        for value in (0, drop_start, drop_end, hold_end, fade_end, reset_end, cycle)
+    )
+    start_y = y - fall
+
+    return f"""
+    <animate attributeName="y"
+      values="{start_y};{start_y};{y};{y};{y};{start_y};{start_y}"
+      keyTimes="{key_times}" dur="{cycle:.0f}s" repeatCount="indefinite"/>
+    <animate attributeName="opacity"
+      values="0;0;{opacity:.2f};{opacity:.2f};0;0;0"
+      keyTimes="{key_times}" dur="{cycle:.0f}s" repeatCount="indefinite"/>"""
+
+
 def render_codeforces_tetris(path: pathlib.Path, handle: str, submissions: list[dict]) -> None:
     today = dt.datetime.now(dt.UTC).date()
     start = today - dt.timedelta(days=364)
@@ -1137,6 +1170,11 @@ def render_codeforces_tetris(path: pathlib.Path, handle: str, submissions: list[
     weeks = 53
     rows = 7
     blocks = []
+    active_days = sum(
+        bool(per_day.get(start + dt.timedelta(days=day_index)))
+        for day_index in range(365)
+    )
+    active_index = 0
 
     for day_index in range(365):
         day = start + dt.timedelta(days=day_index)
@@ -1156,11 +1194,18 @@ def render_codeforces_tetris(path: pathlib.Path, handle: str, submissions: list[
         color = CODEFORCES_COLORS.get(dominant, CODEFORCES_COLORS["OTHER"])
         opacity = min(1.0, 0.42 + day_total * 0.14)
         fall = 42 + (row * 9) + ((col % 6) * 5)
-        begin = 0.03 * (col % 20) + 0.025 * row
+        animation = tetris_drop_animation(
+            y,
+            fall,
+            opacity,
+            active_index,
+            active_days,
+            row,
+        )
+        active_index += 1
         blocks.append(
             f"""<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2" fill="{color}" opacity="{opacity:0.2f}">
-    <animate attributeName="y" values="{y - fall};{y}" dur="0.72s" begin="{begin:0.2f}s" fill="freeze"/>
-    <animate attributeName="opacity" values="0;{opacity:0.2f}" dur="0.72s" begin="{begin:0.2f}s" fill="freeze"/>
+    {animation}
   </rect>"""
         )
 
@@ -1186,7 +1231,13 @@ def render_codeforces_tetris(path: pathlib.Path, handle: str, submissions: list[
 
     side_piece = f"""
   <g transform="translate(850 92)">
-    <animateTransform attributeName="transform" type="translate" values="850 48;850 92;850 48" dur="3.8s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate"
+      values="850 48;850 48;850 92;850 92;850 48;850 48"
+      keyTimes="0;0.0393;0.4643;0.8429;0.8821;1"
+      dur="14s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;1;0;0"
+      keyTimes="0;0.0393;0.4643;0.8429;0.8821;1"
+      dur="14s" repeatCount="indefinite"/>
     <rect x="0" y="0" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
     <rect x="16" y="0" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
     <rect x="16" y="16" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
@@ -1235,6 +1286,11 @@ def render_codeforces_tetris_mobile(
     grid_x = 32
     grid_y = 116
     blocks = []
+    active_days = sum(
+        bool(per_day.get(start + dt.timedelta(days=day_index)))
+        for day_index in range(365)
+    )
+    active_index = 0
     for day_index in range(365):
         day = start + dt.timedelta(days=day_index)
         column = day_index // 7
@@ -1253,11 +1309,18 @@ def render_codeforces_tetris_mobile(
         color = CODEFORCES_COLORS.get(dominant, CODEFORCES_COLORS["OTHER"])
         opacity = min(1.0, 0.46 + day_total * 0.14)
         fall = 24 + row * 4 + column % 5
-        begin = 0.02 * (column % 20) + 0.018 * row
+        animation = tetris_drop_animation(
+            y,
+            fall,
+            opacity,
+            active_index,
+            active_days,
+            row,
+        )
+        active_index += 1
         blocks.append(
             f"""<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="1" fill="{color}" opacity="{opacity:.2f}">
-    <animate attributeName="y" values="{y - fall};{y}" dur="0.65s" begin="{begin:.2f}s" fill="freeze"/>
-    <animate attributeName="opacity" values="0;{opacity:.2f}" dur="0.65s" begin="{begin:.2f}s" fill="freeze"/>
+    {animation}
   </rect>"""
         )
 

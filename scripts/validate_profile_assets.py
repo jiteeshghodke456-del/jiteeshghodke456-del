@@ -20,6 +20,8 @@ EXPECTED_ASSETS = {
     "github-contribution-grid-snake.svg",
     "github-overview-mobile.svg",
     "github-overview.svg",
+    "projects-showcase-mobile.svg",
+    "projects-showcase.svg",
     "trophies-mobile.svg",
     "trophies.svg",
 }
