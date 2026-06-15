@@ -6,11 +6,31 @@
 
 <div align="center">
 
-<img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal.svg" alt="Animated terminal introduction" />
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal-mobile.svg" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal.svg" alt="Animated terminal introduction" />
+</picture>
+
+<br />
+
+![Pune, India](https://img.shields.io/badge/Pune%2C%20India-111820?style=flat-square&logo=googlemaps&logoColor=F5C16C)
+![Systems design](https://img.shields.io/badge/Systems%20Design-111820?style=flat-square&logo=diagramsdotnet&logoColor=7DD3FC)
+![Open to building](https://img.shields.io/badge/Open%20to-building-111820?style=flat-square&logo=githubsponsors&logoColor=98C379)
 
 </div>
 
-### Connect
+## Systems, mostly
+
+I am interested in how software works at the inconvenient level: memory, protocols, failure modes, trade-offs, and the architectural decisions that later become somebody else's incident report.
+
+My current focus is building applications that scale and getting better at competitive programming. I also have a habit of seeing a subscription price, saying "reasonable", and opening a new repository instead.
+
+- **Learning:** Rust, JavaScript, TypeScript, React, and React Native
+- **Building toward:** dependable systems, useful products, and software I actually understand
+- **Open to:** internships, freelance work, open source, collaborations, and cofounding
+- **Ask me about:** how my day was; the monitoring for that service is surprisingly effective
+
+### Find me
 
 <a href="https://github.com/jiteeshghodke456-del"><img src="https://img.shields.io/badge/-181717?style=flat-square&logo=github&logoColor=F7E7C4" height="32" alt="GitHub" /></a>
 <a href="https://www.linkedin.com/in/jiteesh-ghodke-642832398/"><img src="https://img.shields.io/badge/-0A66C2?style=flat-square&logo=linkedin&logoColor=white" height="32" alt="LinkedIn" /></a>
@@ -27,122 +47,97 @@
 [![Currently learning](https://skillicons.dev/icons?i=rust,js,ts,react&theme=dark)](https://skillicons.dev)
 
 ![React Native](https://img.shields.io/badge/React%20Native-learning-111111?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Systems Design](https://img.shields.io/badge/Systems%20Design-focus-F5C16C?style=for-the-badge&logo=diagramsdotnet&logoColor=111111)
-
-### Notes from the workbench
-
-<table>
-  <tr>
-    <td width="33%">
-      <h3>Systems</h3>
-      <p>I want to know why the thing works, why it stops working, and why the diagram was so smug about it.</p>
-    </td>
-    <td width="33%">
-      <h3>Codeforces</h3>
-      <p>Voluntary suffering, but with ratings. Very advanced, if you ignore the part where arrays bully me.</p>
-    </td>
-    <td width="33%">
-      <h3>Self-building</h3>
-      <p>If I need a tool badly enough, I will try building it. This is either independence or a budgeting issue.</p>
-    </td>
-  </tr>
-</table>
-
-I want to wake up excited, make useful software, understand the systems I depend on, and talk to actual humans occasionally. A modest plan. Historically dangerous.
+![System Design](https://img.shields.io/badge/System%20Design-primary%20focus-F5C16C?style=for-the-badge&logo=diagramsdotnet&logoColor=111111)
 
 ---
 
-### Featured builds
+## Builds
 
-<table>
-  <tr>
-    <td width="50%">
-      <h3>Atelier</h3>
-      <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
-      <p>A personal software workspace for turning scattered ideas into calm tools, before they unionize.</p>
-      <p><code>systems</code> <code>productivity</code> <code>personal tooling</code></p>
-    </td>
-    <td width="50%">
-      <h3>Stenokun</h3>
-      <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
-      <p>A new build entering the queue. The queue was not consulted, which is normal management behaviour.</p>
-      <p><code>coming soon</code> <code>experiments</code> <code>systems</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3>Unbiased AI Detection</h3>
-      <p><img src="https://img.shields.io/badge/status-in%20the%20lab-7DD3FC?style=flat-square" alt="In the lab" /></p>
-      <p>Exploring fairer ways to reason about AI-generated content without giving confidence a fake moustache.</p>
-      <p><code>ai</code> <code>classification</code> <code>fairness</code></p>
-    </td>
-    <td width="50%">
-      <h3>Tiffinology</h3>
-      <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
-      <p>A food and tiffin idea waiting for the backlog to stop behaving like a drawer full of unlabeled cables.</p>
-      <p><code>marketplace</code> <code>food</code> <code>local systems</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3>Quippiq</h3>
-      <p><img src="https://img.shields.io/badge/status-coming%20soon-F5C16C?style=flat-square" alt="Coming soon" /></p>
-      <p>A fast-moving product idea with the name already doing some of the networking.</p>
-      <p><code>product</code> <code>mobile</code> <code>experiments</code></p>
-    </td>
-    <td width="50%">
-      <h3>Krushi Sarthi</h3>
-      <p><img src="https://img.shields.io/badge/status-concept%20%2B%20build-98C379?style=flat-square" alt="Concept and build" /></p>
-      <p>An AI-powered advisory system for farmers, focused on accessible, timely, and practical guidance.</p>
-      <p><code>ai</code> <code>agriculture</code> <code>advisory systems</code></p>
-    </td>
-  </tr>
-</table>
+### Atelier · `coming soon`
+
+A personal software workspace for turning scattered ideas into calm, practical tools.
+
+`systems` `productivity` `personal tooling`
+
+### Stenokun · `coming soon`
+
+A new product experiment currently moving from notes and diagrams into working software.
+
+`experiments` `systems` `product`
+
+### Unbiased AI Detection · `in the lab`
+
+Exploring fairer ways to reason about AI-generated content without pretending confidence is the same thing as evidence.
+
+`ai` `classification` `fairness`
+
+### Tiffinology · `coming soon`
+
+A local food and tiffin platform focused on making discovery, ordering, and everyday operations simpler.
+
+`marketplace` `food` `local systems`
+
+### Quippiq · `coming soon`
+
+A mobile-first product experiment built around fast, focused interactions.
+
+`mobile` `product` `experiments`
+
+### Krushi Sarthi · `concept + build`
+
+An AI-powered advisory system for farmers, focused on accessible, timely, and practical guidance.
+
+`ai` `agriculture` `advisory systems`
 
 ---
 
-### Codeforces Tetris
+## Codeforces Tetris
 
 <div align="center">
 
 <a href="https://codeforces.com/profile/SobaDango">
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris.svg" alt="Codeforces Tetris heatmap" />
+  <picture>
+    <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris-mobile.svg" />
+    <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris.svg" alt="Codeforces Tetris heatmap for SobaDango" />
+  </picture>
 </a>
 
-<sub>The blocks fall, the verdicts judge, the handle survives.</sub>
+<sub>The blocks fall, the verdicts judge, and the handle continues to deny everything.</sub>
 
 </div>
 
 ---
 
-### GitHub workshop
+## GitHub workshop
 
 <div align="center">
 
-<img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies.svg" alt="GitHub trophies" />
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies-mobile.svg" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies.svg" alt="GitHub trophies" />
+</picture>
 
 <br />
 
-<img width="49%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-stats.svg" alt="GitHub stats" />
-<img width="49%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/top-langs.svg" alt="Top languages" />
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-overview-mobile.svg" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-overview.svg" alt="GitHub repository and language overview" />
+</picture>
 
 <br />
 
-<img src="https://streak-stats.demolab.com?user=jiteeshghodke456-del&theme=dark&hide_border=true&background=0D1117&ring=F5C16C&fire=F472B6&currStreakLabel=7DD3FC&sideLabels=D8DEE9&currStreakNum=F7E7C4&sideNums=F7E7C4" alt="GitHub streak" />
-
-<br />
-
-<img width="100%" src="https://github-readme-activity-graph.vercel.app/graph?username=jiteeshghodke456-del&bg_color=0D1117&color=D8DEE9&line=F5C16C&point=7DD3FC&area=true&area_color=312E2B&hide_border=true" alt="GitHub activity graph" />
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-activity-mobile.svg" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-activity.svg" alt="GitHub contribution activity and streaks" />
+</picture>
 
 </div>
-
----
 
 ### Contribution snake
 
 <div align="center">
 
-<sub>It eats contributions and grows. Finally, a data structure with ambition.</sub>
+<sub>It gains a segment for every active contribution day it eats. Career development, but visibly reptilian.</sub>
 
 <br />
 <br />
@@ -150,14 +145,14 @@ I want to wake up excited, make useful software, understand the systems I depend
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake-dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake.svg" />
-  <img width="100%" alt="GitHub contribution snake animation" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake.svg" />
+  <img width="100%" alt="Growing GitHub contribution snake animation" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake.svg" />
 </picture>
 
 </div>
 
 ---
 
-### Build something?
+## Build something?
 
 > [!IMPORTANT]
 > Open to internships, freelance work, open source, collaborations, and cofounding. If you are building something useful, strange, or suspiciously ambitious, say hello.
@@ -169,7 +164,7 @@ I want to wake up excited, make useful software, understand the systems I depend
 <br />
 <br />
 
-<sub>Built with system design notes, suspicious optimism, and the social calendar of a background service.</sub>
+<sub>Built with system diagrams, unreasonable project queues, and the social calendar of a background service.</sub>
 
 </div>
 
