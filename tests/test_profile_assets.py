@@ -16,10 +16,14 @@ from scripts.generate_profile_assets import (
     render_github_overview_mobile,
     render_codeforces_tetris,
     render_codeforces_tetris_mobile,
+    render_particle_hero,
+    render_particle_hero_mobile,
     render_projects_showcase,
     render_projects_showcase_mobile,
     render_terminal_intro,
     render_terminal_mobile,
+    render_trophies,
+    render_trophies_mobile,
 )
 from scripts.grow_contribution_snake import enhance_svg
 
@@ -106,6 +110,26 @@ class ProfileAssetTests(unittest.TestCase):
             ET.parse(activity)
             ET.parse(activity_mobile)
 
+    def test_particle_heroes_are_valid_and_animated(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            desktop = root / "hero.svg"
+            mobile = root / "hero-mobile.svg"
+            render_particle_hero(desktop)
+            render_particle_hero_mobile(mobile)
+            sources = [
+                desktop.read_text(encoding="utf-8"),
+                mobile.read_text(encoding="utf-8"),
+            ]
+            ET.parse(desktop)
+            ET.parse(mobile)
+
+        for source in sources:
+            self.assertIn('class="particle-glyph"', source)
+            self.assertIn('filter="url(#particle-glow)"', source)
+            self.assertGreater(source.count("<animate"), 20)
+            self.assertIn("#FF7A3D", source)
+
     def test_project_showcases_are_valid_and_colorful(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = pathlib.Path(directory)
@@ -117,11 +141,35 @@ class ProfileAssetTests(unittest.TestCase):
             ET.parse(desktop)
             ET.parse(mobile)
 
-        self.assertIn("Georgia", desktop_source)
+        self.assertIn("Arial Narrow", desktop_source)
         self.assertIn("USEFUL IDEAS", desktop_source)
+        self.assertGreaterEqual(desktop_source.count('class="particle-glyph"'), 6)
+        self.assertNotIn("project-symbol", desktop_source)
         self.assertGreaterEqual(desktop_source.count("project-status"), 7)
         for color in ("#F5C16C", "#7DD3FC", "#F472B6", "#98C379"):
             self.assertIn(color, desktop_source)
+
+    def test_trophies_use_large_particle_icons_without_bobbing(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            desktop = root / "trophies.svg"
+            mobile = root / "trophies-mobile.svg"
+            user = {"public_repos": 4}
+            repos = [{"stargazers_count": 3, "forks_count": 1}]
+            languages = collections.Counter({"Python": 700, "C++": 300})
+            render_trophies(desktop, user, repos, languages)
+            render_trophies_mobile(mobile, user, repos, languages)
+            sources = [
+                desktop.read_text(encoding="utf-8"),
+                mobile.read_text(encoding="utf-8"),
+            ]
+            ET.parse(desktop)
+            ET.parse(mobile)
+
+        for source in sources:
+            self.assertEqual(source.count('class="particle-glyph"'), 6)
+            self.assertNotIn('values="0 0;0 -4;0 0"', source)
+            self.assertGreater(source.count("<animateTransform"), 80)
 
     def test_codeforces_tetris_replays_at_a_readable_pace(self) -> None:
         now = int(dt.datetime.now(dt.UTC).timestamp())

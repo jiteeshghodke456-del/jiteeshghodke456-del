@@ -4,19 +4,20 @@
 
 **Systems Design & Architecture** · Pune, India
 
-<a href="https://git.io/typing-svg">
-  <img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=600&size=22&duration=3200&pause=900&color=F5C16C&center=true&vCenter=true&width=760&lines=Low-level+details%2C+high-level+consequences;Building+systems+I+can+actually+explain;Competitive+programming%2C+because+peace+was+unavailable" alt="Profile introduction" />
-</a>
-
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal-mobile.svg?v=4" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal.svg?v=4" alt="Animated terminal introduction" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero-mobile.svg?v=1" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero.svg?v=1" alt="Particle-rendered profile header for Jiteesh Ghodke" />
 </picture>
 
-<a href="https://github.com/jiteeshghodke456-del"><img src="https://img.shields.io/badge/-181717?style=flat-square&logo=github&logoColor=F7E7C4" height="30" alt="GitHub" /></a>
-<a href="https://www.linkedin.com/in/jiteesh-ghodke-642832398/"><img src="https://img.shields.io/badge/-0A66C2?style=flat-square&logo=linkedin&logoColor=white" height="30" alt="LinkedIn" /></a>
-<a href="https://x.com/Jiteez_"><img src="https://img.shields.io/badge/-111111?style=flat-square&logo=x&logoColor=white" height="30" alt="X" /></a>
-<a href="https://codeforces.com/profile/SobaDango"><img src="https://img.shields.io/badge/-98C379?style=flat-square&logo=codeforces&logoColor=111111" height="30" alt="Codeforces" /></a>
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal-mobile.svg?v=5" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal.svg?v=5" alt="Animated terminal introduction" />
+</picture>
+
+<a href="https://github.com/jiteeshghodke456-del"><img src="https://img.shields.io/badge/GitHub-090B0F?style=for-the-badge&logo=github&logoColor=white" height="38" alt="GitHub" /></a>
+<a href="https://www.linkedin.com/in/jiteesh-ghodke-642832398/"><img src="https://img.shields.io/badge/LinkedIn-090B0F?style=for-the-badge&logo=linkedin&logoColor=white" height="38" alt="LinkedIn" /></a>
+<a href="https://x.com/Jiteez_"><img src="https://img.shields.io/badge/X-090B0F?style=for-the-badge&logo=x&logoColor=white" height="38" alt="X" /></a>
+<a href="https://codeforces.com/profile/SobaDango"><img src="https://img.shields.io/badge/Codeforces-090B0F?style=for-the-badge&logo=codeforces&logoColor=FF7A3D" height="38" alt="Codeforces" /></a>
 
 </div>
 
@@ -48,9 +49,9 @@ I like understanding software below the reassuring diagrams: memory, protocols, 
 
 ### Toolkit
 
-[![Main tools](https://skillicons.dev/icons?i=python,c,cpp,html,css,git,github,linux,vscode&theme=dark)](https://skillicons.dev)
+<img src="https://skillicons.dev/icons?i=python,c,cpp,html,css,git,github,linux,vscode&theme=dark&perline=5" width="300" alt="Python, C, C++, HTML, CSS, Git, GitHub, Linux, and VS Code" />
 
-[![Currently learning](https://skillicons.dev/icons?i=rust,js,ts,react&theme=dark)](https://skillicons.dev)
+<img src="https://skillicons.dev/icons?i=rust,js,ts,react&theme=dark&perline=4" width="250" alt="Rust, JavaScript, TypeScript, and React" />
 
 ---
 
@@ -61,8 +62,8 @@ Each color marks a different kind of problem. The status labels mark how optimis
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase-mobile.svg?v=1" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase.svg?v=1" alt="Colorful showcase of Jiteesh Ghodke's projects" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase-mobile.svg?v=2" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase.svg?v=2" alt="Particle-rendered showcase of Jiteesh Ghodke's projects" />
 </picture>
 
 </div>
@@ -91,8 +92,8 @@ Each color marks a different kind of problem. The status labels mark how optimis
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies-mobile.svg?v=4" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies.svg?v=4" alt="GitHub trophies" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies-mobile.svg?v=5" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies.svg?v=5" alt="Particle-rendered GitHub trophies" />
 </picture>
 
 <picture>

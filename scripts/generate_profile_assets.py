@@ -30,6 +30,7 @@ PALETTE = {
     "pink": "#F472B6",
     "green": "#98C379",
     "red": "#EF6B73",
+    "orange": "#FF7A3D",
 }
 
 CODEFORCES_COLORS = {
@@ -47,8 +48,8 @@ PROJECTS = [
         "name": "Atelier",
         "status": "COMING SOON",
         "category": "PERSONAL SYSTEMS",
-        "description": "A calm workspace for unruly ideas and practical software.",
-        "aside": "Risk: building the tool before finishing the task.",
+        "description": "A calm workspace for unruly ideas.",
+        "aside": "Risk: building the tool before the task.",
         "accent": PALETTE["gold"],
         "symbol": "A",
     },
@@ -57,7 +58,7 @@ PROJECTS = [
         "status": "COMING SOON",
         "category": "SYSTEMS EXPERIMENT",
         "description": "Architecture notes slowly becoming working code.",
-        "aside": "Naming complete. The easy two percent is thriving.",
+        "aside": "Naming done. The easy two percent thrives.",
         "accent": PALETTE["blue"],
         "symbol": "S",
     },
@@ -65,8 +66,8 @@ PROJECTS = [
         "name": "Unbiased AI Detection",
         "status": "IN THE LAB",
         "category": "AI / FAIRNESS",
-        "description": "Fairer detection without confusing confidence for evidence.",
-        "aside": "The model is currently being asked awkward questions.",
+        "description": "Fairer detection without confidence theatre.",
+        "aside": "The model is being asked awkward things.",
         "accent": PALETTE["pink"],
         "symbol": "AI",
     },
@@ -74,8 +75,8 @@ PROJECTS = [
         "name": "Tiffinology",
         "status": "COMING SOON",
         "category": "LOCAL FOOD",
-        "description": "Simpler discovery and ordering for everyday tiffins.",
-        "aside": "Lunch, but with infrastructure.",
+        "description": "Tiffin discovery and ordering, kept simple.",
+        "aside": "Lunch, now with infrastructure.",
         "accent": PALETTE["green"],
         "symbol": "T",
     },
@@ -83,8 +84,8 @@ PROJECTS = [
         "name": "Quippiq",
         "status": "COMING SOON",
         "category": "MOBILE PRODUCT",
-        "description": "Fast mobile interactions without six onboarding screens.",
-        "aside": "The app may eventually explain its own name.",
+        "description": "Fast interactions. No onboarding novel.",
+        "aside": "It may eventually explain its own name.",
         "accent": "#FF8A65",
         "symbol": "Q",
     },
@@ -92,12 +93,33 @@ PROJECTS = [
         "name": "Krushi Sarthi",
         "status": "CONCEPT + BUILD",
         "category": "AGRI ADVISORY",
-        "description": "Practical AI guidance for farmers and daily decisions.",
+        "description": "Practical AI guidance for farmers.",
         "aside": "Useful first. Impressive second.",
         "accent": "#B39DDB",
         "symbol": "K",
     },
 ]
+
+PARTICLE_GLYPHS = {
+    "A": ("01110", "10001", "10001", "11111", "10001", "10001", "10001"),
+    "G": ("01111", "10000", "10000", "10111", "10001", "10001", "01110"),
+    "I": ("11111", "00100", "00100", "00100", "00100", "00100", "11111"),
+    "J": ("00111", "00010", "00010", "00010", "10010", "10010", "01100"),
+    "K": ("10001", "10010", "10100", "11000", "10100", "10010", "10001"),
+    "Q": ("01110", "10001", "10001", "10001", "10101", "10010", "01101"),
+    "S": ("01111", "10000", "10000", "01110", "00001", "00001", "11110"),
+    "T": ("11111", "00100", "00100", "00100", "00100", "00100", "00100"),
+}
+
+TROPHY_PATTERN = (
+    "0011100",
+    "1111111",
+    "1011101",
+    "0111110",
+    "0011100",
+    "0011100",
+    "0111110",
+)
 
 
 def esc(value: object) -> str:
@@ -300,8 +322,145 @@ def fetch_codeforces(handle: str) -> list[dict]:
     return []
 
 
+def particle_text_pattern(text: str) -> tuple[str, ...]:
+    glyphs = [PARTICLE_GLYPHS[character] for character in text if character in PARTICLE_GLYPHS]
+    if not glyphs:
+        return ()
+    return tuple("00".join(glyph[row] for glyph in glyphs) for row in range(7))
+
+
+def particle_matrix(
+    pattern: tuple[str, ...],
+    x: float,
+    y: float,
+    cell: float,
+    primary: str,
+    accent: str,
+    prefix: str,
+    duration: float = 16.0,
+    opacity: float = 1.0,
+) -> str:
+    particles = []
+    active = [
+        (column, row)
+        for row, line in enumerate(pattern)
+        for column, value in enumerate(line)
+        if value == "1"
+    ]
+    for index, (column, row) in enumerate(active):
+        px = x + column * cell
+        py = y + row * cell
+        scatter_x = (((index * 17 + row * 5) % 15) - 7) * cell * 0.55
+        scatter_y = (((index * 11 + column * 3) % 17) - 8) * cell * 0.48
+        dissolve_x = (((index * 7 + column) % 13) - 6) * cell * 0.70
+        dissolve_y = (((index * 13 + row) % 15) - 7) * cell * 0.62
+        assemble = 0.035 + (index % 12) * 0.007
+        settle = assemble + 0.095
+        color = accent if index % 17 == 0 else primary
+        particle_opacity = opacity * (0.68 + (index % 4) * 0.09)
+        key_times = f"0;{assemble:.3f};{settle:.3f};0.72;0.90;1"
+        transforms = (
+            f"{scatter_x:.1f} {scatter_y:.1f};"
+            f"{scatter_x:.1f} {scatter_y:.1f};"
+            f"0 0;0 0;"
+            f"{dissolve_x:.1f} {dissolve_y:.1f};"
+            f"{scatter_x:.1f} {scatter_y:.1f}"
+        )
+        if index % 4 == 0:
+            size = cell * (0.30 if index % 8 else 0.40)
+            shape = (
+                f'<rect x="{px - size / 2:.1f}" y="{py - size / 2:.1f}" '
+                f'width="{size:.1f}" height="{size:.1f}" rx="{size * 0.18:.1f}" '
+                f'fill="{color}" opacity="{particle_opacity:.2f}">'
+            )
+            close = "</rect>"
+        else:
+            radius = cell * (0.16 + (index % 3) * 0.035)
+            shape = (
+                f'<circle cx="{px:.1f}" cy="{py:.1f}" r="{radius:.1f}" '
+                f'fill="{color}" opacity="{particle_opacity:.2f}">'
+            )
+            close = "</circle>"
+        particles.append(
+            f"""{shape}
+      <animateTransform attributeName="transform" type="translate"
+        values="{transforms}" keyTimes="{key_times}"
+        dur="{duration:.0f}s" repeatCount="indefinite"/>
+      <animate attributeName="opacity"
+        values="0;0;{particle_opacity:.2f};{particle_opacity:.2f};0.10;0"
+        keyTimes="{key_times}" dur="{duration:.0f}s" repeatCount="indefinite"/>
+    {close}"""
+        )
+
+    return (
+        f'<g id="{esc(prefix)}" class="particle-glyph" '
+        f'filter="url(#particle-glow)">{"".join(particles)}</g>'
+    )
+
+
+def particle_glyph(
+    text: str,
+    x: float,
+    y: float,
+    cell: float,
+    primary: str,
+    accent: str,
+    prefix: str,
+    duration: float = 16.0,
+    opacity: float = 1.0,
+) -> str:
+    return particle_matrix(
+        particle_text_pattern(text),
+        x,
+        y,
+        cell,
+        primary,
+        accent,
+        prefix,
+        duration,
+        opacity,
+    )
+
+
+def particle_field(
+    width: int,
+    height: int,
+    prefix: str,
+    count: int = 28,
+    accent: str | None = None,
+) -> str:
+    accent = accent or PALETTE["orange"]
+    nodes = []
+    for index in range(count):
+        x = 14 + ((index * 83 + 29) % max(1, width - 28))
+        y = 14 + ((index * 47 + 17) % max(1, height - 28))
+        radius = 0.7 + (index % 4) * 0.35
+        opacity = 0.10 + (index % 5) * 0.055
+        color = accent if index % 13 == 0 else PALETTE["cream"]
+        dx = ((index * 7) % 17) - 8
+        dy = ((index * 11) % 19) - 9
+        duration = 15 + index % 7
+        nodes.append(
+            f"""<circle id="{esc(prefix)}-{index}" cx="{x}" cy="{y}" r="{radius:.1f}"
+      fill="{color}" opacity="{opacity:.2f}">
+      <animateTransform attributeName="transform" type="translate"
+        values="0 0;{dx} {dy};0 0" dur="{duration}s" repeatCount="indefinite"/>
+      <animate attributeName="opacity"
+        values="{opacity:.2f};{min(0.58, opacity + 0.18):.2f};{opacity:.2f}"
+        dur="{duration}s" repeatCount="indefinite"/>
+    </circle>"""
+        )
+    return f'<g class="particle-field">{"".join(nodes)}</g>'
+
+
 def svg_shell(width: int, height: int, body: str, title: str = "") -> str:
     return f"""<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="{esc(title)}">
+  <defs>
+    <filter id="particle-glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="1.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
   <style>
     .title {{ font: 700 20px 'Space Mono', 'SFMono-Regular', Consolas, monospace; fill: {PALETTE['cream']}; }}
     .label {{ font: 600 12px 'Space Mono', 'SFMono-Regular', Consolas, monospace; fill: {PALETTE['text']}; }}
@@ -319,6 +478,122 @@ def svg_shell(width: int, height: int, body: str, title: str = "") -> str:
 """
 
 
+def render_particle_hero(path: pathlib.Path) -> None:
+    glyph = particle_glyph(
+        "JG",
+        552,
+        82,
+        22,
+        PALETTE["cream"],
+        PALETTE["orange"],
+        "hero-jg",
+        duration=18,
+    )
+    body = f"""
+  <style>
+    .hero-name {{ font: 800 39px 'Arial Narrow', 'Roboto Condensed', Arial, sans-serif; fill: {PALETTE['cream']}; }}
+    .hero-role {{ font: 700 13px 'Space Mono', Consolas, monospace; fill: {PALETTE['orange']}; }}
+    .hero-copy {{ font: 500 12px 'Space Mono', Consolas, monospace; fill: {PALETTE['text']}; }}
+    .hero-micro {{ font: 600 9px 'Space Mono', Consolas, monospace; fill: {PALETTE['muted']}; }}
+    .hero-line {{ stroke: {PALETTE['cream']}; stroke-width: 1; opacity: 0.18; stroke-dasharray: 4 7; }}
+  </style>
+  {particle_field(920, 330, 'hero-field', 42)}
+  <path d="M504 54H872M504 276H872M516 42V288M858 42V288" class="hero-line">
+    <animate attributeName="stroke-dashoffset" values="0;-44" dur="14s" repeatCount="indefinite"/>
+  </path>
+  <path d="M528 252L558 222L612 236L650 196L714 212L760 164L836 182"
+    fill="none" stroke="{PALETTE['orange']}" stroke-width="1.5" opacity="0.42"
+    stroke-dasharray="2 8">
+    <animate attributeName="stroke-dashoffset" values="0;-60" dur="10s" repeatCount="indefinite"/>
+  </path>
+  <circle cx="558" cy="222" r="3" fill="{PALETTE['orange']}"/>
+  <circle cx="650" cy="196" r="3" fill="{PALETTE['cream']}"/>
+  <circle cx="760" cy="164" r="3" fill="{PALETTE['orange']}"/>
+  {glyph}
+  <rect x="42" y="50" width="4" height="212" fill="{PALETTE['orange']}" opacity="0.88">
+    <animate attributeName="height" values="0;212;212;0" keyTimes="0;0.14;0.82;1"
+      dur="18s" repeatCount="indefinite"/>
+  </rect>
+  <text x="68" y="91" class="hero-micro">PROFILE / SYSTEMS / 01</text>
+  <text x="68" y="141" class="hero-name" opacity="0">JITEESH GHODKE
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.05;0.11;1"
+      dur="18s" repeatCount="indefinite"/>
+    <animate attributeName="x" values="42;42;68;68" keyTimes="0;0.05;0.11;1"
+      dur="18s" repeatCount="indefinite"/>
+  </text>
+  <text x="68" y="172" class="hero-role" opacity="0">SYSTEMS DESIGN / ARCHITECTURE
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.10;0.16;1"
+      dur="18s" repeatCount="indefinite"/>
+  </text>
+  <text x="68" y="214" class="hero-copy" opacity="0">Low-level details. High-level consequences.
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.15;0.21;1"
+      dur="18s" repeatCount="indefinite"/>
+  </text>
+  <text x="68" y="239" class="hero-copy" opacity="0">Building systems I can explain when they fail.
+    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.19;0.25;1"
+      dur="18s" repeatCount="indefinite"/>
+  </text>
+  <text x="68" y="286" class="hero-micro">PUNE / INDIA</text>
+  <text x="454" y="286" class="hero-micro" text-anchor="end">DESIGNING FOR SCALE / DEBUGGING THE CONSEQUENCES</text>
+  <text x="893" y="166" class="hero-micro" text-anchor="middle"
+    transform="rotate(90 893 166)">POINT CLOUD / BUILD 2026</text>
+  <rect x="68" y="303" width="386" height="1" fill="{PALETTE['border']}"/>
+  <rect x="68" y="303" width="92" height="1" fill="{PALETTE['orange']}">
+    <animate attributeName="x" values="68;362;68" dur="9s" repeatCount="indefinite"/>
+  </rect>"""
+    path.write_text(
+        svg_shell(920, 330, body, "Particle portrait header for Jiteesh Ghodke"),
+        encoding="utf-8",
+    )
+
+
+def render_particle_hero_mobile(path: pathlib.Path) -> None:
+    glyph = particle_glyph(
+        "JG",
+        121,
+        116,
+        15,
+        PALETTE["cream"],
+        PALETTE["orange"],
+        "mobile-hero-jg",
+        duration=18,
+    )
+    body = f"""
+  <style>
+    .hero-name {{ font: 800 30px 'Arial Narrow', 'Roboto Condensed', Arial, sans-serif; fill: {PALETTE['cream']}; }}
+    .hero-role {{ font: 700 11px 'Space Mono', Consolas, monospace; fill: {PALETTE['orange']}; }}
+    .hero-copy {{ font: 500 11px 'Space Mono', Consolas, monospace; fill: {PALETTE['text']}; }}
+    .hero-micro {{ font: 600 8px 'Space Mono', Consolas, monospace; fill: {PALETTE['muted']}; }}
+    .hero-line {{ stroke: {PALETTE['cream']}; stroke-width: 1; opacity: 0.16; stroke-dasharray: 3 7; }}
+  </style>
+  {particle_field(420, 440, 'mobile-hero-field', 28)}
+  <path d="M88 98H332M88 236H332M102 84V250M318 84V250" class="hero-line">
+    <animate attributeName="stroke-dashoffset" values="0;-40" dur="14s" repeatCount="indefinite"/>
+  </path>
+  {glyph}
+  <text x="24" y="38" class="hero-micro">PROFILE / SYSTEMS / 01</text>
+  <text x="24" y="76" class="hero-name">JITEESH GHODKE</text>
+  <text x="24" y="96" class="hero-role">SYSTEMS DESIGN / ARCHITECTURE</text>
+  <path d="M74 274L120 248L172 269L218 236L276 258L340 222"
+    fill="none" stroke="{PALETTE['orange']}" stroke-width="1.4" opacity="0.44"
+    stroke-dasharray="2 7">
+    <animate attributeName="stroke-dashoffset" values="0;-52" dur="10s" repeatCount="indefinite"/>
+  </path>
+  <text x="24" y="326" class="hero-copy">Low-level details.</text>
+  <text x="24" y="348" class="hero-copy">High-level consequences.</text>
+  <text x="24" y="388" class="hero-copy">Building systems I can explain</text>
+  <text x="24" y="410" class="hero-copy">when they fail. Eventually.</text>
+  <text x="396" y="326" class="hero-micro" text-anchor="end">PUNE / INDIA</text>
+  <rect x="24" y="424" width="372" height="1" fill="{PALETTE['border']}"/>
+  <rect x="24" y="424" width="74" height="1" fill="{PALETTE['orange']}">
+    <animate attributeName="x" values="24;322;24" dur="9s" repeatCount="indefinite"/>
+  </rect>"""
+    path.write_text(
+        svg_shell(420, 440, body, "Mobile particle portrait header for Jiteesh Ghodke"),
+        encoding="utf-8",
+    )
+
+
 def metric_card(x: int, y: int, width: int, label: str, value: object, accent: str) -> str:
     return f"""
   <rect x="{x}" y="{y}" width="{width}" height="58" rx="12" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
@@ -329,6 +604,17 @@ def metric_card(x: int, y: int, width: int, label: str, value: object, accent: s
 
 def render_terminal_intro(path: pathlib.Path) -> None:
     duration = 16.0
+    terminal_glyph = particle_glyph(
+        "JG",
+        724,
+        84,
+        9.0,
+        PALETTE["cream"],
+        PALETTE["orange"],
+        "terminal-jg",
+        duration=18,
+        opacity=0.52,
+    )
     sessions = [
         (
             "whoami",
@@ -455,6 +741,10 @@ def render_terminal_intro(path: pathlib.Path) -> None:
     <clipPath id="screen">
       <rect x="18" y="58" width="884" height="306"/>
     </clipPath>
+    <filter id="particle-glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="1.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
     {''.join(clips)}
   </defs>
   <style>
@@ -480,6 +770,8 @@ def render_terminal_intro(path: pathlib.Path) -> None:
   <circle cx="842" cy="30" r="4" fill="{PALETTE['green']}"/>
   <text x="854" y="34" class="status">LIVE</text>
   <g clip-path="url(#screen)">
+    {particle_field(920, 372, 'terminal-field', 22)}
+    {terminal_glyph}
     <rect x="29" y="72" width="2" height="266" rx="1" fill="{PALETTE['border']}"/>
     <g class="animated-session">
       {''.join(animated_rows)}
@@ -593,6 +885,10 @@ def render_terminal_mobile(path: pathlib.Path) -> None:
       <stop stop-color="{PALETTE['bg']}"/>
       <stop offset="1" stop-color="#151419"/>
     </linearGradient>
+    <filter id="particle-glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="1.6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
     {''.join(clips)}
   </defs>
   <style>
@@ -616,6 +912,7 @@ def render_terminal_mobile(path: pathlib.Path) -> None:
   <text x="210" y="31" text-anchor="middle" class="mobile-title">jiteesh@atelier</text>
   <circle cx="378" cy="27" r="4" fill="{PALETTE['green']}"/>
   <path d="M13 52H407" stroke="{PALETTE['border']}"/>
+  {particle_field(420, 490, 'mobile-terminal-field', 16)}
   <g class="mobile-animated">{''.join(animated)}</g>
   <g class="mobile-static">{''.join(static)}</g>
   <rect x="22" y="456" width="8" height="18" rx="1" fill="{PALETTE['cream']}" class="mobile-cursor">
@@ -635,41 +932,47 @@ def project_card(
     mobile: bool = False,
 ) -> str:
     accent = project["accent"]
-    symbol_size = 44 if mobile else 46
-    symbol_x = x + 24
-    symbol_y = y + 24
-    text_x = x + 84
-    title_y = y + 42
-    category_y = y + 67
-    description_y = y + 95
-    aside_y = y + 121
-    status_width = max(92, len(project["status"]) * 7 + 24)
-    status_x = x + width - status_width - 18
+    symbol = project["symbol"]
+    symbol_cell = 5.5 if len(symbol) > 1 else (6.6 if mobile else 7.5)
+    symbol_x = x + (20 if len(symbol) > 1 else 32)
+    symbol_y = y + (30 if len(symbol) > 1 else 25)
+    text_x = x + (112 if mobile else 118)
+    title_y = y + 38
+    category_y = y + 62
+    description_y = y + 91
+    aside_y = y + 128
     name_class = "project-name project-name-long" if len(project["name"]) > 18 else "project-name"
+    glyph_id = re.sub(r"[^a-z0-9]+", "-", project["name"].lower()).strip("-")
+    glyph = particle_glyph(
+        symbol,
+        symbol_x,
+        symbol_y,
+        symbol_cell,
+        PALETTE["cream"],
+        accent,
+        f"project-{glyph_id}",
+        duration=16,
+    )
 
     return f"""
   <g>
     <rect x="{x}" y="{y}" width="{width}" height="{height}" rx="10"
       fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
-    <rect x="{x}" y="{y}" width="5" height="{height}" rx="2.5" fill="{accent}"/>
-    <rect x="{symbol_x}" y="{symbol_y}" width="{symbol_size}" height="{symbol_size}" rx="9"
-      fill="{accent}" opacity="0.16"/>
-    <rect x="{symbol_x + 0.5}" y="{symbol_y + 0.5}" width="{symbol_size - 1}" height="{symbol_size - 1}" rx="8.5"
-      stroke="{accent}" opacity="0.72"/>
-    <text x="{symbol_x + symbol_size / 2}" y="{symbol_y + 29}" class="project-symbol"
-      text-anchor="middle" fill="{accent}">{esc(project['symbol'])}</text>
+    <path d="M{x + 14} {y + 18}V{y + height - 18}M{x + 14} {y + 18}H{x + 28}M{x + 14} {y + height - 18}H{x + 28}"
+      stroke="{accent}" stroke-width="2" opacity="0.72"/>
+    {glyph}
     <text x="{text_x}" y="{title_y}" class="{name_class}">{esc(project['name'])}</text>
     <text x="{text_x}" y="{category_y}" class="project-category" fill="{accent}">{esc(project['category'])}</text>
-    <rect x="{status_x}" y="{y + 18}" width="{status_width}" height="24" rx="12"
-      fill="{accent}" opacity="0.13"/>
-    <text x="{status_x + status_width / 2}" y="{y + 34}" class="project-status"
-      text-anchor="middle" fill="{accent}">{esc(project['status'])}</text>
-    <text x="{x + 24}" y="{description_y}" class="project-description">{esc(project['description'])}</text>
-    <path d="M{x + 24} {y + 108}H{x + width - 24}" stroke="{PALETTE['border']}"/>
-    <text x="{x + 24}" y="{aside_y}" class="project-aside">{esc(project['aside'])}</text>
-    <circle cx="{x + width - 29}" cy="{y + height - 22}" r="4" fill="{accent}">
-      <animate attributeName="opacity" values="0.35;1;0.35" dur="{2.4 + (x + y) % 5 * 0.2:.1f}s" repeatCount="indefinite"/>
-    </circle>
+    <circle cx="{x + width - 105}" cy="{y + 58}" r="3" fill="{accent}"/>
+    <text x="{x + width - 18}" y="{category_y}" class="project-status"
+      text-anchor="end" fill="{accent}">{esc(project['status'])}</text>
+    <text x="{text_x}" y="{description_y}" class="project-description">{esc(project['description'])}</text>
+    <path d="M{text_x} {y + 107}H{x + width - 18}" stroke="{PALETTE['border']}"/>
+    <text x="{text_x}" y="{aside_y}" class="project-aside">{esc(project['aside'])}</text>
+    <path d="M{x + width - 54} {y + height - 13}H{x + width - 18}"
+      stroke="{accent}" stroke-width="2" stroke-dasharray="4 5">
+      <animate attributeName="stroke-dashoffset" values="0;-36" dur="6s" repeatCount="indefinite"/>
+    </path>
   </g>"""
 
 
@@ -697,17 +1000,17 @@ def render_projects_showcase(path: pathlib.Path) -> None:
     </linearGradient>
   </defs>
   <style>
-    .project-heading {{ font: 700 23px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
+    .project-heading {{ font: 800 25px 'Arial Narrow', 'Roboto Condensed', Arial, sans-serif; fill: {PALETTE['cream']}; }}
     .project-kicker {{ font: 600 11px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['muted']}; letter-spacing: 0; }}
-    .project-name {{ font: 700 20px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
+    .project-name {{ font: 800 22px 'Arial Narrow', 'Roboto Condensed', Arial, sans-serif; fill: {PALETTE['cream']}; }}
     .project-name-long {{ font-size: 18px; }}
     .project-category {{ font: 700 10px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
-    .project-status {{ font: 700 9px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
+    .project-status {{ font: 700 10px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
     .project-description {{ font: 500 13px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['text']}; }}
-    .project-aside {{ font: italic 12px Georgia, 'Times New Roman', serif; fill: {PALETTE['muted']}; }}
-    .project-symbol {{ font: 800 15px 'Segoe UI', Arial, sans-serif; }}
+    .project-aside {{ font: 500 11px 'SFMono-Regular', Consolas, monospace; fill: {PALETTE['muted']}; }}
     @media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; }} }}
   </style>
+  {particle_field(920, 560, 'project-field', 24)}
   <text x="24" y="36" class="project-heading">Projects in various states of becoming real</text>
   <rect x="24" y="48" width="276" height="3" rx="1.5" fill="url(#project-title-accent)"/>
   <text x="896" y="38" class="project-kicker" text-anchor="end">USEFUL IDEAS / QUESTIONABLE SLEEP SCHEDULE</text>
@@ -741,17 +1044,17 @@ def render_projects_showcase_mobile(path: pathlib.Path) -> None:
     </linearGradient>
   </defs>
   <style>
-    .project-heading {{ font: 700 21px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
+    .project-heading {{ font: 800 23px 'Arial Narrow', 'Roboto Condensed', Arial, sans-serif; fill: {PALETTE['cream']}; }}
     .project-kicker {{ font: 600 10px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['muted']}; letter-spacing: 0; }}
-    .project-name {{ font: 700 18px Georgia, 'Times New Roman', serif; fill: {PALETTE['cream']}; }}
+    .project-name {{ font: 800 20px 'Arial Narrow', 'Roboto Condensed', Arial, sans-serif; fill: {PALETTE['cream']}; }}
     .project-name-long {{ font-size: 16px; }}
     .project-category {{ font: 700 9px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
-    .project-status {{ font: 700 8px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
+    .project-status {{ font: 700 9px 'SFMono-Regular', Consolas, monospace; letter-spacing: 0; }}
     .project-description {{ font: 500 12px 'Segoe UI', Arial, sans-serif; fill: {PALETTE['text']}; }}
-    .project-aside {{ font: italic 11px Georgia, 'Times New Roman', serif; fill: {PALETTE['muted']}; }}
-    .project-symbol {{ font: 800 14px 'Segoe UI', Arial, sans-serif; }}
+    .project-aside {{ font: 500 10px 'SFMono-Regular', Consolas, monospace; fill: {PALETTE['muted']}; }}
     @media (prefers-reduced-motion: reduce) {{ * {{ animation: none !important; }} }}
   </style>
+  {particle_field(420, 1022, 'mobile-project-field', 24)}
   <text x="18" y="36" class="project-heading">Projects becoming real</text>
   <rect x="18" y="49" width="250" height="3" rx="1.5" fill="url(#mobile-project-accent)"/>
   <text x="18" y="69" class="project-kicker">USEFUL IDEAS / QUESTIONABLE SLEEP SCHEDULE</text>
@@ -1047,25 +1350,42 @@ def render_trophies(path: pathlib.Path, user: dict, repos: list[dict], languages
     ]
     chunks = []
     for index, (label, value, color) in enumerate(cards):
-        x = 24 + index * 146
+        column = index % 3
+        row = index // 3
+        x = 24 + column * 298
+        y = 76 + row * 108
+        trophy = particle_matrix(
+            TROPHY_PATTERN,
+            x + 31,
+            y + 24,
+            6.2,
+            PALETTE["cream"],
+            color,
+            f"particle-trophy-{index}",
+            duration=16,
+        )
         chunks.append(
             f"""
   <g>
-    <rect x="{x}" y="64" width="122" height="86" rx="16" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
-    <path d="M{x + 35} 86h52l-8 38H{x + 43}z" fill="{color}" opacity="0.86"/>
-    <rect x="{x + 51}" y="124" width="20" height="10" rx="2" fill="{color}"/>
-    <rect x="{x + 42}" y="134" width="38" height="8" rx="2" fill="{color}" opacity="0.65"/>
-    <text x="{x + 61}" y="101" class="label" text-anchor="middle" fill="{PALETTE['bg']}">{esc(value)}</text>
-    <text x="{x + 61}" y="170" class="muted" text-anchor="middle">{esc(label)}</text>
-    <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="{2.4 + index * 0.2:0.1f}s" repeatCount="indefinite"/>
+    <rect x="{x}" y="{y}" width="274" height="92" rx="10" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
+    <path d="M{x + 14} {y + 14}V{y + 78}" stroke="{color}" stroke-width="3"/>
+    {trophy}
+    <text x="{x + 108}" y="{y + 43}" class="number">{esc(value)}</text>
+    <text x="{x + 108}" y="{y + 68}" class="muted">{esc(label)}</text>
+    <text x="{x + 252}" y="{y + 22}" class="tiny" text-anchor="end">0{index + 1}/06</text>
+    <path d="M{x + 108} {y + 77}H{x + 252}" stroke="{color}" stroke-width="1.5"
+      stroke-dasharray="3 7">
+      <animate attributeName="stroke-dashoffset" values="0;-40" dur="8s" repeatCount="indefinite"/>
+    </path>
   </g>"""
         )
 
     body = f"""
   <text x="24" y="38" class="title">GitHub Trophies</text>
   <text x="24" y="58" class="muted">Custom trophies, because the old trophy service asked for rent.</text>
+  {particle_field(920, 300, 'trophy-field', 20)}
   {''.join(chunks)}"""
-    path.write_text(svg_shell(920, 200, body, "GitHub trophies"), encoding="utf-8")
+    path.write_text(svg_shell(920, 300, body, "GitHub trophies"), encoding="utf-8")
 
 
 def render_trophies_mobile(
@@ -1088,24 +1408,36 @@ def render_trophies_mobile(
     for index, (label, value, color) in enumerate(cards):
         column = index % 2
         row = index // 2
-        x = 24 + column * 198
-        y = 76 + row * 92
+        x = 18 + column * 198
+        y = 76 + row * 104
+        trophy = particle_matrix(
+            TROPHY_PATTERN,
+            x + 24,
+            y + 23,
+            6.0,
+            PALETTE["cream"],
+            color,
+            f"mobile-particle-trophy-{index}",
+            duration=16,
+        )
         chunks.append(
             f"""
   <g>
-    <rect x="{x}" y="{y}" width="174" height="74" rx="10" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
-    <path d="M{x + 20} {y + 18}h38l-6 28H{x + 26}z" fill="{color}" opacity="0.88"/>
-    <rect x="{x + 31}" y="{y + 46}" width="16" height="7" rx="2" fill="{color}"/>
-    <text x="{x + 105}" y="{y + 34}" class="number" text-anchor="middle">{esc(value)}</text>
-    <text x="{x + 105}" y="{y + 55}" class="muted" text-anchor="middle">{esc(label)}</text>
+    <rect x="{x}" y="{y}" width="186" height="90" rx="10" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
+    <path d="M{x + 12} {y + 13}V{y + 77}" stroke="{color}" stroke-width="3"/>
+    {trophy}
+    <text x="{x + 86}" y="{y + 42}" class="number">{esc(value)}</text>
+    <text x="{x + 86}" y="{y + 66}" class="muted">{esc(label)}</text>
+    <text x="{x + 170}" y="{y + 20}" class="tiny" text-anchor="end">0{index + 1}</text>
   </g>"""
         )
 
     body = f"""
   <text x="24" y="38" class="title">GitHub trophies</text>
   <text x="24" y="60" class="muted">Small numbers. Properly supervised.</text>
+  {particle_field(420, 410, 'mobile-trophy-field', 18)}
   {''.join(chunks)}"""
-    path.write_text(svg_shell(420, 370, body, "Mobile GitHub trophies"), encoding="utf-8")
+    path.write_text(svg_shell(420, 410, body, "Mobile GitHub trophies"), encoding="utf-8")
 
 
 def verdict_key(submission: dict) -> str:
@@ -1204,7 +1536,8 @@ def render_codeforces_tetris(path: pathlib.Path, handle: str, submissions: list[
         )
         active_index += 1
         blocks.append(
-            f"""<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2" fill="{color}" opacity="{opacity:0.2f}">
+            f"""<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2"
+    fill="{color}" opacity="{opacity:0.2f}" filter="url(#particle-glow)">
     {animation}
   </rect>"""
         )
@@ -1238,13 +1571,16 @@ def render_codeforces_tetris(path: pathlib.Path, handle: str, submissions: list[
     <animate attributeName="opacity" values="0;1;1;1;0;0"
       keyTimes="0;0.0393;0.4643;0.8429;0.8821;1"
       dur="14s" repeatCount="indefinite"/>
-    <rect x="0" y="0" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
-    <rect x="16" y="0" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
-    <rect x="16" y="16" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
-    <rect x="32" y="16" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
+    <g filter="url(#particle-glow)">
+      <rect x="0" y="0" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
+      <rect x="16" y="0" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
+      <rect x="16" y="16" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
+      <rect x="32" y="16" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
+    </g>
   </g>"""
 
     body = f"""
+  {particle_field(920, 250, 'tetris-field', 16)}
   <text x="42" y="38" class="title">Codeforces Tetris</text>
   <text x="42" y="60" class="muted">@{esc(handle)} - submissions falling into place, emotionally and otherwise.</text>
   <rect x="28" y="76" width="824" height="126" rx="14" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
@@ -1319,7 +1655,8 @@ def render_codeforces_tetris_mobile(
         )
         active_index += 1
         blocks.append(
-            f"""<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="1" fill="{color}" opacity="{opacity:.2f}">
+            f"""<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="1"
+    fill="{color}" opacity="{opacity:.2f}" filter="url(#particle-glow)">
     {animation}
   </rect>"""
         )
@@ -1339,6 +1676,7 @@ def render_codeforces_tetris_mobile(
         )
 
     body = f"""
+  {particle_field(420, 280, 'mobile-tetris-field', 12)}
   <text x="24" y="38" class="title">Codeforces Tetris</text>
   <text x="24" y="60" class="muted">@{esc(handle)} / last 365 days</text>
   <text x="24" y="83" class="label">{total} submissions / {accepted} accepted</text>
@@ -1368,6 +1706,8 @@ def main() -> int:
     contributions = fetch_github_contributions(args.github_user, github_token)
     submissions = fetch_codeforces(args.codeforces_handle)
 
+    render_particle_hero(out_dir / "profile-hero.svg")
+    render_particle_hero_mobile(out_dir / "profile-hero-mobile.svg")
     render_terminal_intro(out_dir / "about-terminal.svg")
     render_terminal_mobile(out_dir / "about-terminal-mobile.svg")
     render_projects_showcase(out_dir / "projects-showcase.svg")

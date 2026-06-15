@@ -22,6 +22,8 @@ EXPECTED_ASSETS = {
     "github-overview.svg",
     "projects-showcase-mobile.svg",
     "projects-showcase.svg",
+    "profile-hero-mobile.svg",
+    "profile-hero.svg",
     "trophies-mobile.svg",
     "trophies.svg",
 }
