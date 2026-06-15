@@ -302,7 +302,7 @@ def render_terminal_intro(path: pathlib.Path) -> None:
             5.75,
         ),
     ]
-    y_positions = [103, 166, 229, 292]
+    y_positions = [92, 148, 204, 260]
     animated_rows: list[str] = []
     static_rows: list[str] = []
     clips: list[str] = []
@@ -324,7 +324,7 @@ def render_terminal_intro(path: pathlib.Path) -> None:
         <rect x="220" y="{y - 18}" width="0" height="24">
           <animate attributeName="width" values="0;0;{width:.1f};{width:.1f}"
             keyTimes="0;{start_key:.4f};{end_key:.4f};1"
-            dur="{duration}s" repeatCount="indefinite"/>
+            dur="{duration}s" begin="-8s" repeatCount="indefinite"/>
         </rect>
       </clipPath>"""
         )
@@ -339,7 +339,7 @@ def render_terminal_intro(path: pathlib.Path) -> None:
         <text x="44" y="{output_y}" class="{output_class}" opacity="0">{output}
           <animate attributeName="opacity" values="0;0;1;1"
             keyTimes="0;{reveal_key:.4f};{min(1, reveal_key + 0.012):.4f};1"
-            dur="{duration}s" repeatCount="indefinite"/>
+            dur="{duration}s" begin="-8s" repeatCount="indefinite"/>
         </text>"""
             )
             static_output_rows.append(
@@ -354,7 +354,7 @@ def render_terminal_intro(path: pathlib.Path) -> None:
             prompt_animation = f"""
           <animate attributeName="opacity" values="0;0;1;1"
             keyTimes="0;{start_key:.4f};{min(1, start_key + 0.006):.4f};1"
-            dur="{duration}s" repeatCount="indefinite"/>"""
+            dur="{duration}s" begin="-8s" repeatCount="indefinite"/>"""
 
         animated_rows.append(
             f"""
@@ -366,10 +366,10 @@ def render_terminal_intro(path: pathlib.Path) -> None:
         <rect x="220" y="{y - 16}" width="8" height="19" rx="1" class="cursor" opacity="0">
           <animate attributeName="x" values="220;220;{220 + width:.1f};{220 + width:.1f};{220 + width:.1f}"
             keyTimes="0;{start_key:.4f};{end_key:.4f};{min(1, end_key + 0.015):.4f};1"
-            dur="{duration}s" repeatCount="indefinite"/>
+            dur="{duration}s" begin="-8s" repeatCount="indefinite"/>
           <animate attributeName="opacity" values="0;0;1;0;0"
             keyTimes="0;{start_key:.4f};{end_key:.4f};{min(1, end_key + 0.015):.4f};1"
-            dur="{duration}s" repeatCount="indefinite"/>
+            dur="{duration}s" begin="-8s" repeatCount="indefinite"/>
         </rect>
         {''.join(output_rows)}
       </g>"""
@@ -383,9 +383,9 @@ def render_terminal_intro(path: pathlib.Path) -> None:
       </g>"""
         )
 
-    body = f"""<svg width="920" height="430" viewBox="0 0 920 430" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated terminal introduction for Jiteesh Ghodke">
+    body = f"""<svg width="920" height="372" viewBox="0 0 920 372" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated terminal introduction for Jiteesh Ghodke">
   <defs>
-    <linearGradient id="terminal-bg" x1="0" y1="0" x2="920" y2="430" gradientUnits="userSpaceOnUse">
+    <linearGradient id="terminal-bg" x1="0" y1="0" x2="920" y2="372" gradientUnits="userSpaceOnUse">
       <stop stop-color="{PALETTE['bg']}"/>
       <stop offset="0.70" stop-color="{PALETTE['panel']}"/>
       <stop offset="1" stop-color="#151419"/>
@@ -396,7 +396,7 @@ def render_terminal_intro(path: pathlib.Path) -> None:
       <stop offset="1" stop-color="{PALETTE['panel']}"/>
     </linearGradient>
     <clipPath id="screen">
-      <rect x="18" y="58" width="884" height="354"/>
+      <rect x="18" y="58" width="884" height="306"/>
     </clipPath>
     {''.join(clips)}
   </defs>
@@ -414,7 +414,7 @@ def render_terminal_intro(path: pathlib.Path) -> None:
       .static-session {{ display: block; }}
     }}
   </style>
-  <rect x="1" y="1" width="918" height="428" rx="12" fill="url(#terminal-bg)" stroke="{PALETTE['border']}" stroke-width="2"/>
+  <rect x="1" y="1" width="918" height="370" rx="12" fill="url(#terminal-bg)" stroke="{PALETTE['border']}" stroke-width="2"/>
   <path d="M18 18C18 8.6 25.6 1 35 1H885C894.4 1 902 8.6 902 18V58H18V18Z" fill="url(#title-bar)"/>
   <circle cx="42" cy="30" r="6" fill="{PALETTE['pink']}"/>
   <circle cx="64" cy="30" r="6" fill="{PALETTE['gold']}"/>
@@ -423,18 +423,18 @@ def render_terminal_intro(path: pathlib.Path) -> None:
   <circle cx="842" cy="30" r="4" fill="{PALETTE['green']}"/>
   <text x="854" y="34" class="status">LIVE</text>
   <g clip-path="url(#screen)">
-    <rect x="29" y="80" width="2" height="310" rx="1" fill="{PALETTE['border']}"/>
+    <rect x="29" y="72" width="2" height="266" rx="1" fill="{PALETTE['border']}"/>
     <g class="animated-session">
       {''.join(animated_rows)}
-      <rect x="44" y="393" width="8" height="19" rx="1" class="cursor" opacity="0">
+      <rect x="44" y="342" width="8" height="19" rx="1" class="cursor" opacity="0">
         <animate attributeName="opacity" values="0;0;1;0;1"
           keyTimes="0;0.475;0.500;0.530;1"
-          dur="{duration}s" repeatCount="indefinite"/>
+          dur="{duration}s" begin="-8s" repeatCount="indefinite"/>
       </rect>
     </g>
     <g class="static-session">
       {''.join(static_rows)}
-      <rect x="44" y="393" width="8" height="19" rx="1" class="cursor"/>
+      <rect x="44" y="342" width="8" height="19" rx="1" class="cursor"/>
     </g>
   </g>
   <path d="M18 58H902" stroke="{PALETTE['border']}"/>
@@ -485,7 +485,7 @@ def render_terminal_mobile(path: pathlib.Path) -> None:
       <rect x="56" y="{y - 17}" width="0" height="22">
         <animate attributeName="width" values="0;0;{width:.1f};{width:.1f}"
           keyTimes="0;{start / duration:.4f};{end / duration:.4f};1"
-          dur="{duration}s" repeatCount="indefinite"/>
+          dur="{duration}s" begin="-8s" repeatCount="indefinite"/>
       </rect>
     </clipPath>"""
         )
@@ -499,7 +499,7 @@ def render_terminal_mobile(path: pathlib.Path) -> None:
                 f"""<text x="22" y="{output_y}" class="{output_class}" opacity="0">{output}
         <animate attributeName="opacity" values="0;0;1;1"
           keyTimes="0;{reveal:.4f};{min(1, reveal + 0.012):.4f};1"
-          dur="{duration}s" repeatCount="indefinite"/>
+          dur="{duration}s" begin="-8s" repeatCount="indefinite"/>
       </text>"""
             )
             static_output_nodes.append(
@@ -511,7 +511,7 @@ def render_terminal_mobile(path: pathlib.Path) -> None:
             if index == 0
             else f"""<animate attributeName="opacity" values="0;0;1;1"
           keyTimes="0;{start / duration:.4f};{min(1, start / duration + 0.008):.4f};1"
-          dur="{duration}s" repeatCount="indefinite"/>"""
+          dur="{duration}s" begin="-8s" repeatCount="indefinite"/>"""
         )
         animated.append(
             f"""<g>
