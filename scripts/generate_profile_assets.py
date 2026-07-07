@@ -1430,34 +1430,130 @@ def verdict_key(submission: dict) -> str:
     return verdict if verdict in CODEFORCES_COLORS else "OTHER"
 
 
-def tetris_drop_animation(
-    y: int,
-    fall: int,
-    opacity: float,
-    order: int,
-    total: int,
-    row: int,
+TETRIS_CYCLE = 14.0
+
+TETROMINO_PREVIEWS = (
+    ("O", "gold", ((0, 0), (1, 0), (0, 1), (1, 1))),
+    ("T", "blue", ((0, 0), (1, 0), (2, 0), (1, 1))),
+    ("S", "pink", ((1, 0), (2, 0), (0, 1), (1, 1))),
+    ("I", "green", ((0, 0), (1, 0), (2, 0), (3, 0))),
+)
+
+GHOST_PIECES = (
+    (((0, 0), (1, 0), (2, 0), (1, 1)), 168, 0.9),
+    (((0, 0), (1, 0), (0, 1), (1, 1)), 470, 4.8),
+    (((1, 0), (2, 0), (0, 1), (1, 1)), 704, 8.4),
+)
+
+
+def tetris_fall_animation(
+    final_y: float,
+    pitch: float,
+    steps: int,
+    drop_start: float,
+    step_dt: float,
+    cycle: float = TETRIS_CYCLE,
+) -> tuple[str, float]:
+    """Discrete, row-by-row tetris gravity. Returns (animate markup, landing time)."""
+    start_y = final_y - steps * pitch
+    values = [start_y + index * pitch for index in range(steps + 1)]
+    values.append(start_y)
+    times = [0.0]
+    times.extend(drop_start + index * step_dt for index in range(steps))
+    land = drop_start + (steps - 1) * step_dt
+    times.append(cycle)
+    key_times = ";".join(f"{value / cycle:.4f}" for value in times)
+    value_list = ";".join(f"{value:.1f}" for value in values)
+    animate = (
+        f'<animate attributeName="y" calcMode="discrete" values="{value_list}" '
+        f'keyTimes="{key_times}" dur="{cycle:.0f}s" repeatCount="indefinite"/>'
+    )
+    return animate, land
+
+
+def tetris_land_flash(land: float, cycle: float = TETRIS_CYCLE) -> str:
+    flash_peak = min(cycle - 0.2, land + 0.12)
+    flash_end = min(cycle - 0.1, land + 0.55)
+    key_times = ";".join(
+        f"{value / cycle:.4f}" for value in (0.0, land, flash_peak, flash_end, cycle)
+    )
+    return (
+        f'<animate attributeName="stroke-opacity" values="0;0;0.9;0;0" '
+        f'keyTimes="{key_times}" dur="{cycle:.0f}s" repeatCount="indefinite"/>'
+    )
+
+
+def tetris_column_exit(
+    column: int,
+    drop: float,
+    cycle: float = TETRIS_CYCLE,
 ) -> str:
-    cycle = 14.0
-    progress = order / max(1, total - 1)
-    drop_start = 0.55 + progress * 4.7 + row * 0.025
-    drop_end = drop_start + 1.1
-    hold_end = 11.8
-    fade_end = 12.35
-    reset_end = 12.36
+    exit_start = 11.55 + column * 0.016
+    exit_end = min(cycle - 0.35, exit_start + 0.85)
     key_times = ";".join(
         f"{value / cycle:.4f}"
-        for value in (0, drop_start, drop_end, hold_end, fade_end, reset_end, cycle)
+        for value in (0.0, exit_start, exit_end, cycle - 0.02, cycle)
     )
-    start_y = y - fall
+    return (
+        f'<animateTransform attributeName="transform" type="translate" '
+        f'values="0 0;0 0;0 {drop:.0f};0 {drop:.0f};0 0" '
+        f'keyTimes="{key_times}" dur="{cycle:.0f}s" repeatCount="indefinite"/>'
+    )
 
-    return f"""
-    <animate attributeName="y"
-      values="{start_y};{start_y};{y};{y};{y};{start_y};{start_y}"
-      keyTimes="{key_times}" dur="{cycle:.0f}s" repeatCount="indefinite"/>
-    <animate attributeName="opacity"
-      values="0;0;{opacity:.2f};{opacity:.2f};0;0;0"
-      keyTimes="{key_times}" dur="{cycle:.0f}s" repeatCount="indefinite"/>"""
+
+def tetris_next_box(x: int, y: int, cell: float) -> str:
+    pieces = []
+    slot = TETRIS_CYCLE / len(TETROMINO_PREVIEWS)
+    for index, (_, color_key, cells) in enumerate(TETROMINO_PREVIEWS):
+        rects = "".join(
+            f'<rect x="{x + 12 + dx * (cell + 1):.1f}" y="{y + 22 + dy * (cell + 1):.1f}" '
+            f'width="{cell:.1f}" height="{cell:.1f}" rx="2" fill="{PALETTE[color_key]}"/>'
+            for dx, dy in cells
+        )
+        visible_from = index * slot / TETRIS_CYCLE
+        visible_to = (index + 1) * slot / TETRIS_CYCLE
+        base_opacity = 1 if index == 0 else 0
+        pieces.append(
+            f"""<g opacity="{base_opacity}">
+      <animate attributeName="opacity" calcMode="discrete" values="0;1;0;0"
+        keyTimes="0;{visible_from:.4f};{visible_to:.4f};1"
+        dur="{TETRIS_CYCLE:.0f}s" repeatCount="indefinite"/>
+      {rects}
+    </g>"""
+        )
+    return "".join(pieces)
+
+
+def tetris_ghost_pieces(grid_y: float, pitch: float, cell: float) -> str:
+    ghosts = []
+    for cells, ghost_x, start in GHOST_PIECES:
+        span = 3.6
+        steps = 11
+        outline = "".join(
+            f'<rect x="{dx * pitch:.1f}" y="{dy * pitch:.1f}" width="{cell:.1f}" height="{cell:.1f}" '
+            f'rx="2" fill="none" stroke="{PALETTE["cream"]}" stroke-width="1"/>'
+            for dx, dy in cells
+        )
+        offsets = ["0 0"]
+        offsets.extend(f"0 {index * pitch * 1.6:.1f}" for index in range(steps + 1))
+        offsets.append("0 0")
+        times = [0.0]
+        times.extend(start + index * (span / steps) for index in range(steps + 1))
+        times.append(TETRIS_CYCLE)
+        y_values = ";".join(offsets)
+        y_times = ";".join(f"{value / TETRIS_CYCLE:.4f}" for value in times)
+        ghosts.append(
+            f"""<g transform="translate({ghost_x} {grid_y - 64:.0f})" opacity="0">
+      <animate attributeName="opacity" calcMode="discrete" values="0;0.14;0;0"
+        keyTimes="0;{start / TETRIS_CYCLE:.4f};{(start + span) / TETRIS_CYCLE:.4f};1"
+        dur="{TETRIS_CYCLE:.0f}s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" type="translate" calcMode="discrete"
+        additive="sum" values="{y_values}" keyTimes="{y_times}"
+        dur="{TETRIS_CYCLE:.0f}s" repeatCount="indefinite"/>
+      {outline}
+    </g>"""
+        )
+    return "".join(ghosts)
 
 
 def render_codeforces_tetris(path: pathlib.Path, handle: str, submissions: list[dict]) -> None:
@@ -1482,100 +1578,174 @@ def render_codeforces_tetris(path: pathlib.Path, handle: str, submissions: list[
 
     cell = 12
     gap = 3
+    pitch = cell + gap
     grid_x = 42
-    grid_y = 88
-    weeks = 53
+    grid_y = 90
     rows = 7
-    blocks = []
-    active_days = sum(
-        bool(per_day.get(start + dt.timedelta(days=day_index)))
-        for day_index in range(365)
-    )
-    active_index = 0
+
+    base_cells = []
+    column_blocks: dict[int, list[str]] = collections.defaultdict(list)
+    column_active: collections.Counter[int] = collections.Counter()
+    column_days: collections.Counter[int] = collections.Counter()
+    active_days = 0
 
     for day_index in range(365):
         day = start + dt.timedelta(days=day_index)
         col = day_index // rows
         row = day_index % rows
-        x = grid_x + col * (cell + gap)
-        y = grid_y + row * (cell + gap)
+        x = grid_x + col * pitch
+        y = grid_y + row * pitch
+        column_days[col] += 1
+        base_cells.append(
+            f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2" '
+            f'fill="{PALETTE["panel_2"]}" opacity="0.5"/>'
+        )
         counts = per_day.get(day)
         if not counts:
-            blocks.append(
-                f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2" fill="{PALETTE["panel_2"]}" opacity="0.52"/>'
-            )
             continue
 
+        active_days += 1
+        column_active[col] += 1
         dominant = counts.most_common(1)[0][0]
         day_total = sum(counts.values())
         color = CODEFORCES_COLORS.get(dominant, CODEFORCES_COLORS["OTHER"])
-        opacity = min(1.0, 0.42 + day_total * 0.14)
-        fall = 42 + (row * 9) + ((col % 6) * 5)
-        animation = tetris_drop_animation(
-            y,
-            fall,
-            opacity,
-            active_index,
-            active_days,
-            row,
-        )
-        active_index += 1
-        blocks.append(
+        opacity = min(1.0, 0.5 + day_total * 0.13)
+        drop_start = 0.5 + (col / 52) * 6.6 + (6 - row) * 0.1
+        fall, land = tetris_fall_animation(y, pitch, row + 5, drop_start, 0.11)
+        flash = tetris_land_flash(land)
+        column_blocks[col].append(
             f"""<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2"
-    fill="{color}" opacity="{opacity:0.2f}" filter="url(#particle-glow)">
-    {animation}
+    fill="{color}" opacity="{opacity:.2f}" stroke="{PALETTE['cream']}"
+    stroke-width="1.3" stroke-opacity="0" filter="url(#particle-glow)">
+    {fall}
+    {flash}
   </rect>"""
         )
 
-    verdicts = collections.Counter(verdict_key(s) for s in submissions)
-    wrong = verdicts.get("WRONG_ANSWER", 0)
-    tle = verdicts.get("TIME_LIMIT_EXCEEDED", 0)
-    runtime = verdicts.get("RUNTIME_ERROR", 0)
-    compile_errors = verdicts.get("COMPILATION_ERROR", 0)
-
-    legend = []
-    legend_items = [
-        ("Accepted", "OK"),
-        ("Wrong answer", "WRONG_ANSWER"),
-        ("TLE/MLE", "TIME_LIMIT_EXCEEDED"),
-        ("Runtime/CE", "RUNTIME_ERROR"),
-    ]
-    for index, (label, key) in enumerate(legend_items):
-        x = 42 + index * 152
-        color = CODEFORCES_COLORS[key]
-        legend.append(
-            f'<rect x="{x}" y="218" width="11" height="11" rx="2" fill="{color}"/><text x="{x + 18}" y="228" class="tiny">{esc(label)}</text>'
+    columns = []
+    for col, block_group in sorted(column_blocks.items()):
+        columns.append(
+            f'<g>{tetris_column_exit(col, 170)}{"".join(block_group)}</g>'
         )
 
-    side_piece = f"""
-  <g transform="translate(850 92)">
-    <animateTransform attributeName="transform" type="translate"
-      values="850 48;850 48;850 92;850 92;850 48;850 48"
-      keyTimes="0;0.0393;0.4643;0.8429;0.8821;1"
-      dur="14s" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values="0;1;1;1;0;0"
-      keyTimes="0;0.0393;0.4643;0.8429;0.8821;1"
-      dur="14s" repeatCount="indefinite"/>
-    <g filter="url(#particle-glow)">
-      <rect x="0" y="0" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
-      <rect x="16" y="0" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
-      <rect x="16" y="16" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
-      <rect x="32" y="16" width="15" height="15" rx="3" fill="{PALETTE['gold']}"/>
-    </g>
-  </g>"""
+    clears = []
+    full_columns = [
+        col for col in sorted(column_active)
+        if column_active[col] == column_days[col] == rows
+    ]
+    for order, col in enumerate(full_columns):
+        clear_start = min(11.0, 9.7 + order * 0.18)
+        times = (
+            0.0,
+            clear_start,
+            clear_start + 0.09,
+            clear_start + 0.18,
+            clear_start + 0.27,
+            clear_start + 0.44,
+            TETRIS_CYCLE,
+        )
+        key_times = ";".join(f"{value / TETRIS_CYCLE:.4f}" for value in times)
+        x = grid_x + col * pitch
+        clears.append(
+            f"""<rect x="{x - 1.5}" y="{grid_y - 1.5}" width="{cell + 3}" height="{rows * pitch}" rx="3"
+    fill="{PALETTE['cream']}" opacity="0">
+    <animate attributeName="opacity" values="0;0;0.8;0.05;0.8;0;0"
+      keyTimes="{key_times}" dur="{TETRIS_CYCLE:.0f}s" repeatCount="indefinite"/>
+  </rect>"""
+        )
+
+    verdicts = collections.Counter(verdict_key(item) for item in submissions)
+    legend_specs = (
+        ("Accepted", "OK"),
+        ("Wrong answer", "WRONG_ANSWER"),
+        ("TLE", "TIME_LIMIT_EXCEEDED"),
+        ("MLE", "MEMORY_LIMIT_EXCEEDED"),
+        ("Runtime", "RUNTIME_ERROR"),
+        ("Compile", "COMPILATION_ERROR"),
+        ("Other", "OTHER"),
+    )
+    legend = []
+    cursor = 42.0
+    for label, key in legend_specs:
+        text = f"{label} {verdicts.get(key, 0)}"
+        legend.append(
+            f'<rect x="{cursor:.0f}" y="224" width="11" height="11" rx="2" fill="{CODEFORCES_COLORS[key]}"/>'
+            f'<text x="{cursor + 17:.0f}" y="234" class="tiny">{esc(text)}</text>'
+        )
+        cursor += 17 + len(text) * 6.3 + 20
+
+    bar_segments = []
+    verdict_total = sum(verdicts.values())
+    if verdict_total:
+        bar_x = 42.0
+        for _, key in legend_specs:
+            count = verdicts.get(key, 0)
+            if not count:
+                continue
+            width = count / verdict_total * 836
+            bar_segments.append(
+                f'<rect x="{bar_x:.1f}" y="248" width="{width:.1f}" height="9" '
+                f'fill="{CODEFORCES_COLORS[key]}"/>'
+            )
+            bar_x += width
+        bar = (
+            f'<g clip-path="url(#cf-bar)">{"".join(bar_segments)}</g>'
+            f'<rect x="42" y="248" width="836" height="9" rx="4.5" fill="none" '
+            f'stroke="{PALETTE["border"]}" stroke-width="1"/>'
+        )
+    else:
+        bar = '<text x="42" y="256" class="muted">no submissions on record. the judge rests.</text>'
+
+    score = f"{accepted * 100:06d}"
+    lines = f"{active_days:03d}"
+    level = f"{min(99, active_days // 10 + 1):02d}"
 
     body = f"""
-  {particle_field(920, 250, 'tetris-field', 16)}
-  <text x="42" y="38" class="title">Codeforces Tetris</text>
-  <text x="42" y="60" class="muted">@{esc(handle)} - submissions falling into place, emotionally and otherwise.</text>
-  <rect x="28" y="76" width="824" height="126" rx="14" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
-  {''.join(blocks)}
+  <defs>
+    <clipPath id="cf-well"><rect x="29" y="77" width="822" height="128" rx="13"/></clipPath>
+    <clipPath id="cf-bar"><rect x="42" y="248" width="836" height="9" rx="4.5"/></clipPath>
+    <pattern id="cf-crt" width="4" height="3" patternUnits="userSpaceOnUse">
+      <rect width="4" height="1" fill="#FFFFFF" opacity="0.035"/>
+    </pattern>
+    <linearGradient id="cf-scan" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="{PALETTE['cream']}" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="{PALETTE['cream']}" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="{PALETTE['cream']}" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .cf-hud {{ font: 800 14px 'Space Mono', 'SFMono-Regular', Consolas, monospace; fill: {PALETTE['gold']}; letter-spacing: 1.5px; }}
+    .cf-boxlab {{ font: 700 9px 'Space Mono', 'SFMono-Regular', Consolas, monospace; fill: {PALETTE['muted']}; letter-spacing: 2px; }}
+  </style>
+  {particle_field(920, 300, 'tetris-field', 16)}
+  <text x="42" y="40" class="title">CODEFORCES TETRIS</text>
+  <rect x="252" y="26" width="9" height="15" fill="{PALETTE['gold']}">
+    <animate attributeName="opacity" calcMode="discrete" values="1;0;1"
+      keyTimes="0;0.5;1" dur="1.2s" repeatCount="indefinite"/>
+  </rect>
+  <text x="42" y="60" class="muted">@{esc(handle)} - one block per day, loudest verdict wins.</text>
+  <text x="758" y="38" class="cf-hud" text-anchor="end" filter="url(#particle-glow)">SCORE {score}</text>
+  <text x="758" y="58" class="muted" text-anchor="end">LINES {lines} / LVL {level} / {total} subs - {accepted} AC</text>
+  <rect x="776" y="10" width="100" height="56" rx="10" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
+  <text x="788" y="24" class="cf-boxlab">NEXT</text>
+  {tetris_next_box(788, 10, 9)}
+  <rect x="28" y="76" width="824" height="130" rx="14" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
+  <g clip-path="url(#cf-well)">
+    {''.join(base_cells)}
+    {tetris_ghost_pieces(grid_y, pitch, cell)}
+    <rect x="30" y="47" width="820" height="30" fill="url(#cf-scan)">
+      <animateTransform attributeName="transform" type="translate"
+        values="0 0;0 160" dur="7s" repeatCount="indefinite"/>
+    </rect>
+    {''.join(columns)}
+    {''.join(clears)}
+  </g>
+  <rect x="29" y="77" width="822" height="128" rx="13" fill="url(#cf-crt)"/>
   {''.join(legend)}
-  <text x="704" y="38" class="label">last 365 days</text>
-  <text x="704" y="60" class="muted">{total} submissions - {accepted} accepted</text>
-  <text x="704" y="228" class="tiny">WA {wrong} / TLE {tle} / RE {runtime} / CE {compile_errors}</text>
-  {side_piece}"""
-    path.write_text(svg_shell(920, 250, body, "Codeforces Tetris heatmap"), encoding="utf-8")
+  {bar}
+  <text x="42" y="284" class="tiny">SEASON 2025-26 / RATED FOR EMOTIONAL DAMAGE</text>
+  <text x="878" y="284" class="muted" text-anchor="end">gravity is undefeated.</text>"""
+    path.write_text(svg_shell(920, 300, body, "Codeforces Tetris heatmap"), encoding="utf-8")
 
 
 def render_codeforces_tetris_mobile(
@@ -1604,74 +1774,153 @@ def render_codeforces_tetris_mobile(
 
     cell = 5
     gap = 1
+    pitch = cell + gap
     grid_x = 32
-    grid_y = 116
-    blocks = []
-    active_days = sum(
-        bool(per_day.get(start + dt.timedelta(days=day_index)))
-        for day_index in range(365)
-    )
-    active_index = 0
+    grid_y = 94
+    rows = 7
+
+    base_cells = []
+    column_blocks: dict[int, list[str]] = collections.defaultdict(list)
+    column_active: collections.Counter[int] = collections.Counter()
+    column_days: collections.Counter[int] = collections.Counter()
+    active_days = 0
+
     for day_index in range(365):
         day = start + dt.timedelta(days=day_index)
-        column = day_index // 7
-        row = day_index % 7
-        x = grid_x + column * (cell + gap)
-        y = grid_y + row * (cell + gap)
+        col = day_index // rows
+        row = day_index % rows
+        x = grid_x + col * pitch
+        y = grid_y + row * pitch
+        column_days[col] += 1
+        base_cells.append(
+            f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="1" '
+            f'fill="{PALETTE["panel_2"]}" opacity="0.55"/>'
+        )
         counts = per_day.get(day)
         if not counts:
-            blocks.append(
-                f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="1" '
-                f'fill="{PALETTE["panel_2"]}" opacity="0.55"/>'
-            )
             continue
+
+        active_days += 1
+        column_active[col] += 1
         dominant = counts.most_common(1)[0][0]
         day_total = sum(counts.values())
         color = CODEFORCES_COLORS.get(dominant, CODEFORCES_COLORS["OTHER"])
-        opacity = min(1.0, 0.46 + day_total * 0.14)
-        fall = 24 + row * 4 + column % 5
-        animation = tetris_drop_animation(
-            y,
-            fall,
-            opacity,
-            active_index,
-            active_days,
-            row,
-        )
-        active_index += 1
-        blocks.append(
+        opacity = min(1.0, 0.52 + day_total * 0.13)
+        drop_start = 0.4 + (col / 52) * 6.8 + (6 - row) * 0.08
+        fall, land = tetris_fall_animation(y, pitch, row + 5, drop_start, 0.09)
+        flash = tetris_land_flash(land)
+        column_blocks[col].append(
             f"""<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="1"
-    fill="{color}" opacity="{opacity:.2f}" filter="url(#particle-glow)">
-    {animation}
+    fill="{color}" opacity="{opacity:.2f}" stroke="{PALETTE['cream']}"
+    stroke-width="0.8" stroke-opacity="0" filter="url(#particle-glow)">
+    {fall}
+    {flash}
+  </rect>"""
+        )
+
+    columns = []
+    for col, block_group in sorted(column_blocks.items()):
+        columns.append(
+            f'<g>{tetris_column_exit(col, 74)}{"".join(block_group)}</g>'
+        )
+
+    clears = []
+    full_columns = [
+        col for col in sorted(column_active)
+        if column_active[col] == column_days[col] == rows
+    ]
+    for order, col in enumerate(full_columns):
+        clear_start = min(11.0, 9.7 + order * 0.18)
+        times = (
+            0.0,
+            clear_start,
+            clear_start + 0.09,
+            clear_start + 0.18,
+            clear_start + 0.27,
+            clear_start + 0.44,
+            TETRIS_CYCLE,
+        )
+        key_times = ";".join(f"{value / TETRIS_CYCLE:.4f}" for value in times)
+        x = grid_x + col * pitch
+        clears.append(
+            f"""<rect x="{x - 1}" y="{grid_y - 1}" width="{cell + 2}" height="{rows * pitch}" rx="1.5"
+    fill="{PALETTE['cream']}" opacity="0">
+    <animate attributeName="opacity" values="0;0;0.8;0.05;0.8;0;0"
+      keyTimes="{key_times}" dur="{TETRIS_CYCLE:.0f}s" repeatCount="indefinite"/>
   </rect>"""
         )
 
     verdicts = collections.Counter(verdict_key(item) for item in submissions)
-    legends = [
-        ("Accepted", "OK", 28, 194),
-        ("Wrong answer", "WRONG_ANSWER", 218, 194),
-        ("TLE / MLE", "TIME_LIMIT_EXCEEDED", 28, 219),
-        ("Runtime / CE", "RUNTIME_ERROR", 218, 219),
-    ]
+    legend_specs = (
+        (("AC", "OK"), ("WA", "WRONG_ANSWER"), ("TLE", "TIME_LIMIT_EXCEEDED"), ("MLE", "MEMORY_LIMIT_EXCEEDED")),
+        (("RE", "RUNTIME_ERROR"), ("CE", "COMPILATION_ERROR"), ("Other", "OTHER")),
+    )
     legend_nodes = []
-    for label, key, x, y in legends:
-        legend_nodes.append(
-            f'<rect x="{x}" y="{y - 9}" width="10" height="10" rx="2" fill="{CODEFORCES_COLORS[key]}"/>'
-            f'<text x="{x + 17}" y="{y}" class="tiny">{esc(label)}</text>'
+    for row_index, legend_row in enumerate(legend_specs):
+        cursor = 32.0
+        y = 182 + row_index * 24
+        for label, key in legend_row:
+            text = f"{label} {verdicts.get(key, 0)}"
+            legend_nodes.append(
+                f'<rect x="{cursor:.0f}" y="{y - 9}" width="10" height="10" rx="2" fill="{CODEFORCES_COLORS[key]}"/>'
+                f'<text x="{cursor + 15:.0f}" y="{y}" class="tiny">{esc(text)}</text>'
+            )
+            cursor += 15 + len(text) * 6.3 + 16
+
+    bar_segments = []
+    verdict_total = sum(verdicts.values())
+    if verdict_total:
+        bar_x = 32.0
+        for legend_row in legend_specs:
+            for _, key in legend_row:
+                count = verdicts.get(key, 0)
+                if not count:
+                    continue
+                width = count / verdict_total * 356
+                bar_segments.append(
+                    f'<rect x="{bar_x:.1f}" y="228" width="{width:.1f}" height="7" '
+                    f'fill="{CODEFORCES_COLORS[key]}"/>'
+                )
+                bar_x += width
+        bar = (
+            f'<g clip-path="url(#cfm-bar)">{"".join(bar_segments)}</g>'
+            f'<rect x="32" y="228" width="356" height="7" rx="3.5" fill="none" '
+            f'stroke="{PALETTE["border"]}" stroke-width="1"/>'
         )
+    else:
+        bar = '<text x="32" y="234" class="muted">no submissions on record.</text>'
+
+    score = f"{accepted * 100:06d}"
 
     body = f"""
-  {particle_field(420, 280, 'mobile-tetris-field', 12)}
-  <text x="24" y="38" class="title">Codeforces Tetris</text>
-  <text x="24" y="60" class="muted">@{esc(handle)} / last 365 days</text>
-  <text x="24" y="83" class="label">{total} submissions / {accepted} accepted</text>
-  <text x="396" y="83" class="tiny" text-anchor="end">WA {verdicts.get('WRONG_ANSWER', 0)} / TLE {verdicts.get('TIME_LIMIT_EXCEEDED', 0)}</text>
-  <rect x="22" y="104" width="376" height="58" rx="10" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
-  {''.join(blocks)}
+  <defs>
+    <clipPath id="cfm-well"><rect x="23" y="83" width="374" height="60" rx="9"/></clipPath>
+    <clipPath id="cfm-bar"><rect x="32" y="228" width="356" height="7" rx="3.5"/></clipPath>
+  </defs>
+  <style>
+    .cfm-hud {{ font: 800 12px 'Space Mono', 'SFMono-Regular', Consolas, monospace; fill: {PALETTE['gold']}; letter-spacing: 1px; }}
+  </style>
+  {particle_field(420, 300, 'mobile-tetris-field', 12)}
+  <text x="24" y="36" class="title">CODEFORCES TETRIS</text>
+  <rect x="234" y="23" width="8" height="14" fill="{PALETTE['gold']}">
+    <animate attributeName="opacity" calcMode="discrete" values="1;0;1"
+      keyTimes="0;0.5;1" dur="1.2s" repeatCount="indefinite"/>
+  </rect>
+  <text x="24" y="56" class="muted">@{esc(handle)} / last 365 days</text>
+  <text x="24" y="76" class="cfm-hud" filter="url(#particle-glow)">SCORE {score} / LINES {active_days:03d}</text>
+  <text x="396" y="76" class="tiny" text-anchor="end">{total} subs / {accepted} AC</text>
+  <rect x="22" y="82" width="376" height="62" rx="10" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
+  <g clip-path="url(#cfm-well)">
+    {''.join(base_cells)}
+    {''.join(columns)}
+    {''.join(clears)}
+  </g>
   {''.join(legend_nodes)}
-  <text x="24" y="260" class="muted">Verdicts remain keen to help.</text>"""
+  {bar}
+  <text x="24" y="262" class="tiny">RATED FOR EMOTIONAL DAMAGE</text>
+  <text x="396" y="284" class="muted" text-anchor="end">gravity is undefeated.</text>"""
     path.write_text(
-        svg_shell(420, 280, body, "Mobile Codeforces Tetris heatmap"),
+        svg_shell(420, 300, body, "Mobile Codeforces Tetris heatmap"),
         encoding="utf-8",
     )
 

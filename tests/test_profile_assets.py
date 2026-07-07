@@ -195,8 +195,15 @@ class ProfileAssetTests(unittest.TestCase):
         for source in sources:
             self.assertIn('dur="14s"', source)
             self.assertIn('repeatCount="indefinite"', source)
-            self.assertIn('keyTimes="0.0000;', source)
+            self.assertIn('calcMode="discrete"', source)
+            self.assertIn("SCORE 000100", source)
+            self.assertIn("RATED FOR EMOTIONAL DAMAGE", source)
             self.assertNotIn('fill="freeze"', source)
+            for color in ("#98C379", "#F472B6", "#F5C16C", "#D19A66", "#EF6B73", "#7DD3FC"):
+                self.assertIn(color, source)
+        self.assertIn('clipPath id="cf-well"', sources[0])
+        self.assertIn(">NEXT<", sources[0])
+        self.assertIn('clipPath id="cfm-well"', sources[1])
 
     def test_snake_grows_once_per_consumed_active_day(self) -> None:
         enhanced, count = enhance_svg(SNAKE_FIXTURE)
@@ -208,13 +215,33 @@ class ProfileAssetTests(unittest.TestCase):
         self.assertIn("20.10%,100%", enhanced)
         self.assertIn("prefers-reduced-motion", enhanced)
 
+    def test_snake_gets_face_frame_and_eat_pulses(self) -> None:
+        enhanced, _ = enhance_svg(SNAKE_FIXTURE)
+        ET.fromstring(enhanced)
+
+        self.assertIn("pgs-head-track", enhanced)
+        self.assertEqual(enhanced.count('class="pgs-ring pgs-r'), 2)
+        self.assertIn("SNAKE.EXE", enhanced)
+        self.assertIn("2 DAYS DEVOURED", enhanced)
+        self.assertIn('id="pgs-glow"', enhanced)
+
+    def test_snake_themes_differ(self) -> None:
+        dark, _ = enhance_svg(SNAKE_FIXTURE, "dark")
+        light, _ = enhance_svg(SNAKE_FIXTURE, "light")
+
+        self.assertNotEqual(dark, light)
+        self.assertIn('fill="#0D1117"', dark)
+        self.assertIn('fill="#FFFFFF"', light)
+
     def test_snake_enhancement_is_idempotent(self) -> None:
         first, _ = enhance_svg(SNAKE_FIXTURE)
         second, count = enhance_svg(first)
 
         self.assertEqual(count, 2)
         self.assertEqual(second.count("profile-growing-snake:start"), 2)
+        self.assertEqual(second.count("profile-growing-snake:underlay-start"), 1)
         self.assertEqual(second.count('class="s grow-segment'), 2)
+        self.assertEqual(second.count("SNAKE.EXE"), 1)
 
 
 if __name__ == "__main__":

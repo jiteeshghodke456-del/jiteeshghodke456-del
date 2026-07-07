@@ -5,13 +5,13 @@
 **Systems Design & Architecture** · Pune, India
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero-mobile.svg?v=2" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero.svg?v=2" alt="Particle-rendered profile header for Jiteesh Ghodke" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero-mobile.svg?v=7" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero.svg?v=7" alt="Particle-rendered profile header for Jiteesh Ghodke" />
 </picture>
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal-mobile.svg?v=6" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal.svg?v=6" alt="Animated terminal introduction" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal-mobile.svg?v=7" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal.svg?v=7" alt="Animated terminal introduction" />
 </picture>
 
 <a href="https://github.com/jiteeshghodke456-del"><img src="https://img.shields.io/badge/GitHub-090B0F?style=for-the-badge&logo=github&logoColor=white" height="38" alt="GitHub" /></a>
@@ -21,9 +21,9 @@
 
 </div>
 
-## What I am doing
+## What I'm about
 
-I like understanding software below the reassuring diagrams: memory, protocols, failure modes, and the tiny decisions that later become architecture.
+I like understanding software below the reassuring diagrams — the memory, the protocols, the failure modes, and the tiny 2 a.m. decisions that get promoted to "architecture" once enough things depend on them.
 
 <table>
   <tr>
@@ -33,19 +33,21 @@ I like understanding software below the reassuring diagrams: memory, protocols, 
     </td>
     <td width="33%">
       <h3>Codeforces</h3>
-      <p>Training problem solving until an array finds a completely new way to insult me.</p>
+      <p>Training until arrays run out of new ways to insult me. They have not. There are charts below.</p>
     </td>
     <td width="33%">
       <h3>Build it</h3>
-      <p>If a tool is expensive or annoying, I usually open an editor. Financial planning, technically.</p>
+      <p>If a tool is expensive or annoying, I open an editor. Financial planning, technically.</p>
     </td>
   </tr>
 </table>
 
-**Current focus:** scalable applications and competitive programming<br />
-**Learning:** Rust, JavaScript, TypeScript, React, and React Native<br />
-**Open to:** internships, freelance, open source, collaborations, and cofounding<br />
-**Ask me about:** how my day was. The response time is unusually good.
+```yaml
+focus:     scalable applications & competitive programming
+learning:  [Rust, JavaScript, TypeScript, React, React Native]
+open_to:   [internships, freelance, open source, collaborations, cofounding]
+ask_about: how my day was        # response time is unusually good
+```
 
 ### Toolkit
 
@@ -53,31 +55,35 @@ I like understanding software below the reassuring diagrams: memory, protocols, 
 
 <img src="https://skillicons.dev/icons?i=rust,js,ts,react&theme=dark&perline=4" width="250" alt="Rust, JavaScript, TypeScript, and React" />
 
+<sub>The first row pays the bills. The second row is the plot.</sub>
+
 ---
 
-## Projects
+## The lab
 
-Each color marks a different kind of problem. The status labels mark how optimistic I was when naming the folder.
+Each color marks a different kind of problem. Each status label records exactly how optimistic I was when I named the folder.
 
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase-mobile.svg?v=3" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase.svg?v=3" alt="Particle-rendered showcase of Jiteesh Ghodke's projects" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase-mobile.svg?v=7" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase.svg?v=7" alt="Particle-rendered showcase of Jiteesh Ghodke's projects" />
 </picture>
 
 </div>
 
 ---
 
-## Codeforces
+## Codeforces, but it's Tetris
+
+Every submission from the last 365 days falls into the board below — one block per day, colored by whichever verdict shouted loudest. Watch for the line clears. They are rarer than I would like.
 
 <div align="center">
 
 <a href="https://codeforces.com/profile/SobaDango">
   <picture>
-    <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris-mobile.svg?v=5" />
-    <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris.svg?v=5" alt="Codeforces Tetris heatmap for SobaDango" />
+    <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris-mobile.svg?v=7" />
+    <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris.svg?v=7" alt="Codeforces Tetris board for SobaDango" />
   </picture>
 </a>
 
@@ -87,33 +93,33 @@ Each color marks a different kind of problem. The status labels mark how optimis
 
 ---
 
-## GitHub workshop
+## GitHub, the receipts
 
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies-mobile.svg?v=6" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies.svg?v=6" alt="Particle-rendered GitHub trophies" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies-mobile.svg?v=7" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies.svg?v=7" alt="Particle-rendered GitHub trophies" />
 </picture>
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-overview-mobile.svg?v=4" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-overview.svg?v=4" alt="GitHub repository and language overview" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-overview-mobile.svg?v=7" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-overview.svg?v=7" alt="GitHub repository and language overview" />
 </picture>
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-activity-mobile.svg?v=4" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-activity.svg?v=4" alt="GitHub contribution activity and streaks" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-activity-mobile.svg?v=7" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-activity.svg?v=7" alt="GitHub contribution activity and streaks" />
 </picture>
 
-### Contribution snake
+### The snake that eats my consistency
 
-<sub>One new tail segment for every active contribution day eaten.</sub>
+<sub>One new tail segment for every contribution day devoured. Long snake — disciplined human. Short snake — "I was busy thinking."</sub>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake-dark.svg?v=4" />
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake.svg?v=4" />
-  <img width="100%" alt="Growing GitHub contribution snake" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake.svg?v=4" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake-dark.svg?v=7" />
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake.svg?v=7" />
+  <img width="100%" alt="Growing GitHub contribution snake" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake.svg?v=7" />
 </picture>
 
 </div>
@@ -121,7 +127,8 @@ Each color marks a different kind of problem. The status labels mark how optimis
 ---
 
 > [!IMPORTANT]
-> Open to internships, freelance work, open source, collaborations, and cofounding.
+> **Open to:** internships, freelance work, open source, collaborations, and cofounding.
+> The inbox is watched with the enthusiasm of a `select()` loop.
 
 <div align="center">
 
@@ -130,6 +137,6 @@ Each color marks a different kind of problem. The status labels mark how optimis
 <br />
 <br />
 
-<sub>System diagrams, unreasonable project queues, and the social calendar of a background service.</sub>
+<sub>You've reached the bottom of the page. In this house we call that a successful traversal.</sub>
 
 </div>
