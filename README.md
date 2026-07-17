@@ -2,7 +2,7 @@
 
 # Jiteesh Ghodke
 
-**Systems Design & Architecture** · Pune, India
+**Systems Design & Architecture** 
 
 <picture>
   <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero-mobile.svg?v=7" />
