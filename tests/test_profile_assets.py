@@ -1,247 +1,396 @@
+"""Tests for the profile cockpit pipeline.
+
+Several of these exist because the corresponding bug shipped during the
+rebuild: the glyph scale factor lost precision to rounding and pushed the
+nameplate past the canvas, and the gauges were briefly legible only while an
+animation was running.
+"""
+
 from __future__ import annotations
 
 import collections
-import datetime as dt
+import json
 import pathlib
-import tempfile
+import sys
 import unittest
 import xml.etree.ElementTree as ET
 
-from scripts.generate_profile_assets import (
-    ContributionHTMLParser,
-    calculate_streaks,
-    render_github_activity,
-    render_github_activity_mobile,
-    render_github_overview,
-    render_github_overview_mobile,
-    render_codeforces_tetris,
-    render_codeforces_tetris_mobile,
-    render_particle_hero,
-    render_particle_hero_mobile,
-    render_projects_showcase,
-    render_projects_showcase_mobile,
-    render_terminal_intro,
-    render_terminal_mobile,
-    render_trophies,
-    render_trophies_mobile,
-)
-from scripts.grow_contribution_snake import enhance_svg
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
+
+from cockpit import fetch, icons, svg, tokens  # noqa: E402
+from cockpit.cards import cluster, nameplate, stack, tetris, work  # noqa: E402
+from cockpit.typography import TypeSetter, fmt, load_face  # noqa: E402
+
+CARDS = {
+    "nameplate": nameplate,
+    "cluster": cluster,
+    "bays": work,
+    "tetris": tetris,
+    "stack": stack,
+}
+
+SAMPLE_SUBMISSIONS = [
+    # problem A: three tries, accepted last
+    {"creationTimeSeconds": 100, "verdict": "WRONG_ANSWER", "problem": {"contestId": 1, "index": "A"}, "programmingLanguage": "Python 3"},
+    {"creationTimeSeconds": 200, "verdict": "TIME_LIMIT_EXCEEDED", "problem": {"contestId": 1, "index": "A"}, "programmingLanguage": "Python 3"},
+    {"creationTimeSeconds": 300, "verdict": "OK", "problem": {"contestId": 1, "index": "A"}, "problem_rating": 800, "programmingLanguage": "Python 3"},
+    # problem B: accepted first try
+    {"creationTimeSeconds": 400, "verdict": "OK", "problem": {"contestId": 1, "index": "B", "rating": 900}, "programmingLanguage": "Python 3"},
+    # problem C: never accepted
+    {"creationTimeSeconds": 500, "verdict": "RUNTIME_ERROR", "problem": {"contestId": 2, "index": "C"}, "programmingLanguage": "GNU C11"},
+]
 
 
-SNAKE_FIXTURE = """<svg viewBox="-16 -32 160 96" xmlns="http://www.w3.org/2000/svg">
-<style>
-:root{--ce:#000;--cs:#fff}.c{animation:none 10000ms linear infinite}.s{animation:none linear 10000ms infinite}
-@keyframes c0{20%{fill:red}20.1%,100%{fill:var(--ce)}}
-@keyframes c1{60%{fill:blue}60.1%,100%{fill:var(--ce)}}
-@keyframes s0{0%,90%{transform:translate(0px,-16px)}10%{transform:translate(0px,0px)}50%{transform:translate(64px,0px)}70%{transform:translate(64px,32px)}100%{transform:translate(0px,-16px)}}
-</style>
-<rect class="c c0" x="0" y="0" width="12" height="12"/>
-<rect class="c c1" x="16" y="0" width="12" height="12"/>
-<rect class="s s0" x="1" y="1" width="14" height="14"/>
-<rect class="s s1" x="2" y="2" width="12" height="12"/>
-<rect class="s s2" x="3" y="3" width="10" height="10"/>
-<rect class="s s3" x="4" y="4" width="8" height="8"/>
-</svg>"""
+def sample_data() -> dict:
+    return {
+        "user": {"login": "example", "created_at": "2025-09-27T07:22:04Z"},
+        "repos": [],
+        "repo_count": 27,
+        "languages": collections.Counter(
+            {"TypeScript": 1_908_767, "Python": 377_677, "CSS": 253_356, "Shell": 23_505}
+        ),
+        "contributions": [
+            {"date": "2026-01-01", "count": 3, "level": 2},
+            {"date": "2026-01-02", "count": 0, "level": 0},
+            {"date": "2026-01-03", "count": 5, "level": 3},
+        ],
+        "streaks": {
+            "total": 71,
+            "longest": 6,
+            "current": 0,
+            "active_days": 41,
+            "busiest_day": 9,
+            "tracked_days": 365,
+        },
+        "account_age_days": 302,
+        "codeforces": fetch.codeforces_stats(SAMPLE_SUBMISSIONS),
+        "codeforces_submissions": SAMPLE_SUBMISSIONS,
+    }
 
 
-class ProfileAssetTests(unittest.TestCase):
-    def test_terminal_has_paced_and_reduced_motion_sessions(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            root = pathlib.Path(directory)
-            path = root / "terminal.svg"
-            mobile_path = root / "terminal-mobile.svg"
-            render_terminal_intro(path)
-            render_terminal_mobile(mobile_path)
-            source = path.read_text(encoding="utf-8")
-            ET.parse(path)
-            ET.parse(mobile_path)
+class FormattingTests(unittest.TestCase):
+    def test_small_values_keep_significant_digits(self):
+        """Glyph scale factors live near 0.07.
 
-        self.assertIn("command-clip-0", source)
-        self.assertIn("prefers-reduced-motion", source)
-        self.assertIn("static-session", source)
-        self.assertNotIn("scanline", source)
+        Rounding those to two decimal places stretched every text run by up to
+        7%, which is how the nameplate ended up wider than its canvas.
+        """
+        self.assertEqual(fmt(0.06655), "0.06655")
+        self.assertNotEqual(fmt(0.06655), "0.07")
+        self.assertLess(abs(float(fmt(0.012345)) - 0.012345), 1e-6)
 
-    def test_public_contribution_markup_parses_tooltip_counts(self) -> None:
-        parser = ContributionHTMLParser()
-        parser.feed(
-            '<td id="day-1" data-date="2026-06-14" data-level="2"></td>'
-            '<tool-tip for="day-1">3 contributions on June 14th.</tool-tip>'
+    def test_large_values_stay_compact(self):
+        self.assertEqual(fmt(880), "880")
+        self.assertEqual(fmt(12.0), "12")
+        self.assertEqual(fmt(12.456), "12.46")
+
+
+class TypographyTests(unittest.TestCase):
+    def test_every_face_loads(self):
+        for face in (tokens.DISPLAY, tokens.MONO, tokens.MONO_SEMI):
+            table = load_face(face)
+            self.assertGreater(len(table["glyphs"]), 90, face)
+            self.assertEqual(table["upem"], 1000, face)
+
+    def test_measured_width_matches_emitted_scale(self):
+        setter = TypeSetter()
+        text = "JITEESH GHODKE"
+        size = 66.5
+        width = setter.width(text, tokens.DISPLAY, size, tokens.TRACK_NAMEPLATE)
+        markup = setter.text(
+            0, 0, text, face=tokens.DISPLAY, size=size,
+            fill="#fff", tracking=tokens.TRACK_NAMEPLATE,
         )
-        self.assertEqual(parser.days[0]["count"], 3)
+        scale = float(markup.split("scale(")[1].split(" ")[0])
+        units = setter.advance_units(text, tokens.DISPLAY, tokens.TRACK_NAMEPLATE)
+        self.assertAlmostEqual(units * scale, width, delta=width * 0.001)
 
-    def test_activity_streaks_allow_today_to_be_empty(self) -> None:
-        today = dt.datetime.now(dt.UTC).date()
-        contributions = [
-            {"date": (today - dt.timedelta(days=3)).isoformat(), "count": 0},
-            {"date": (today - dt.timedelta(days=2)).isoformat(), "count": 1},
-            {"date": (today - dt.timedelta(days=1)).isoformat(), "count": 2},
-            {"date": today.isoformat(), "count": 0},
-        ]
-        self.assertEqual(calculate_streaks(contributions), (3, 2, 2, 2))
+    def test_unknown_character_degrades_visibly(self):
+        setter = TypeSetter()
+        self.assertNotEqual(setter.text(0, 0, "☃", face=tokens.MONO, size=10, fill="#fff"), "")
 
-    def test_overview_and_activity_are_valid_svg(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            root = pathlib.Path(directory)
-            overview = root / "overview.svg"
-            overview_mobile = root / "overview-mobile.svg"
-            activity = root / "activity.svg"
-            activity_mobile = root / "activity-mobile.svg"
-            user = {"public_repos": 4, "followers": 2}
-            repos = [{"stargazers_count": 3, "forks_count": 1}]
-            languages = collections.Counter({"Python": 700, "C++": 300})
-            render_github_overview(
-                overview,
-                "jiteeshghodke456-del",
-                user,
-                repos,
-                languages,
+    def test_glyphs_are_defined_once_and_reused(self):
+        setter = TypeSetter()
+        setter.text(0, 0, "AAAA", face=tokens.MONO, size=10, fill="#fff")
+        self.assertEqual(setter.defs().count("<path id="), 1)
+
+
+class NameplateTests(unittest.TestCase):
+    def test_name_fits_inside_the_canvas(self):
+        """The whole card is a first impression; overflow is a failed one."""
+        for width in (tokens.WIDE, tokens.NARROW):
+            document = nameplate.build(sample_data(), width=width)
+            root = ET.fromstring(document)
+            for group in root.iter("{http://www.w3.org/2000/svg}g"):
+                transform = group.get("transform") or ""
+                if "scale(" not in transform:
+                    continue
+                start_x = float(transform.split("translate(")[1].split(" ")[0])
+                self.assertGreaterEqual(start_x, 0, f"text starts off-canvas at {width}px")
+            self.assertLessEqual(
+                _widest_text_run(document), width,
+                f"a text run overflows the {width}px canvas",
             )
-            render_github_overview_mobile(
-                overview_mobile,
-                "jiteeshghodke456-del",
-                user,
-                repos,
-                languages,
-            )
-            render_github_activity(activity, [])
-            render_github_activity_mobile(activity_mobile, [])
-            ET.parse(overview)
-            ET.parse(overview_mobile)
-            ET.parse(activity)
-            ET.parse(activity_mobile)
 
-    def test_particle_heroes_are_valid_and_animated(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            root = pathlib.Path(directory)
-            desktop = root / "hero.svg"
-            mobile = root / "hero-mobile.svg"
-            render_particle_hero(desktop)
-            render_particle_hero_mobile(mobile)
-            sources = [
-                desktop.read_text(encoding="utf-8"),
-                mobile.read_text(encoding="utf-8"),
-            ]
-            ET.parse(desktop)
-            ET.parse(mobile)
 
-        for source in sources:
-            self.assertIn('class="particle-glyph"', source)
-            self.assertGreater(source.count("<animate"), 20)
-            self.assertIn("#FF7A3D", source)
-            self.assertNotIn('class="particle-glyph" filter=', source)
-            self.assertNotIn('class="hero-name" opacity="0"', source)
+def _widest_text_run(document: str) -> float:
+    """Right-most edge of any glyph run in the document."""
+    setter = TypeSetter()
+    widest = 0.0
+    root = ET.fromstring(document)
+    namespace = "{http://www.w3.org/2000/svg}"
+    for group in root.iter(f"{namespace}g"):
+        transform = group.get("transform") or ""
+        if "translate(" not in transform or "scale(" not in transform:
+            continue
+        start_x = float(transform.split("translate(")[1].split(" ")[0])
+        scale = float(transform.split("scale(")[1].split(" ")[0])
+        uses = list(group.iter(f"{namespace}use"))
+        if not uses:
+            continue
+        last = max(float(use.get("x") or 0) for use in uses)
+        widest = max(widest, start_x + (last + 1000) * scale)
+    return widest
 
-    def test_project_showcases_are_valid_and_colorful(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            root = pathlib.Path(directory)
-            desktop = root / "projects.svg"
-            mobile = root / "projects-mobile.svg"
-            render_projects_showcase(desktop)
-            render_projects_showcase_mobile(mobile)
-            desktop_source = desktop.read_text(encoding="utf-8")
-            ET.parse(desktop)
-            ET.parse(mobile)
 
-        self.assertIn("Arial Narrow", desktop_source)
-        self.assertIn("USEFUL IDEAS", desktop_source)
-        self.assertGreaterEqual(desktop_source.count('class="particle-glyph"'), 6)
-        self.assertNotIn("project-symbol", desktop_source)
-        self.assertGreaterEqual(desktop_source.count("project-status"), 7)
-        for color in ("#F5C16C", "#7DD3FC", "#F472B6", "#98C379"):
-            self.assertIn(color, desktop_source)
+class ClusterTests(unittest.TestCase):
+    def test_gauges_are_legible_without_animation(self):
+        """Static attributes must hold the reading, not the starting point."""
+        document = cluster.build(sample_data(), width=tokens.WIDE)
+        root = ET.fromstring(document)
+        namespace = "{http://www.w3.org/2000/svg}"
 
-    def test_trophies_use_large_particle_icons_without_bobbing(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            root = pathlib.Path(directory)
-            desktop = root / "trophies.svg"
-            mobile = root / "trophies-mobile.svg"
-            user = {"public_repos": 4}
-            repos = [{"stargazers_count": 3, "forks_count": 1}]
-            languages = collections.Counter({"Python": 700, "C++": 300})
-            render_trophies(desktop, user, repos, languages)
-            render_trophies_mobile(mobile, user, repos, languages)
-            sources = [
-                desktop.read_text(encoding="utf-8"),
-                mobile.read_text(encoding="utf-8"),
-            ]
-            ET.parse(desktop)
-            ET.parse(mobile)
-
-        for source in sources:
-            self.assertEqual(source.count('class="particle-glyph"'), 6)
-            self.assertNotIn('values="0 0;0 -4;0 0"', source)
-            self.assertGreater(source.count("<animateTransform"), 80)
-
-    def test_codeforces_tetris_replays_at_a_readable_pace(self) -> None:
-        now = int(dt.datetime.now(dt.UTC).timestamp())
-        submissions = [
-            {"creationTimeSeconds": now, "verdict": "OK"},
-            {"creationTimeSeconds": now - 86400, "verdict": "WRONG_ANSWER"},
+        arcs = [
+            element
+            for element in root.iter(f"{namespace}path")
+            if element.get("stroke-dasharray")
         ]
+        self.assertTrue(arcs, "no value arcs were drawn")
+        for arc in arcs:
+            drawn = float(arc.get("stroke-dasharray").split(" ")[0])
+            self.assertGreater(drawn, 0, "value arc is empty before animation")
 
-        with tempfile.TemporaryDirectory() as directory:
-            root = pathlib.Path(directory)
-            desktop = root / "tetris.svg"
-            mobile = root / "tetris-mobile.svg"
-            render_codeforces_tetris(desktop, "SobaDango", submissions)
-            render_codeforces_tetris_mobile(mobile, "SobaDango", submissions)
-            sources = [
-                desktop.read_text(encoding="utf-8"),
-                mobile.read_text(encoding="utf-8"),
-            ]
-            ET.parse(desktop)
-            ET.parse(mobile)
+        needles = [
+            element
+            for element in root.iter(f"{namespace}g")
+            if (element.get("class") or "").startswith("nd")
+        ]
+        self.assertEqual(len(needles), 4)
+        for needle in needles:
+            angle = float(needle.get("transform").split("rotate(")[1].split(" ")[0])
+            self.assertNotAlmostEqual(
+                angle, cluster.START_ANGLE, msg="needle is parked at zero",
+            )
 
-        for source in sources:
-            self.assertIn('dur="14s"', source)
-            self.assertIn('repeatCount="indefinite"', source)
-            self.assertIn('calcMode="discrete"', source)
-            self.assertIn("SCORE 000100", source)
-            self.assertIn("RATED FOR EMOTIONAL DAMAGE", source)
-            self.assertNotIn('fill="freeze"', source)
-            for color in ("#98C379", "#F472B6", "#F5C16C", "#D19A66", "#EF6B73", "#7DD3FC"):
-                self.assertIn(color, source)
-        self.assertIn('clipPath id="cf-well"', sources[0])
-        self.assertIn(">NEXT<", sources[0])
-        self.assertIn('clipPath id="cfm-well"', sources[1])
+    def test_motion_is_guarded_by_reduced_motion(self):
+        document = cluster.build(sample_data(), width=tokens.WIDE)
+        self.assertIn("prefers-reduced-motion:no-preference", document)
 
-    def test_snake_grows_once_per_consumed_active_day(self) -> None:
-        enhanced, count = enhance_svg(SNAKE_FIXTURE)
-        ET.fromstring(enhanced)
+    def test_gauge_values_track_the_data(self):
+        data = sample_data()
+        gauges = cluster.gauges_from(data)
+        by_label = {gauge["label"]: gauge for gauge in gauges}
+        self.assertEqual(by_label["CONTRIBUTIONS"]["value"], 71)
+        self.assertEqual(by_label["REPOSITORIES"]["value"], 27)
+        self.assertEqual(
+            by_label["ACCEPT RATE"]["value"], data["codeforces"]["accept_rate"]
+        )
 
-        self.assertEqual(count, 2)
-        self.assertEqual(enhanced.count('class="s grow-segment'), 2)
-        self.assertIn("@keyframes grow_reveal_0", enhanced)
-        self.assertIn("20.10%,100%", enhanced)
-        self.assertIn("prefers-reduced-motion", enhanced)
+    def test_odometer_shows_one_cell_per_digit(self):
+        setter = TypeSetter()
+        drum = cluster._odometer(setter, 0, 0, 800, "000302", "days in")
+        self.assertEqual(drum.count(f'fill="{tokens.VOID}"'), 6)
 
-    def test_snake_gets_face_frame_and_eat_pulses(self) -> None:
-        enhanced, _ = enhance_svg(SNAKE_FIXTURE)
-        ET.fromstring(enhanced)
+    def test_card_copy_is_drawn_as_outlines_not_text_nodes(self):
+        """Type is vector, which is why copy cannot be asserted as a string.
 
-        self.assertIn("pgs-head-track", enhanced)
-        self.assertEqual(enhanced.count('class="pgs-ring pgs-r'), 2)
-        self.assertIn("SNAKE.EXE", enhanced)
-        self.assertIn("2 DAYS DEVOURED", enhanced)
-        self.assertIn('id="pgs-glow"', enhanced)
+        It also means the cards do not depend on a font being installed, and
+        do not shift when GitHub changes its own stylesheet.
+        """
+        document = cluster.build(sample_data(), width=tokens.WIDE)
+        root = ET.fromstring(document)
+        self.assertEqual(list(root.iter("{http://www.w3.org/2000/svg}text")), [])
+        self.assertTrue(list(root.iter("{http://www.w3.org/2000/svg}use")))
+        # The reading is still exposed to screen readers through desc.
+        desc = root.find("{http://www.w3.org/2000/svg}desc")
+        self.assertIn("71 contributions", desc.text)
 
-    def test_snake_themes_differ(self) -> None:
-        dark, _ = enhance_svg(SNAKE_FIXTURE, "dark")
-        light, _ = enhance_svg(SNAKE_FIXTURE, "light")
 
-        self.assertNotEqual(dark, light)
-        self.assertIn('fill="#0D1117"', dark)
-        self.assertIn('fill="#FFFFFF"', light)
+class TetrisTests(unittest.TestCase):
+    def test_one_column_per_problem(self):
+        columns = tetris.columns_from(SAMPLE_SUBMISSIONS, 60)
+        self.assertEqual(len(columns), 3)
+        self.assertEqual(columns[0], ["WRONG_ANSWER", "TIME_LIMIT_EXCEEDED", "OK"])
+        self.assertEqual(columns[1], ["OK"])
 
-    def test_snake_enhancement_is_idempotent(self) -> None:
-        first, _ = enhance_svg(SNAKE_FIXTURE)
-        second, count = enhance_svg(first)
+    def test_no_submission_is_lost_within_the_limit(self):
+        columns = tetris.columns_from(SAMPLE_SUBMISSIONS, 60)
+        self.assertEqual(sum(len(column) for column in columns), len(SAMPLE_SUBMISSIONS))
 
-        self.assertEqual(count, 2)
-        self.assertEqual(second.count("profile-growing-snake:start"), 2)
-        self.assertEqual(second.count("profile-growing-snake:underlay-start"), 1)
-        self.assertEqual(second.count('class="s grow-segment'), 2)
-        self.assertEqual(second.count("SNAKE.EXE"), 1)
+    def test_first_try_accepts_counts_only_leading_ok(self):
+        columns = tetris.columns_from(SAMPLE_SUBMISSIONS, 60)
+        self.assertEqual(tetris.first_try_accepts(columns), 1)
+
+    def test_verdict_colours_split_by_outcome(self):
+        """Hue carries accepted-or-not; brightness separates failure modes."""
+        self.assertEqual(tokens.VERDICT_COLORS["OK"], tokens.ICE)
+        rejected = ("WRONG_ANSWER", "TIME_LIMIT_EXCEEDED", "RUNTIME_ERROR")
+        for key in rejected:
+            self.assertNotEqual(tokens.VERDICT_COLORS[key], tokens.ICE)
+        self.assertEqual(
+            len({tokens.VERDICT_COLORS[key] for key in rejected}), len(rejected),
+            "failure modes must stay distinguishable",
+        )
+
+
+class StackTests(unittest.TestCase):
+    def test_language_shares_sum_to_the_whole(self):
+        languages = stack.top_languages(
+            {"A": 50, "B": 30, "C": 10, "D": 5, "E": 3, "F": 1, "G": 1}, limit=3
+        )
+        self.assertEqual(languages[-1][0], "Other")
+        self.assertEqual(sum(count for _, count in languages), 100)
+
+    def test_no_segment_is_labelled_zero_percent(self):
+        """Every listed language must round to at least one percent."""
+        languages = {"A": 10_000, "B": 4_000, "C": 12, "D": 8}
+        listed = stack.top_languages(languages)
+        total = sum(count for _, count in listed)
+        for name, count in listed:
+            self.assertGreaterEqual(
+                round(count / total * 100), 1, f"{name} would render as 0%"
+            )
+
+    def test_mix_stays_within_the_pair(self):
+        self.assertEqual(stack.mix(tokens.ROSE, tokens.ICE, 0), tokens.ROSE.upper())
+        self.assertEqual(stack.mix(tokens.ROSE, tokens.ICE, 1), tokens.ICE.upper())
+
+    def test_every_referenced_icon_exists(self):
+        referenced = set(stack.SHIPS_IN) | set(stack.LEARNING)
+        for bay in work.BAYS:
+            referenced.update(bay["stack"])
+        missing = sorted(slug for slug in referenced if not icons.has(slug))
+        self.assertEqual(missing, [], f"vendor_icons.py has not fetched: {missing}")
+
+
+class WorkTests(unittest.TestCase):
+    def test_every_bay_points_at_a_repository(self):
+        for bay in work.BAYS:
+            self.assertTrue(bay["repo"], f"{bay['name']} has no repo to open")
+
+    def test_brand_is_spelled_ataleir(self):
+        names = " ".join(bay["name"] for bay in work.BAYS)
+        self.assertIn("ATALEIR", names)
+        self.assertNotIn("ATELIER", names)
+
+
+class DocumentTests(unittest.TestCase):
+    def test_all_cards_render_valid_svg_at_both_widths(self):
+        data = sample_data()
+        for name, module in CARDS.items():
+            for width in (tokens.WIDE, tokens.NARROW):
+                document = module.build(data, width=width)
+                with self.subTest(card=name, width=width):
+                    root = ET.fromstring(document)
+                    self.assertTrue(root.get("viewBox"))
+                    self.assertTrue(root.findall("{http://www.w3.org/2000/svg}title"))
+
+    def test_no_card_relies_on_svg_filters(self):
+        """Filters are dropped silently by some renderers; gradients are not."""
+        data = sample_data()
+        for name, module in CARDS.items():
+            document = module.build(data, width=tokens.WIDE)
+            with self.subTest(card=name):
+                self.assertNotIn("feGaussianBlur", document)
+                self.assertNotIn("<filter", document)
+
+    def test_cards_survive_missing_data(self):
+        """A Codeforces outage must produce honest zeroes, not a crash."""
+        empty = sample_data()
+        empty["codeforces"] = fetch.codeforces_stats([])
+        empty["codeforces_submissions"] = []
+        empty["languages"] = collections.Counter()
+        empty["streaks"] = dict(empty["streaks"], total=0)
+        for name, module in CARDS.items():
+            with self.subTest(card=name):
+                ET.fromstring(module.build(empty, width=tokens.WIDE))
+
+
+class FetchTests(unittest.TestCase):
+    def test_streaks_counts_active_days_and_longest_run(self):
+        days = [
+            {"date": "2026-01-01", "count": 1},
+            {"date": "2026-01-02", "count": 2},
+            {"date": "2026-01-03", "count": 0},
+            {"date": "2026-01-04", "count": 4},
+        ]
+        result = fetch.streaks(days)
+        self.assertEqual(result["total"], 7)
+        self.assertEqual(result["active_days"], 3)
+        self.assertEqual(result["longest"], 2)
+        self.assertEqual(result["busiest_day"], 4)
+
+    def test_codeforces_stats_counts_unique_problems(self):
+        stats = fetch.codeforces_stats(SAMPLE_SUBMISSIONS)
+        self.assertEqual(stats["total"], 5)
+        self.assertEqual(stats["accepted"], 2)
+        self.assertEqual(stats["solved"], 2)
+        self.assertEqual(stats["attempted"], 3)
+        self.assertAlmostEqual(stats["accept_rate"], 40.0)
+
+    def test_account_age_handles_a_missing_timestamp(self):
+        self.assertEqual(fetch.account_age_days({}), 0)
+        self.assertEqual(fetch.account_age_days({"created_at": "nonsense"}), 0)
+
+
+class PaletteTests(unittest.TestCase):
+    def test_accents_are_limited_to_the_declared_pair(self):
+        """Every accent must be rose, ice, or a luminance step of one of them.
+
+        The old design drifted to seven hues across three rendering systems.
+        This is the guard that stops that happening again.
+        """
+        allowed = {
+            tokens.ROSE, tokens.ICE, tokens.ROSE_BRIGHT, tokens.ROSE_DEEP,
+            tokens.ICE_BRIGHT, tokens.ICE_DEEP, tokens.DIM, "#8C1F5A",
+        }
+        self.assertTrue(set(tokens.VERDICT_COLORS.values()).issubset(allowed))
+
+
+class ReadmeTests(unittest.TestCase):
+    ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+    def test_readme_references_every_generated_asset(self):
+        readme = (self.ROOT / "README.md").read_text(encoding="utf-8")
+        for name in CARDS:
+            for suffix in ("", "-mobile"):
+                self.assertIn(f"{name}{suffix}.svg", readme)
+        self.assertIn("github-contribution-grid-snake.svg", readme)
+
+    def test_readme_has_no_third_party_badge_services(self):
+        readme = (self.ROOT / "README.md").read_text(encoding="utf-8")
+        for service in ("shields.io", "skillicons.dev", "komarev.com", "github-readme-stats"):
+            self.assertNotIn(service, readme)
+
+    def test_readme_spells_the_brand_correctly(self):
+        readme = (self.ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("Ataleir", readme)
+        self.assertNotIn("Atelier", readme)
+
+    def test_vendored_assets_are_committed(self):
+        for relative in (
+            "assets/glyphs/display.json",
+            "assets/glyphs/mono.json",
+            "assets/glyphs/mono-semibold.json",
+            "assets/icons/simple-icons.json",
+        ):
+            self.assertTrue((self.ROOT / relative).exists(), relative)
+
+    def test_icon_table_records_its_licence(self):
+        table = json.loads(
+            (self.ROOT / "assets/icons/simple-icons.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(table["license"], "CC0-1.0")
 
 
 if __name__ == "__main__":
