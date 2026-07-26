@@ -19,28 +19,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # No pip install anywhere in this job. Fonts and icons were compiled to
+      # JSON by scripts/vendor_glyphs.py and scripts/vendor_icons.py, which are
+      # developer tools run by hand when those assets change.
       - name: Test profile asset pipeline
         run: python3 -m unittest discover -s tests -v
 
-      - name: Generate custom SVG cards
+      - name: Generate cockpit cards
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USER: ${{ github.repository_owner }}
           CODEFORCES_HANDLE: SobaDango
         run: python3 scripts/generate_profile_assets.py --out-dir dist
 
+      # Palette matches scripts/cockpit/tokens.py: void backdrop, the HEAT ramp
+      # for day cells, rose for the snake itself.
       - name: Generate contribution snake
         uses: Platane/snk/svg-only@v3.5.0
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
-            dist/github-contribution-grid-snake.svg?color_snake=%23E09B3D&color_dots=%23EBEEF2,%23BFE0F7,%237DD3FC,%233B9EDC,%23F472B6
-            dist/github-contribution-grid-snake-dark.svg?color_snake=%23F5C16C&color_dots=%23161D26,%23274B63,%233F7EA6,%237DD3FC,%23F472B6
+            dist/github-contribution-grid-snake.svg?color_snake=%23FF2D75&color_dots=%23141724,%23173653,%231B6AC4,%237C4A8E,%23FF2D75
 
       - name: Grow snake as contributions are eaten
         run: |
           python3 scripts/grow_contribution_snake.py \
-            dist/github-contribution-grid-snake.svg \
-            dist/github-contribution-grid-snake-dark.svg
+            dist/github-contribution-grid-snake.svg
 
       - name: Validate published assets
         run: python3 scripts/validate_profile_assets.py --asset-dir dist --readme README.md

@@ -22,13 +22,15 @@ UNDERLAY_MARKER_END = "<!-- profile-growing-snake:underlay-end -->"
 
 THEMES = {
     "dark": {
-        "bg": "#0D1117",
-        "border": "#2B3642",
-        "title": "#8B949E",
-        "accent": "#F5C16C",
-        "tail_from": "#F5C16C",
-        "tail_to": "#F472B6",
-        "pupil": "#0D1117",
+        # Matches scripts/cockpit/tokens.py. The snake is part of the same
+        # cabin, so it uses the same two accents as every other card.
+        "bg": "#07070A",
+        "border": "#1C1F2B",
+        "title": "#79808F",
+        "accent": "#3AA0FF",
+        "tail_from": "#FF2D75",
+        "tail_to": "#3AA0FF",
+        "pupil": "#07070A",
     },
     "light": {
         "bg": "#FFFFFF",
@@ -234,10 +236,6 @@ def build_underlay(svg: str, theme: dict[str, str], eaten: int) -> str:
     label = f"{eaten} DAY{'S' if eaten != 1 else ''} DEVOURED"
     return (
         f"{UNDERLAY_MARKER_START}"
-        f'<defs><filter id="pgs-glow" x="-80%" y="-80%" width="260%" height="260%">'
-        f'<feGaussianBlur stdDeviation="1.6" result="blur"/>'
-        f'<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>'
-        f"</filter></defs>"
         f'<g class="pgs-underlay">'
         f'<rect x="{x + 0.5:.1f}" y="{y + 0.5:.1f}" width="{width - 1:.1f}" '
         f'height="{height - 1:.1f}" rx="12" fill="{theme["bg"]}" stroke="{theme["border"]}"/>'
@@ -294,10 +292,15 @@ def build_head(
 
     elements = [
         '<g class="pgs-fx pgs-head-track">'
-        '<g filter="url(#pgs-glow)">'
+        # Glow as stacked translucent rects rather than a blur filter: some
+        # renderers drop filters silently and the head would lose its light.
+        '<rect x="-3.5" y="-3.5" width="23" height="23" rx="9"'
+        ' fill="var(--cs)" opacity="0.12"/>'
+        '<rect x="-1.5" y="-1.5" width="19" height="19" rx="7"'
+        ' fill="var(--cs)" opacity="0.18"/>'
         '<rect x="0.5" y="0.5" width="15" height="15" rx="5" fill="var(--cs)"/>'
         f"{''.join(eye_groups)}"
-        "</g></g>"
+        "</g>"
     ]
     return styles, elements
 
@@ -437,7 +440,10 @@ def enhance_svg(svg: str, theme_name: str = "dark") -> tuple[str, int]:
 
 
 def process_file(path: pathlib.Path) -> int:
-    theme_name = "dark" if "dark" in path.stem else "light"
+    # The profile is always dark, so one snake is generated and its filename
+    # no longer says which theme it is. Dark is the default; "light" in the
+    # stem is the only way to ask for the other one.
+    theme_name = "light" if "light" in path.stem else "dark"
     original = path.read_text(encoding="utf-8")
     enhanced, count = enhance_svg(original, theme_name)
     path.write_text(enhanced, encoding="utf-8")

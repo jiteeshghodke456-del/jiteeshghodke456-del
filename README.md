@@ -1,142 +1,102 @@
 <div align="center">
 
-# Jiteesh Ghodke
-
-**Systems Design & Architecture** 
-
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero-mobile.svg?v=7" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/profile-hero.svg?v=7" alt="Particle-rendered profile header for Jiteesh Ghodke" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/nameplate-mobile.svg?v=8" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/nameplate.svg?v=8" alt="Jiteesh Ghodke - software engineer, system design, competitive programming" />
 </picture>
 
-<picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal-mobile.svg?v=7" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/about-terminal.svg?v=7" alt="Animated terminal introduction" />
-</picture>
-
-<a href="https://github.com/jiteeshghodke456-del"><img src="https://img.shields.io/badge/GitHub-090B0F?style=for-the-badge&logo=github&logoColor=white" height="38" alt="GitHub" /></a>
-<a href="https://www.linkedin.com/in/jiteesh-ghodke-642832398/"><img src="https://img.shields.io/badge/LinkedIn-090B0F?style=for-the-badge&logo=linkedin&logoColor=white" height="38" alt="LinkedIn" /></a>
-<a href="https://x.com/Jiteez_"><img src="https://img.shields.io/badge/X-090B0F?style=for-the-badge&logo=x&logoColor=white" height="38" alt="X" /></a>
-<a href="https://codeforces.com/profile/SobaDango"><img src="https://img.shields.io/badge/Codeforces-090B0F?style=for-the-badge&logo=codeforces&logoColor=FF7A3D" height="38" alt="Codeforces" /></a>
+[**GitHub**](https://github.com/jiteeshghodke456-del) · [**LinkedIn**](https://www.linkedin.com/in/jiteesh-ghodke-642832398/) · [**X**](https://x.com/Jiteez_) · [**Codeforces**](https://codeforces.com/profile/SobaDango)
 
 </div>
 
-## What I'm about
+I like the part of software that sits underneath the reassuring architecture diagram — the memory, the protocols, the failure modes, and the 2 a.m. decisions that quietly get promoted to "design" once enough things depend on them.
 
-I like understanding software below the reassuring diagrams — the memory, the protocols, the failure modes, and the tiny 2 a.m. decisions that get promoted to "architecture" once enough things depend on them.
-
-<table>
-  <tr>
-    <td width="33%">
-      <h3>Systems</h3>
-      <p>Designing applications that scale without requiring a ceremonial restart every Thursday.</p>
-    </td>
-    <td width="33%">
-      <h3>Codeforces</h3>
-      <p>Training until arrays run out of new ways to insult me. They have not. There are charts below.</p>
-    </td>
-    <td width="33%">
-      <h3>Build it</h3>
-      <p>If a tool is expensive or annoying, I open an editor. Financial planning, technically.</p>
-    </td>
-  </tr>
-</table>
-
-```yaml
-focus:     scalable applications & competitive programming
-learning:  [Rust, JavaScript, TypeScript, React, React Native]
-open_to:   [internships, freelance, open source, collaborations, cofounding]
-ask_about: how my day was        # response time is unusually good
-```
-
-### Toolkit
-
-<img src="https://skillicons.dev/icons?i=python,c,cpp,html,css,git,github,linux,vscode&theme=dark&perline=5" width="300" alt="Python, C, C++, HTML, CSS, Git, GitHub, Linux, and VS Code" />
-
-<img src="https://skillicons.dev/icons?i=rust,js,ts,react&theme=dark&perline=4" width="250" alt="Rust, JavaScript, TypeScript, and React" />
-
-<sub>The first row pays the bills. The second row is the plot.</sub>
+Everything below is measured, rebuilt every morning by a workflow in this repo, and not rounded in my favour.
 
 ---
 
-## The lab
-
-Each color marks a different kind of problem. Each status label records exactly how optimistic I was when I named the folder.
+## The cluster
 
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase-mobile.svg?v=7" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/projects-showcase.svg?v=7" alt="Particle-rendered showcase of Jiteesh Ghodke's projects" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/cluster-mobile.svg?v=8" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/cluster.svg?v=8" alt="Instrument cluster: contributions, problems solved, accept rate, repositories" />
 </picture>
 
 </div>
 
----
-
-## Codeforces, but it's Tetris
-
-Every submission from the last 365 days falls into the board below — one block per day, colored by whichever verdict shouted loudest. Watch for the line clears. They are rarer than I would like.
-
-<div align="center">
-
-<a href="https://codeforces.com/profile/SobaDango">
-  <picture>
-    <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris-mobile.svg?v=7" />
-    <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/codeforces-tetris.svg?v=7" alt="Codeforces Tetris board for SobaDango" />
-  </picture>
-</a>
-
-<sub>The blocks fall. The verdicts remain professionally disappointed.</sub>
-
-</div>
+Four dials with their scales printed on the face, because a number without a scale is just a number that would like you to be impressed. This account is not yet a year old. The needles are exactly where you would expect them to be, and they are moving in the correct direction.
 
 ---
 
-## GitHub, the receipts
+## The bays
 
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies-mobile.svg?v=7" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/trophies.svg?v=7" alt="Particle-rendered GitHub trophies" />
-</picture>
-
-<picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-overview-mobile.svg?v=7" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-overview.svg?v=7" alt="GitHub repository and language overview" />
-</picture>
-
-<picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-activity-mobile.svg?v=7" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-activity.svg?v=7" alt="GitHub contribution activity and streaks" />
-</picture>
-
-### The snake that eats my consistency
-
-<sub>One new tail segment for every contribution day devoured. Long snake — disciplined human. Short snake — "I was busy thinking."</sub>
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake-dark.svg?v=7" />
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake.svg?v=7" />
-  <img width="100%" alt="Growing GitHub contribution snake" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake.svg?v=7" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/bays-mobile.svg?v=8" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/bays.svg?v=8" alt="Project bays: Ataleir, Drishti, Magi, NeetCode log" />
 </picture>
 
 </div>
 
+**01** [Ataleir](https://github.com/jiteeshghodke456-del/ataleir-beta-updates) · **02** [Drishti](https://github.com/jiteeshghodke456-del/ruraldrushtiteam5idiots) · **03** [Magi](https://github.com/jiteeshghodke456-del/Magi_Deepfake_AI) · **04** [NeetCode log](https://github.com/jiteeshghodke456-del/neetcode-submissions)
+
+Four bays, four things you can actually open. There is no fifth bay full of ideas labelled *coming soon* — those live in a notes app, where they are not pretending to be work.
+
 ---
 
-> [!IMPORTANT]
-> **Open to:** internships, freelance work, open source, collaborations, and cofounding.
-> The inbox is watched with the enthusiasm of a `select()` loop.
+## Codeforces, but it is Tetris
 
 <div align="center">
 
-<img src="https://komarev.com/ghpvc/?username=jiteeshghodke456-del&label=Profile%20Views&color=F5C16C&style=flat-square" alt="Profile views" />
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/tetris-mobile.svg?v=8" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/tetris.svg?v=8" alt="Codeforces submissions stacked as a Tetris board, one column per problem" />
+</picture>
 
-<br />
-<br />
+</div>
 
-<sub>You've reached the bottom of the page. In this house we call that a successful traversal.</sub>
+One column per problem, one block per submission, stacked in the order I sent them. Blue means the judge accepted it. Pink means the judge disagreed, and the shade tells you how creatively.
 
+A single blue block is a good afternoon. A tall pink column with one blue block balanced on top is also a good afternoon — just a longer one.
+
+---
+
+## The snake that eats my consistency
+
+<div align="center">
+
+<img width="100%" alt="Contribution snake devouring the last year of commits" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/github-contribution-grid-snake.svg?v=8" />
+
+</div>
+
+It grows one tail segment for every contribution day it eats. Long snake, disciplined human. Short snake, a human who was *thinking about* the problem.
+
+---
+
+## What the code actually is
+
+<div align="center">
+
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/stack-mobile.svg?v=8" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/stack.svg?v=8" alt="Language mix measured in bytes, plus current toolkit" />
+</picture>
+
+</div>
+
+Measured in bytes on disk across every repository I own, rather than in languages I would enjoy being asked about in an interview. The gap between those two lists is the honest part of any profile.
+
+---
+
+## One action
+
+I am looking for a **software engineering internship**. If you have one, [open an issue on this repo](https://github.com/jiteeshghodke456-del/jiteeshghodke456-del/issues/new) or find me on [LinkedIn](https://www.linkedin.com/in/jiteesh-ghodke-642832398/) — both land in the same place, and I answer both.
+
+Freelance work, open source, and unreasonably long conversations about system design are also welcome. Cofounding is a longer conversation, and I would rather have that one slowly.
+
+<div align="center">
+<sub>Every image on this page is drawn by <a href="https://github.com/jiteeshghodke456-del/jiteeshghodke456-del/tree/main/scripts">a Python script in this repo</a> — no badge services, no third-party stat cards, no dependencies. Type is rendered as vector outlines, so it looks the same on your machine as it does on mine. Rebuilt daily at 00:00 UTC.</sub>
 </div>
