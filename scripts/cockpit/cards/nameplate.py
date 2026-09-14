@@ -20,6 +20,12 @@ INDICATORS = [
 WASH_ROSE = "wr"
 WASH_ICE = "wi"
 
+# Geometry the height calculation depends on. TELLTALE_RADIUS is the halo drawn in
+# _telltale; BAR_INSET is where svg.ambient_bar sits above the bottom edge.
+TELLTALE_RADIUS = 8
+BAR_CLEARANCE = 16
+BAR_INSET = 20
+
 
 def _defs() -> str:
     return svg.radial_wash(WASH_ROSE, tokens.ROSE, 0.34) + svg.radial_wash(
@@ -55,11 +61,10 @@ def _fit_size(setter: TypeSetter, text: str, available: float, maximum: float) -
 def build(data: dict, *, width: int = tokens.WIDE) -> str:
     narrow = width <= tokens.NARROW
     pad = tokens.PAD_NARROW if narrow else tokens.PAD
-    height = 268 if narrow else 232
     available = width - pad * 2
 
     setter = TypeSetter()
-    body: list[str] = [_wash(width, height)]
+    body: list[str] = []
 
     # Eyebrow
     eyebrow_text = "BTECH '29 · SYSTEM DESIGN" if narrow else EYEBROW
@@ -122,15 +127,25 @@ def build(data: dict, *, width: int = tokens.WIDE) -> str:
         for index, (text, color, lit) in enumerate(INDICATORS):
             row_y = cursor + index * 20
             body.append(_telltale(setter, pad, row_y, text, color, lit))
-        cursor += 20 * len(INDICATORS)
+        last_row = cursor + 20 * (len(INDICATORS) - 1)
     else:
         offset = pad
         for text, color, lit in INDICATORS:
             body.append(_telltale(setter, offset, cursor, text, color, lit))
             offset += 22 + setter.width(text, tokens.DISPLAY, 9, tokens.TRACK_LABEL) + 34
-        cursor += 18
+        last_row = cursor
 
-    body.append(svg.ambient_bar(pad, height - 20, available))
+    # The canvas is derived from the content, not asserted ahead of it. This card used to
+    # hardcode its height while every sibling computed one, and the mobile layout quietly
+    # grew 13px past the constant. Nothing fell off the canvas, because the ambient bar was
+    # pinned to height - 20 rather than following the cursor, so instead the bar was drawn
+    # straight through the last telltale and its dot. Deriving both from the same cursor is
+    # what makes that impossible rather than merely fixed.
+    ink_bottom = last_row + TELLTALE_RADIUS + 1
+    height = int(ink_bottom + BAR_CLEARANCE + BAR_INSET)
+
+    body.insert(0, _wash(width, height))
+    body.append(svg.ambient_bar(pad, height - BAR_INSET, available))
 
     return svg.document(
         width,
