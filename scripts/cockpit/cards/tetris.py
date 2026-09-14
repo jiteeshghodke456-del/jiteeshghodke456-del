@@ -37,7 +37,9 @@ COLS = 10
 ROWS = 18
 CELL = 15
 BEVEL = 3
-HUD_W = 150
+# Wide enough for a label and a six digit value on one line. At 150 the right aligned
+# SCORE value was drawn straight through its own label.
+HUD_W = 196
 SCREEN_PAD = 16
 GAP = 18
 FONT = 3                 # pixel-font scale; below 3 it dissolves at phone width
@@ -202,44 +204,68 @@ def _speaker(x: float, y: float) -> str:
 
 
 def _hud(
-    anim: AnimationSet, x: float, y: float, stats: dict, cleared_label: str
+    x: float, y: float, stats: dict, profile: dict, height: float
 ) -> str:
-    """SCORE, LINES, LEVEL and a NEXT well, in the bitmap font.
+    """The readout, in the bitmap font, with every number saying what it means.
+
+    The board was hard to connect to a Codeforces account because the panel spoke only
+    Tetris. SCORE, LINES and LEVEL are evocative and tell you nothing about a rating. So the
+    arcade word stays on top, where it belongs, and a plain caption sits underneath saying
+    what was actually counted.
+
+    The rating leads, in the slot a cabinet reserves for a high score, because it is the one
+    number on the card that describes the account rather than the effort.
 
     Set in bitmap rather than the page's vector faces on purpose: a smooth outline face on a
-    simulated LCD is the one detail that breaks the illusion, because real hardware type sat
-    exactly on the pixel grid.
+    simulated LCD is the single detail that gives the illusion away, since real hardware type
+    sat exactly on the pixel grid.
     """
-    total = int(stats.get("total", 0))
-    accepted = int(stats.get("accepted", 0))
     parts: list[str] = []
-    rows = (
-        ("SCORE", f"{total:06d}"),
-        ("LINES", f"{accepted:03d}"),
-        ("LEVEL", f"{accepted // 10:03d}"),
-    )
     cursor = y
-    for label, value in rows:
+
+    rating = int(profile.get("rating") or 0)
+    rank = str(profile.get("rank") or "").upper()
+
+    if rating:
+        parts.append(pf.render_path("RATING", x, cursor, scale=2, fill=tokens.GB[2]))
+        cursor += 14
+        parts.append(
+            pf.render_path(f"{rating:04d}", x, cursor, scale=5, fill=tokens.ACID)
+        )
+        cursor += 40
+        if rank:
+            parts.append(pf.render_path(rank, x, cursor, scale=2, fill=tokens.GB[3]))
+            cursor += 14
+        contests = len(profile.get("contests") or ())
+    else:
+        contests = 0
+
+    cursor += 14
+    parts.append(
+        f'<rect x="{x}" y="{cursor - 8}" width="{HUD_W - 12}" height="1" '
+        f'fill="{tokens.GB[1]}"/>'
+    )
+
+    rows = (
+        ("SCORE", f"{int(stats.get('total', 0)):06d}", "SUBMISSIONS"),
+        ("LINES", f"{int(stats.get('accepted', 0)):03d}", "ACCEPTED"),
+        ("LEVEL", f"{contests:02d}", "CONTESTS"),
+    )
+    for label, value, caption in rows:
         parts.append(pf.render_path(label, x, cursor, scale=2, fill=tokens.GB[2]))
         parts.append(
-            pf.render_path(value, x, cursor + 16, scale=FONT, fill=tokens.GB[3])
+            pf.render_path(
+                value,
+                x + HUD_W - 12 - pf.measure(value, scale=3)[0],
+                cursor - 4,
+                scale=3,
+                fill=tokens.GB[3],
+            )
         )
-        cursor += 52
+        cursor += 20
+        parts.append(pf.render_path(caption, x, cursor, scale=2, fill=tokens.DIM))
+        cursor += 24
 
-    # NEXT well, holding the piece that is currently falling.
-    parts.append(pf.render_path("NEXT", x, cursor, scale=2, fill=tokens.GB[2]))
-    box_y = cursor + 16
-    parts.append(
-        f'<rect x="{x}" y="{box_y}" width="{CELL * 4 + 8}" height="{CELL * 2 + 8}" '
-        f'fill="none" stroke="{tokens.GB[1]}" stroke-width="1.5"/>'
-    )
-    for col, row in PIECES["T"]:
-        parts.append(
-            f'<use href="#bOK" x="{x + 4 + col * CELL}" y="{box_y + 4 + row * CELL}"/>'
-        )
-    parts.append(
-        pf.render_path(cleared_label, x, box_y + CELL * 2 + 22, scale=2, fill=tokens.GB[2])
-    )
     return "".join(parts)
 
 
@@ -249,6 +275,7 @@ def build(data: dict, *, width: int = tokens.WIDE) -> str:
 
     submissions = data.get("codeforces_submissions") or []
     stats = data.get("codeforces") or {}
+    profile = data.get("codeforces_profile") or {}
     columns = columns_from(submissions, COLS)
 
     cell = 18 if narrow else CELL
@@ -389,7 +416,13 @@ def build(data: dict, *, width: int = tokens.WIDE) -> str:
 
     if not narrow:
         body.append(
-            _hud(anim, well_x + well_w + gap, well_y + 4, stats, "CLEARED")
+            _hud(
+                well_x + well_w + gap,
+                well_y + 8,
+                stats,
+                data.get("codeforces_profile") or {},
+                well_h,
+            )
         )
         # Console furniture.  A board floating in space is a chart; a board inside a
         # handheld is a game someone was playing.
@@ -414,9 +447,12 @@ def build(data: dict, *, width: int = tokens.WIDE) -> str:
     if narrow:
         # The narrow variant drops the shell and the side HUD, but not the numbers -- a
         # board with no score is a chart again.  One compact line under the screen.
+        rating = int(profile.get("rating") or 0)
         readout = (
-            f"SCORE {int(stats.get('total', 0)):06d}   "
-            f"LINES {int(stats.get('accepted', 0)):03d}"
+            f"RATING {rating:04d}   {int(stats.get('accepted', 0)):03d} ACCEPTED"
+            if rating
+            else f"SCORE {int(stats.get('total', 0)):06d}   "
+                 f"LINES {int(stats.get('accepted', 0)):03d}"
         )
         body.append(
             pf.render_path(
