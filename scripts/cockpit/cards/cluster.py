@@ -203,9 +203,22 @@ def _odometer(
 
 
 def gauges_from(data: dict) -> list[dict]:
+    """Four GitHub measures, each with its scale printed on the face.
+
+    All four are GitHub on purpose.  The board directly below this card is already
+    Codeforces, so spending two of four dials on problems-solved and accept-rate said the
+    same thing twice and left the actual account unmeasured.
+
+    Stars, forks and current streak are deliberately absent.  They are 1, 0 and 0, and a
+    card whose whole claim is that it prints the scale and does not round in anyone's favour
+    cannot then pick measures that flatter.  Languages and bytes written are the honest
+    numbers here that also happen to be the interesting ones.
+    """
     contributions = data["streaks"]["total"]
-    codeforces = data["codeforces"]
     repos = data["repo_count"]
+    languages = data["languages"]
+    written_mb = sum(languages.values()) / 1_000_000
+
     return [
         {
             "label": "CONTRIBUTIONS",
@@ -216,30 +229,7 @@ def gauges_from(data: dict) -> list[dict]:
             "scale_note": "of 365",
             "min_label": "0",
             "max_label": "365",
-            "color": tokens.ROSE,
-        },
-        {
-            "label": "PROBLEMS SOLVED",
-            "sub": "codeforces, unique",
-            "value": codeforces["solved"],
-            "max": 100,
-            "display": str(codeforces["solved"]),
-            "scale_note": "of 100",
-            "min_label": "0",
-            "max_label": "100",
-            "color": tokens.ICE,
-        },
-        {
-            "label": "ACCEPT RATE",
-            "sub": f"{codeforces['accepted']} of {codeforces['total']} submissions",
-            "value": codeforces["accept_rate"],
-            "max": 100,
-            "display": f"{codeforces['accept_rate']:.0f}%",
-            "scale_note": "accepted",
-            "min_label": "0",
-            "max_label": "100",
-            "color": tokens.ICE,
-            "split": True,
+            "color": tokens.ACID,
         },
         {
             "label": "REPOSITORIES",
@@ -250,7 +240,31 @@ def gauges_from(data: dict) -> list[dict]:
             "scale_note": "of 30",
             "min_label": "0",
             "max_label": "30",
-            "color": tokens.ROSE,
+            "color": tokens.VIOLET,
+        },
+        {
+            "label": "LANGUAGES",
+            "sub": "distinct, measured in bytes",
+            "value": len(languages),
+            "max": 10,
+            "display": str(len(languages)),
+            "scale_note": "of 10",
+            "min_label": "0",
+            "max_label": "10",
+            "color": tokens.ACID,
+        },
+        {
+            "label": "CODE WRITTEN",
+            "sub": f"across {repos} repositories",
+            "value": min(written_mb, 2.0),
+            "max": 2.0,
+            "display": f"{written_mb:.2f}",
+            # Kept to the same length as "of 365" and "of 30": the note sits directly under
+            # the readout and a longer string runs straight through the needle hub.
+            "scale_note": "MB, of 2",
+            "min_label": "0",
+            "max_label": "2",
+            "color": tokens.VIOLET,
         },
     ]
 

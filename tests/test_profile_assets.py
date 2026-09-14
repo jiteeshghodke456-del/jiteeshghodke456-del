@@ -192,9 +192,34 @@ class ClusterTests(unittest.TestCase):
         by_label = {gauge["label"]: gauge for gauge in gauges}
         self.assertEqual(by_label["CONTRIBUTIONS"]["value"], 71)
         self.assertEqual(by_label["REPOSITORIES"]["value"], 27)
-        self.assertEqual(
-            by_label["ACCEPT RATE"]["value"], data["codeforces"]["accept_rate"]
+        self.assertEqual(by_label["LANGUAGES"]["value"], len(data["languages"]))
+        self.assertAlmostEqual(
+            by_label["CODE WRITTEN"]["value"],
+            min(sum(data["languages"].values()) / 1_000_000, 2.0),
         )
+
+    def test_every_dial_measures_github(self):
+        """All four gauges are GitHub measures.
+
+        The Codeforces board sits directly below this card, so spending dials on
+        problems-solved and accept-rate said the same thing twice and left the account
+        itself unmeasured.
+        """
+        labels = {gauge["label"] for gauge in cluster.gauges_from(sample_data())}
+        self.assertEqual(
+            labels, {"CONTRIBUTIONS", "REPOSITORIES", "LANGUAGES", "CODE WRITTEN"}
+        )
+
+    def test_no_dial_flatters_with_a_near_zero_measure(self):
+        """Stars, forks and current streak are 1, 0 and 0 on this account.
+
+        A card whose stated virtue is printing the scale and not rounding in anyone's
+        favour cannot then choose measures that flatter -- nor ones that humiliate.
+        """
+        for gauge in cluster.gauges_from(sample_data()):
+            self.assertGreater(
+                gauge["value"] / gauge["max"], 0.05, f"{gauge['label']} reads as empty"
+            )
 
     def test_odometer_shows_one_cell_per_digit(self):
         setter = TypeSetter()
@@ -233,10 +258,10 @@ class TetrisTests(unittest.TestCase):
 
     def test_verdict_colours_split_by_outcome(self):
         """Hue carries accepted-or-not; brightness separates failure modes."""
-        self.assertEqual(tokens.VERDICT_COLORS["OK"], tokens.ICE)
+        self.assertEqual(tokens.VERDICT_COLORS["OK"], tokens.ACID)
         rejected = ("WRONG_ANSWER", "TIME_LIMIT_EXCEEDED", "RUNTIME_ERROR")
         for key in rejected:
-            self.assertNotEqual(tokens.VERDICT_COLORS[key], tokens.ICE)
+            self.assertNotEqual(tokens.VERDICT_COLORS[key], tokens.ACID)
         self.assertEqual(
             len({tokens.VERDICT_COLORS[key] for key in rejected}), len(rejected),
             "failure modes must stay distinguishable",
@@ -345,14 +370,15 @@ class FetchTests(unittest.TestCase):
 
 class PaletteTests(unittest.TestCase):
     def test_accents_are_limited_to_the_declared_pair(self):
-        """Every accent must be rose, ice, or a luminance step of one of them.
+        """Every accent must be acid, violet, or a luminance step of one of them.
 
         The old design drifted to seven hues across three rendering systems.
-        This is the guard that stops that happening again.
+        This is the guard that stops that happening again -- it survived the rotation
+        from the rose/ice pair to the green/purple one, which is the point of a guard.
         """
         allowed = {
-            tokens.ROSE, tokens.ICE, tokens.ROSE_BRIGHT, tokens.ROSE_DEEP,
-            tokens.ICE_BRIGHT, tokens.ICE_DEEP, tokens.DIM, "#8C1F5A",
+            tokens.VIOLET, tokens.ACID, tokens.VIOLET_BRIGHT, tokens.VIOLET_DEEP,
+            tokens.ACID_BRIGHT, tokens.ACID_DEEP, tokens.DIM, "#7A2BC4",
         }
         self.assertTrue(set(tokens.VERDICT_COLORS.values()).issubset(allowed))
 
