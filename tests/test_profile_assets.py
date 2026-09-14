@@ -115,6 +115,16 @@ class TypographyTests(unittest.TestCase):
         self.assertEqual(setter.defs().count("<path id="), 1)
 
 
+
+def _lowest_telltale(root) -> float:
+    """Bottom edge of the lowest telltale halo, in user units."""
+    circles = [
+        float(node.get("cy")) + float(node.get("r"))
+        for node in root.iter("{http://www.w3.org/2000/svg}circle")
+        if node.get("cy") and node.get("r")
+    ]
+    return max(circles) if circles else 0.0
+
 class NameplateTests(unittest.TestCase):
     def test_name_fits_inside_the_canvas(self):
         """The whole card is a first impression; overflow is a failed one."""
@@ -131,6 +141,87 @@ class NameplateTests(unittest.TestCase):
                 _widest_text_run(document), width,
                 f"a text run overflows the {width}px canvas",
             )
+
+    def test_content_stays_inside_the_canvas_vertically(self):
+        """Every assertion about this card used to be horizontal.
+
+        That is how the mobile layout came to run 13px past a hardcoded height without a
+        single test noticing, and the bug was never visible on desktop.
+        """
+        for width in (tokens.WIDE, tokens.NARROW):
+            with self.subTest(width=width):
+                document = nameplate.build(sample_data(), width=width)
+                root = ET.fromstring(document)
+                height = float(root.get("height"))
+                bottom = _lowest_telltale(root)
+                pad = tokens.PAD_NARROW if width <= tokens.NARROW else tokens.PAD
+                # Merely being inside the canvas is too weak to catch anything: the broken
+                # mobile layout left 2.96px of margin where the card's own padding is 18,
+                # so it technically fitted while looking cramped and colliding with the bar.
+                self.assertGreaterEqual(
+                    height - bottom, pad,
+                    f"only {height - bottom:.2f}px below the content at {width}px, "
+                    f"where the card pads by {pad}px",
+                )
+
+    def test_the_ambient_bar_does_not_cross_a_telltale(self):
+        """The bar is pinned near the bottom edge and painted last.
+
+        When the layout outgrew the canvas, the bar was drawn straight through the second
+        telltale dot rather than being pushed off it, so nothing looked missing and nothing
+        failed. It just looked wrong, on phones only.
+        """
+        for width in (tokens.WIDE, tokens.NARROW):
+            with self.subTest(width=width):
+                document = nameplate.build(sample_data(), width=width)
+                root = ET.fromstring(document)
+                bar_top = min(
+                    float(rect.get("y"))
+                    for rect in root.iter("{http://www.w3.org/2000/svg}rect")
+                    if rect.get("y") and float(rect.get("height", 0)) <= 16
+                )
+                self.assertGreater(
+                    bar_top, _lowest_telltale(root),
+                    f"the ambient bar overlaps a telltale at {width}px",
+                )
+
+    def test_the_name_is_fitted_against_its_widest_line(self):
+        """Raising the size cap must never push a line off the card.
+
+        The mobile name was fitted against JITEESH while GHODKE is 2.8% wider, and it fitted
+        only because the cap bound first. At a cap of 64 the old code returned 64 and GHODKE
+        overflowed by 3.9px while still reporting success.
+        """
+        setter = TypeSetter()
+        available = tokens.NARROW - tokens.PAD_NARROW * 2
+        for cap in (62, 64, 72, 120):
+            with self.subTest(cap=cap):
+                size = nameplate._fit_size(
+                    setter, ("JITEESH", "GHODKE"), available, cap
+                )
+                widest = max(
+                    setter.width(line, tokens.DISPLAY, size, tokens.TRACK_NAMEPLATE)
+                    for line in ("JITEESH", "GHODKE")
+                )
+                self.assertLessEqual(widest, available + 0.01)
+
+
+class CardGeometryTests(unittest.TestCase):
+    def test_no_card_hardcodes_its_height(self):
+        """A canvas asserted ahead of the content will eventually disagree with it.
+
+        nameplate.py was the one card that did this and it is how the banner broke. The
+        others all derive a height from their layout cursor; this keeps it that way.
+        """
+        import re
+
+        cards = pathlib.Path("scripts/cockpit/cards")
+        offenders = []
+        for module in sorted(cards.glob("*.py")):
+            for number, line in enumerate(module.read_text().splitlines(), 1):
+                if re.match(r"\s*height\s*=\s*[\d.]+(\s+if\b.*)?$", line):
+                    offenders.append(f"{module.name}:{number}: {line.strip()}")
+        self.assertEqual(offenders, [], "height must follow the content")
 
 
 def _widest_text_run(document: str) -> float:
