@@ -102,9 +102,13 @@ RADIUS = 14           # card corner radius
 DISPLAY = "display"
 MONO = "mono"
 MONO_SEMI = "mono-semibold"
+ARCADE = "arcade"
 
 # Tracking in 1/1000 em. Wide display caps need air; mono does not.
+# Press Start 2P is monospaced and already carries generous sidebearings, so
+# the nameplate tracking that suited Archivo would blow it apart.
 TRACK_NAMEPLATE = 60
+TRACK_ARCADE = 10
 TRACK_EYEBROW = 180
 TRACK_LABEL = 120
 

@@ -31,7 +31,12 @@ GLYPH_DIR = ROOT / "assets" / "glyphs"
 
 # Latin text, digits, and the punctuation the cards actually set. Anything
 # outside this set is drawn as geometry instead of type.
-CHARSET = "".join(chr(c) for c in range(0x20, 0x7F)) + "·–—°×"
+#
+# The two arrows are here because the committed glyph tables already contained
+# them while this string did not, so re-running the script would have silently
+# deleted glyphs from the artifacts it is supposed to produce. The point of
+# vendoring is that the JSON is reproducible from the TTF and this line.
+CHARSET = "".join(chr(c) for c in range(0x20, 0x7F)) + "·–—°×→↗"
 
 FACES = [
     {
@@ -51,6 +56,16 @@ FACES = [
         "file": "IBMPlexMono-SemiBold.ttf",
         "axes": None,
         "note": "IBM Plex Mono semibold. Readouts and gauge numerals.",
+    },
+    {
+        "key": "arcade",
+        "file": "PressStart2P-Regular.ttf",
+        "axes": None,
+        "note": (
+            "Press Start 2P. The nameplate, and anywhere the page is pretending "
+            "to be a machine from 1989. It has no north-east arrow, which is "
+            "expected and reported rather than hidden."
+        ),
     },
 ]
 
