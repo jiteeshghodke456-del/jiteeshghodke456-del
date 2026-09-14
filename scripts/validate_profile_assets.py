@@ -14,10 +14,9 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 
-CARDS = ("nameplate", "cluster", "bays", "tetris", "stack")
+CARDS = ("nameplate", "cluster", "bays", "tetris", "snake", "stack")
 
 EXPECTED_ASSETS = {f"{name}{suffix}.svg" for name in CARDS for suffix in ("", "-mobile")}
-EXPECTED_ASSETS.add("github-contribution-grid-snake.svg")
 
 # Assets from the previous design. If one of these is still produced or still
 # referenced, something was half-migrated.
@@ -28,7 +27,6 @@ RETIRED_ASSETS = {
     "codeforces-tetris-mobile.svg",
     "github-activity.svg",
     "github-activity-mobile.svg",
-    "github-contribution-grid-snake-dark.svg",
     "github-overview.svg",
     "github-overview-mobile.svg",
     "profile-hero.svg",
@@ -45,7 +43,9 @@ PLACEHOLDERS = ("YOUR_LINK", "YOUR_EMAIL", "Pranit Dhanade", "TODO", "Lorem ipsu
 # typo in the old project list; it must not come back on a public surface.
 FORBIDDEN = ("Atelier",)
 
-PALETTE = ("#FF2D75", "#3AA0FF", "#07070A")
+# Kept in sync with cockpit/tokens.py by hand; the tokens test is what stops the
+# design drifting, and this is the belt to that pair of braces.
+PALETTE = ("#9D4EFF", "#39FF14", "#04060A")
 
 # Entity-expansion attacks against ElementTree need a DOCTYPE or an ENTITY
 # declaration. None of our assets have one - we generate them, and the snake
@@ -87,12 +87,7 @@ def validate(asset_dir: pathlib.Path, readme_path: pathlib.Path) -> list[str]:
         if "feGaussianBlur" in source:
             errors.append(f"{name} uses an SVG filter; use gradients instead")
 
-        if name.startswith("github-contribution-grid-snake"):
-            if 'class="c c' in source and "profile-growing-snake:start" not in source:
-                errors.append(f"snake growth layer is missing from {path}")
-            if "#FF2D75" not in source:
-                errors.append(f"{name} was not recoloured to the cockpit palette")
-        elif not any(colour in source for colour in PALETTE):
+        if not any(colour in source for colour in PALETTE):
             errors.append(f"{name} contains none of the palette colours")
 
     for name in sorted(RETIRED_ASSETS):

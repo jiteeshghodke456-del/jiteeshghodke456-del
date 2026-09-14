@@ -391,7 +391,7 @@ class ReadmeTests(unittest.TestCase):
         for name in CARDS:
             for suffix in ("", "-mobile"):
                 self.assertIn(f"{name}{suffix}.svg", readme)
-        self.assertIn("github-contribution-grid-snake.svg", readme)
+        self.assertIn("snake.svg", readme)
 
     def test_readme_has_no_third_party_badge_services(self):
         readme = (self.ROOT / "README.md").read_text(encoding="utf-8")

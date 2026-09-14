@@ -75,14 +75,15 @@ def _appear(at: float, *, until: float, fade_out: float) -> list[Keyframe]:
     return frames
 
 
-def _cell_xy(col: int, row: int) -> tuple[float, float]:
-    return col * PITCH, row * PITCH
+def _cell_xy(col: int, row: int, pitch: int = PITCH) -> tuple[float, float]:
+    return col * pitch, row * pitch
 
 
-def render(record: SnakeRecord, field, path) -> str:
-    """Write the snake asset and return the markup."""
-    grid_w = record.cols * PITCH - GAP
-    grid_h = record.rows * PITCH - GAP
+def render(record: SnakeRecord, field, *, cell: int = CELL, font: int = FONT) -> str:
+    """Return the markup for one snake panel."""
+    pitch = cell + GAP
+    grid_w = record.cols * pitch - GAP
+    grid_h = record.rows * pitch - GAP
     lcd_w = grid_w + 2 * LCD_PAD
     lcd_h = HUD_H + grid_h + 2 * LCD_PAD
     width = lcd_w + 2 * SHELL_X
@@ -117,12 +118,12 @@ def render(record: SnakeRecord, field, path) -> str:
 
     # ---- HUD --------------------------------------------------------------
     hud_y = SHELL_TOP + LCD_PAD
-    doc.add(pf.render_path("EATEN", grid_x, hud_y, scale=FONT, fill=tokens.NOKIA["l2"]))
+    doc.add(pf.render_path("EATEN", grid_x, hud_y, scale=font, fill=tokens.NOKIA["l2"]))
 
     total = len(record.meals)
-    counter_x = grid_x + pf.measure("EATEN ", scale=FONT)[0]
+    counter_x = grid_x + pf.measure("EATEN ", scale=font)[0]
     for place, divisor in ((0, 10), (1, 1)):
-        digit_x = counter_x + place * (pf.GLYPH_W + 1) * FONT
+        digit_x = counter_x + place * (pf.GLYPH_W + 1) * font
         slots = []
         for digit in range(10):
             frames = []
@@ -135,7 +136,7 @@ def render(record: SnakeRecord, field, path) -> str:
             if shown == {"0"}:
                 continue                      # this digit never comes up; emit nothing
             glyph = pf.render_path(
-                str(digit), digit_x, hud_y, scale=FONT, fill=tokens.NOKIA["l4"]
+                str(digit), digit_x, hud_y, scale=font, fill=tokens.NOKIA["l4"]
             )
             if shown == {"1"}:
                 # A digit that is always on -- the tens place of a small score, say -- is
@@ -153,9 +154,9 @@ def render(record: SnakeRecord, field, path) -> str:
     doc.add(
         pf.render_path(
             label,
-            grid_x + grid_w - pf.measure(label, scale=FONT)[0],
+            grid_x + grid_w - pf.measure(label, scale=font)[0],
             hud_y,
-            scale=FONT,
+            scale=font,
             fill=tokens.NOKIA["l2"],
         )
     )
@@ -166,7 +167,7 @@ def render(record: SnakeRecord, field, path) -> str:
     symbols = {
         level: doc.defs.add(
             f"cell{level}",
-            f'<rect id="{{id}}" width="{CELL}" height="{CELL}" rx="1" '
+            f'<rect id="{{id}}" width="{cell}" height="{cell}" rx="1" '
             f'fill="{tokens.NOKIA[f"l{level}"]}"/>',
         )
         for level in range(5)
@@ -177,7 +178,7 @@ def render(record: SnakeRecord, field, path) -> str:
     for col in range(record.cols):
         for row in range(record.rows):
             level = field.level_at(col, row)
-            x, y = _cell_xy(col, row)
+            x, y = _cell_xy(col, row, pitch)
             when = eaten_at.get((col, row))
             if when is None:
                 cells.append(use(symbols[level], grid_x + x, grid_y + y))
@@ -205,7 +206,7 @@ def render(record: SnakeRecord, field, path) -> str:
     # Centred on its own origin on purpose.  The ring scales via CSS, and a CSS transform
     # REPLACES the transform attribute rather than composing with it -- so a companion
     # translate on the same element would be silently discarded the moment it animated.
-    ring = (CELL + 8) / 2
+    ring = (cell + 8) / 2
     pulse_ref = doc.defs.add(
         "pulse",
         f'<rect id="{{id}}" x="{-ring}" y="{-ring}" width="{ring * 2}" height="{ring * 2}" '
@@ -228,9 +229,9 @@ def render(record: SnakeRecord, field, path) -> str:
             easing="linear",
             base={"opacity": "0"},
         )
-        x, y = _cell_xy(meal.col, meal.row)
+        x, y = _cell_xy(meal.col, meal.row, pitch)
         pulses.append(
-            f'<g transform="translate({n(grid_x + x + CELL / 2)} {n(grid_y + y + CELL / 2)})">'
+            f'<g transform="translate({n(grid_x + x + cell / 2)} {n(grid_y + y + cell / 2)})">'
             f'<g class="{cls}">{use(pulse_ref)}</g></g>'
         )
     doc.add("".join(pulses))
@@ -248,13 +249,13 @@ def render(record: SnakeRecord, field, path) -> str:
     body_refs = [
         doc.defs.add(
             f"seg{index}",
-            f'<rect id="{{id}}" width="{CELL}" height="{CELL}" rx="1.5" fill="{shade}"/>',
+            f'<rect id="{{id}}" width="{cell}" height="{cell}" rx="1.5" fill="{shade}"/>',
         )
         for index, shade in enumerate(shades)
     ]
     head_ref = doc.defs.add(
         "head",
-        f'<rect id="{{id}}" x="-1" y="-1" width="{CELL + 2}" height="{CELL + 2}" rx="2" '
+        f'<rect id="{{id}}" x="-1" y="-1" width="{cell + 2}" height="{cell + 2}" rx="2" '
         f'fill="{tokens.NOKIA["snake"]}"/>',
     )
 
@@ -263,17 +264,17 @@ def render(record: SnakeRecord, field, path) -> str:
     path_frames = [
         Keyframe(
             index * record.step_dt,
-            {"transform": f"translate({n(grid_x + _cell_xy(*cell)[0])}px,"
-                          f"{n(grid_y + _cell_xy(*cell)[1])}px)"},
+            {"transform": f"translate({n(grid_x + _cell_xy(*step_cell, pitch)[0])}px,"
+                          f"{n(grid_y + _cell_xy(*step_cell, pitch)[1])}px)"},
         )
-        for index, cell in enumerate(record.track)
+        for index, step_cell in enumerate(record.track)
     ]
     last = record.track[-1]
     path_frames.append(
         Keyframe(
             record.duration,
-            {"transform": f"translate({n(grid_x + _cell_xy(*last)[0])}px,"
-                          f"{n(grid_y + _cell_xy(*last)[1])}px)"},
+            {"transform": f"translate({n(grid_x + _cell_xy(*last, pitch)[0])}px,"
+                          f"{n(grid_y + _cell_xy(*last, pitch)[1])}px)"},
         )
     )
     path_cls = anim.add(path_frames)
@@ -317,6 +318,4 @@ def render(record: SnakeRecord, field, path) -> str:
     )
 
     doc.css(anim.css())
-    markup = doc.render()
-    path.write_text(markup, encoding="utf-8")
-    return markup
+    return doc.render()

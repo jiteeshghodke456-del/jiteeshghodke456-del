@@ -32,20 +32,6 @@ jobs:
           CODEFORCES_HANDLE: SobaDango
         run: python3 scripts/generate_profile_assets.py --out-dir dist
 
-      # Palette matches scripts/cockpit/tokens.py: void backdrop, the HEAT ramp
-      # for day cells, rose for the snake itself.
-      - name: Generate contribution snake
-        uses: Platane/snk/svg-only@v3.5.0
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/github-contribution-grid-snake.svg?color_snake=%23FF2D75&color_dots=%23141724,%23173653,%231B6AC4,%237C4A8E,%23FF2D75
-
-      - name: Grow snake as contributions are eaten
-        run: |
-          python3 scripts/grow_contribution_snake.py \
-            dist/github-contribution-grid-snake.svg
-
       - name: Validate published assets
         run: python3 scripts/validate_profile_assets.py --asset-dir dist --readme README.md
 

@@ -199,7 +199,7 @@ class RendererTests(unittest.TestCase):
         }
         self.field = grid.build(_days(days), today=dt.date(2026, 9, 14))
         self.record = ai.plan(self.field)
-        self.markup = render.render(self.record, self.field, _Discard())
+        self.markup = render.render(self.record, self.field)
 
     def test_is_well_formed_with_a_viewbox(self) -> None:
         root = ET.fromstring(self.markup)
@@ -251,15 +251,8 @@ class RendererTests(unittest.TestCase):
         self.assertLess(len(self.markup), 46 * 1024)
 
     def test_is_deterministic(self) -> None:
-        again = render.render(self.record, self.field, _Discard())
+        again = render.render(self.record, self.field)
         self.assertEqual(self.markup, again)
-
-
-class _Discard:
-    """A write-only stand-in so renderer tests never touch the filesystem."""
-
-    def write_text(self, *args, **kwargs) -> None:
-        return None
 
 
 if __name__ == "__main__":

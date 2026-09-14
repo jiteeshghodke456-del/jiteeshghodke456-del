@@ -18,13 +18,14 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 from cockpit import fetch, tokens  # noqa: E402
-from cockpit.cards import cluster, nameplate, stack, tetris, work  # noqa: E402
+from cockpit.cards import cluster, nameplate, snake, stack, tetris, work  # noqa: E402
 
 CARDS = {
     "nameplate": nameplate,
     "cluster": cluster,
     "bays": work,
     "tetris": tetris,
+    "snake": snake,
     "stack": stack,
 }
 
