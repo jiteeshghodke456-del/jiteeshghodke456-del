@@ -251,7 +251,7 @@ def build(data: dict, *, width: int = tokens.WIDE) -> str:
     stats = data.get("codeforces") or {}
     columns = columns_from(submissions, COLS)
 
-    cell = 11 if narrow else CELL
+    cell = 18 if narrow else CELL
     rows = 14 if narrow else ROWS
     well_w = COLS * cell
     well_h = rows * cell
@@ -261,7 +261,7 @@ def build(data: dict, *, width: int = tokens.WIDE) -> str:
     screen_w = well_w + gap + hud_w + SCREEN_PAD * 2
     screen_h = well_h + SCREEN_PAD * 2
     top = 62
-    height = top + screen_h + 28 + (52 if not narrow else 26)
+    height = top + screen_h + 28 + (52 if not narrow else 54)
 
     setter = TypeSetter()
     anim = AnimationSet(Timeline(CYCLE), "t")
@@ -408,6 +408,23 @@ def build(data: dict, *, width: int = tokens.WIDE) -> str:
                 screen_y + screen_h + 26,
                 scale=2,
                 fill=tokens.DIM,
+            )
+        )
+
+    if narrow:
+        # The narrow variant drops the shell and the side HUD, but not the numbers -- a
+        # board with no score is a chart again.  One compact line under the screen.
+        readout = (
+            f"SCORE {int(stats.get('total', 0)):06d}   "
+            f"LINES {int(stats.get('accepted', 0)):03d}"
+        )
+        body.append(
+            pf.render_path(
+                readout,
+                (width - pf.measure(readout, scale=2)[0]) / 2,
+                screen_y + screen_h + 20,
+                scale=2,
+                fill=tokens.GB[2],
             )
         )
 
