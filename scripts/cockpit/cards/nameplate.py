@@ -7,7 +7,7 @@ animation disabled - the light sweep is garnish, never load-bearing.
 from __future__ import annotations
 
 from .. import svg, tokens
-from ..typography import TypeSetter, fmt
+from ..typography import TypeSetter, fmt, load_face
 
 NAME = "JITEESH GHODKE"
 EYEBROW = "SOFTWARE ENGINEER · SYSTEM DESIGN · BTECH '29"
@@ -49,12 +49,33 @@ def _wash(width: int, height: int) -> str:
     )
 
 
-def _fit_size(setter: TypeSetter, text: str, available: float, maximum: float) -> float:
-    """Largest size at which ``text`` still fits ``available``."""
-    units = setter.advance_units(text, tokens.DISPLAY, tokens.TRACK_NAMEPLATE)
+def _fit_size(
+    setter: TypeSetter,
+    lines: str | tuple[str, ...],
+    available: float,
+    maximum: float,
+    *,
+    face: str = tokens.DISPLAY,
+    tracking: int = tokens.TRACK_NAMEPLATE,
+) -> float:
+    """Largest size at which every line of ``lines`` still fits ``available``.
+
+    Takes all the lines, not one of them. The mobile nameplate used to be fitted against
+    "JITEESH" while the wider line is "GHODKE" by 2.8%, and it fitted only because the size
+    cap of 62 happened to bind before the width constraint did. Raising that cap by two
+    pushed GHODKE off the card while this function still reported that it fitted.
+
+    The em size is read from the face rather than assumed to be 1000, which is true of all
+    four faces today and is exactly the sort of thing that stops being true silently.
+    """
+    if isinstance(lines, str):
+        lines = (lines,)
+    units = max(
+        (setter.advance_units(line, face, tracking) for line in lines), default=0
+    )
     if units <= 0:
         return maximum
-    upem = 1000
+    upem = load_face(face)["upem"]
     return min(maximum, available * upem / units)
 
 
@@ -75,7 +96,7 @@ def build(data: dict, *, width: int = tokens.WIDE) -> str:
     # Name. On mobile it stacks so the type can stay large instead of shrinking
     # to fit one line at a size nobody can read on a phone.
     if narrow:
-        size = _fit_size(setter, "JITEESH", available, 62)
+        size = _fit_size(setter, ("JITEESH", "GHODKE"), available, 62)
         baseline = pad + 78
         for index, line in enumerate(("JITEESH", "GHODKE")):
             body.append(
