@@ -206,6 +206,67 @@ class NameplateTests(unittest.TestCase):
                 self.assertLessEqual(widest, available + 0.01)
 
 
+class BayTests(unittest.TestCase):
+    def test_private_projects_carry_no_repository(self):
+        """A link that 404s for every visitor is worse than no link.
+
+        Two bays are private. They are listed because they are real work and a reader can be
+        told what a thing is without being handed the source, but nothing may point at them.
+        """
+        for bay in work.BAYS:
+            with self.subTest(bay=bay["name"]):
+                if "PRIVATE" in bay["status"]:
+                    self.assertIsNone(
+                        bay["repo"], f"{bay['name']} is private but carries a repo"
+                    )
+                else:
+                    self.assertTrue(bay["repo"], f"{bay['name']} is public but has no repo")
+
+    def test_public_bays_are_linked_from_the_readme(self):
+        readme = pathlib.Path("README.md").read_text(encoding="utf-8")
+        for bay in work.BAYS:
+            with self.subTest(bay=bay["name"]):
+                if bay["repo"]:
+                    self.assertIn(bay["repo"], readme)
+
+    def test_private_bays_are_never_linked_from_the_readme(self):
+        """No markdown link may be labelled with a private project's name."""
+        import re
+
+        readme = pathlib.Path("README.md").read_text(encoding="utf-8")
+        labels = {
+            label.strip("* ").lower()
+            for label in re.findall(r"\[([^\]]+)\]\(http", readme)
+        }
+        for bay in work.BAYS:
+            if bay["repo"] is None:
+                with self.subTest(bay=bay["name"]):
+                    self.assertNotIn(bay["name"].lower(), labels)
+
+
+class ReadmeStyleTests(unittest.TestCase):
+    def test_no_dashes_are_used_to_split_sentences(self):
+        """House style: complete sentences, and no double hyphen anywhere.
+
+        Clauses bolted on after a dash read as an afterthought. The rule is enforced rather
+        than remembered because it is the kind of thing that creeps back one line at a time.
+        """
+        import re
+
+        readme = pathlib.Path("README.md").read_text(encoding="utf-8")
+        offenders = [
+            f"line {number}: {line.strip()[:90]}"
+            for number, line in enumerate(readme.splitlines(), 1)
+            if "\u2014" in line or re.search(r"--", line)
+        ]
+        self.assertEqual(offenders, [])
+
+    def test_no_bay_is_a_placeholder(self):
+        for bay in work.BAYS:
+            with self.subTest(bay=bay["name"]):
+                self.assertNotIn("COMING SOON", bay["status"].upper())
+
+
 class CardGeometryTests(unittest.TestCase):
     def test_no_card_hardcodes_its_height(self):
         """A canvas asserted ahead of the content will eventually disagree with it.
@@ -390,9 +451,19 @@ class StackTests(unittest.TestCase):
 
 
 class WorkTests(unittest.TestCase):
-    def test_every_bay_points_at_a_repository(self):
+    def test_every_public_bay_points_at_a_repository(self):
+        """A bay is either linkable or honestly marked private.
+
+        This used to demand a repo from every bay, which was right while all four were
+        public. Two are not, and a link that 404s for every visitor is worse than none, so
+        the rule became: public bays must link, private bays must not.
+        """
         for bay in work.BAYS:
-            self.assertTrue(bay["repo"], f"{bay['name']} has no repo to open")
+            with self.subTest(bay=bay["name"]):
+                if "PRIVATE" in bay["status"]:
+                    self.assertIsNone(bay["repo"])
+                else:
+                    self.assertTrue(bay["repo"], f"{bay['name']} has no repo to open")
 
     def test_brand_is_spelled_ataleir(self):
         names = " ".join(bay["name"] for bay in work.BAYS)
