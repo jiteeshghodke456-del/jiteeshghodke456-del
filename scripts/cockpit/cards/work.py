@@ -1,8 +1,12 @@
-"""The work bays: four things that exist, each with somewhere to click.
+"""The work bays: four things that exist.
 
-Every bay points at a repository that is actually reachable. Projects with no
-public trace are not listed - a wall of "coming soon" cards costs the reader
-the same attention as real work and returns none of it.
+A bay carries a repository only when that repository is public. Two of these are private and
+say so on the pill, because a link that 404s for every visitor is worse than no link. They
+are still listed, because they are real work and the reader can be told what a thing is
+without being handed the source.
+
+Nothing here is a placeholder. A wall of cards labelled coming soon costs the reader the same
+attention as real work and returns none of it.
 """
 
 from __future__ import annotations
@@ -13,39 +17,39 @@ from ..typography import TypeSetter, fmt
 BAYS = [
     {
         "name": "ATALEIR",
-        "status": "INVITE BETA",
+        "status": "PRIVATE BETA",
         "hot": True,
         "line": "Spoiler-free hints for story games, as a Windows overlay.",
-        "aside": "Tells you where the key is. Not who dies.",
-        "repo": "ataleir-beta-updates",
+        "aside": "It tells you where the key is and never who dies. Now becoming a company.",
+        "repo": None,
         "stack": ["electron", "typescript"],
+    },
+    {
+        "name": "ANTARCTIC NAVIGATION",
+        "status": "PRIVATE",
+        "hot": True,
+        "line": "Sea ice forecasting and route planning for polar research vessels.",
+        "aside": "A Smart India Hackathon problem. The ice moves faster than the schedule.",
+        "repo": None,
+        "stack": ["python"],
     },
     {
         "name": "DRISHTI",
         "status": "HACKATHON BUILD",
         "hot": False,
         "line": "Cash-flow early warning for rural micro-enterprises.",
-        "aside": "NABARD Hackathon at GFF 2026. Deadlines are a design constraint.",
+        "aside": "Built for the NABARD hackathon at Global Fintech Fest.",
         "repo": "ruraldrushtiteam5idiots",
         "stack": ["typescript", "supabase"],
     },
     {
-        "name": "MAGI",
-        "status": "COURSE PROJECT",
+        "name": "PLOT TWIST",
+        "status": "AWS BUILD",
         "hot": False,
-        "line": "Deepfake detection that admits when it is unsure.",
-        "aside": "Started as coursework. Kept going well past the marking scheme.",
-        "repo": "Magi_Deepfake_AI",
-        "stack": ["python"],
-    },
-    {
-        "name": "NEETCODE LOG",
-        "status": "ONGOING",
-        "hot": True,
-        "line": "Every solution I have written down, including the ugly ones.",
-        "aside": "Especially the ugly ones. That is the point of a log.",
-        "repo": "neetcode-submissions",
-        "stack": ["python"],
+        "line": "Turns one line of premise into a short story, then mutates it on demand.",
+        "aside": "Runs on Bedrock. The chaos slider goes to ten and probably should not.",
+        "repo": "awschallenge2026jiteeshghodke",
+        "stack": ["javascript", "nodedotjs"],
     },
 ]
 
