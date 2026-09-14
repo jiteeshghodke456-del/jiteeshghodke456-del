@@ -6,7 +6,12 @@ import string
 import unittest
 import xml.etree.ElementTree as ET
 
-from scripts.profilegen.svg.pixelfont import (
+import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
+
+from profilegen.svg.pixelfont import (
     GLYPH_H,
     GLYPH_W,
     GLYPHS,

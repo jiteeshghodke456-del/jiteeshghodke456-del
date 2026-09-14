@@ -23,8 +23,8 @@ from ..svg import pixelfont as pf
 from ..svg.anim import AnimationSet, Keyframe, Timeline
 from ..svg.doc import SvgDoc, anim_group, use
 from ..svg.num import n, o
-from ...cockpit import tokens
-from ...cockpit.tokens import lerp
+from cockpit import tokens
+from cockpit.tokens import lerp
 from .recorder import SnakeRecord
 
 CELL = 13

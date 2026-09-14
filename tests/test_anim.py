@@ -4,7 +4,12 @@ import dataclasses
 import re
 import unittest
 
-from scripts.profilegen.svg.anim import AnimationSet, EmitterStats, Keyframe, Timeline
+import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
+
+from profilegen.svg.anim import AnimationSet, EmitterStats, Keyframe, Timeline
 
 
 KEYFRAMES = re.compile(r"@keyframes ([A-Za-z_][\w-]*)\{")
