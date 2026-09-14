@@ -47,6 +47,7 @@ def collect(username: str, handle: str, token: str | None) -> dict:
         "streaks": fetch.streaks(contributions),
         "account_age_days": fetch.account_age_days(user),
         "codeforces": fetch.codeforces_stats(submissions),
+        "codeforces_profile": fetch.fetch_codeforces_profile(handle),
         "codeforces_submissions": submissions,
     }
 

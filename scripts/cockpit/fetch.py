@@ -284,6 +284,51 @@ def codeforces_stats(submissions: list[dict]) -> dict:
         "attempted": len(attempted),
         "accept_rate": (accepted / total * 100) if total else 0.0,
         "verdicts": verdicts,
-        "max_rating": max(ratings) if ratings else 0,
+        # The hardest problem solved, not the account rating. Those are different
+        # numbers and the old name invited exactly one confusion.
+        "max_problem_rating": max(ratings) if ratings else 0,
         "languages": languages,
+    }
+
+def fetch_codeforces_profile(handle: str) -> dict:
+    """The account itself: rating, rank, and the contest history behind them.
+
+    Submission counts describe the grind but say nothing about where the account stands, and
+    neither user.info nor user.rating was called anywhere. That is the whole reason the
+    Tetris card could show how many problems were attempted and not what rating any of it
+    earned.
+
+    Returns empty defaults when Codeforces is unreachable, which it regularly is for
+    anonymous callers, so the card renders without a rating rather than failing the build.
+    """
+    empty = {"rating": 0, "max_rating": 0, "rank": "", "contests": [], "known": False}
+
+    info = safe_json(f"https://codeforces.com/api/user.info?handles={handle}")
+    if not (isinstance(info, dict) and info.get("status") == "OK" and info.get("result")):
+        return empty
+    user = info["result"][0]
+
+    contests: list[dict] = []
+    history = safe_json(f"https://codeforces.com/api/user.rating?handle={handle}")
+    if isinstance(history, dict) and history.get("status") == "OK":
+        for row in history.get("result") or []:
+            if not isinstance(row, dict):
+                continue
+            contests.append(
+                {
+                    "name": str(row.get("contestName") or ""),
+                    "old": int(row.get("oldRating") or 0),
+                    "new": int(row.get("newRating") or 0),
+                    "rank": int(row.get("rank") or 0),
+                    "at": int(row.get("ratingUpdateTimeSeconds") or 0),
+                }
+            )
+    contests.sort(key=lambda row: row["at"])
+
+    return {
+        "rating": int(user.get("rating") or 0),
+        "max_rating": int(user.get("maxRating") or 0),
+        "rank": str(user.get("rank") or ""),
+        "contests": contests,
+        "known": True,
     }
