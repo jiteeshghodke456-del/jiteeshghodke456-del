@@ -1,109 +1,146 @@
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/nameplate-mobile.svg?v=10" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/nameplate.svg?v=10" alt="Jiteesh Ghodke, software engineer, system design, competitive programming" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/boot-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/boot.svg?v=11" alt="Night shift at the neon arcade. Jiteesh Ghodke drops onto the screen letter by letter while Bit the robot waves. Press start." />
 </picture>
 
 [**GitHub**](https://github.com/jiteeshghodke456-del) · [**LinkedIn**](https://www.linkedin.com/in/jiteesh-ghodke-642832398/) · [**X**](https://x.com/Jiteez_) · [**Codeforces**](https://codeforces.com/profile/SobaDango)
 
 </div>
 
-I like the part of software that sits underneath the reassuring architecture diagram. The memory, the protocols, the failure modes, and the 2 a.m. decisions that quietly get promoted to "design" once enough things depend on them.
+It is the night shift at the neon arcade. Every cabinet on this page is one part of my year, the high scores are real, and the robot is called Bit. Scroll down to play.
 
-Everything below is measured, rebuilt every morning by a workflow in this repo, and not rounded in my favour. Some of it is a Game Boy. I did not have a good reason.
+<div align="center">
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/warp-1-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/warp-1.svg?v=11" alt="Loading player" />
+</picture>
+</div>
 
-## The cluster
+## Player select
 
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/cluster-mobile.svg?v=10" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/cluster.svg?v=10" alt="Instrument cluster: contributions, repositories, languages, bytes written" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/player-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/player.svg?v=11" alt="Character select screen for Jiteesh: class systems engineer, stat bars for days on GitHub, active days, problems solved and repositories, and three special moves" />
 </picture>
 
 </div>
 
-Four dials with their scales printed on the face. A number without a scale is just a number that would like you to be impressed. All four measure this account and nothing else, because the Codeforces board is further down and can speak for itself.
+Class: systems engineer. I like the part of software that sits underneath the reassuring architecture diagram, where the memory, the protocols and the 2 a.m. decisions live. Every stat bar prints its own scale, because a number without one is just a number that would like you to be impressed.
 
-There are dials I left off. Stars, forks and current streak are 1, 0 and 0. A page whose entire claim is that it prints the scale cannot then go shopping for flattering measures.
+<div align="center">
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/warp-2-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/warp-2.svg?v=11" alt="Bit dashes across the screen toward the world map" />
+</picture>
+</div>
 
-## The bays
+## World map
 
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/bays-mobile.svg?v=10" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/bays.svg?v=10" alt="Project bays: Ataleir, Antarctic navigation, Drishti, Plot Twist" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/worlds-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/worlds.svg?v=11" alt="A world map with four worlds: Ataleir, Antarctic Navigation, Drishti and Plot Twist, with Bit hopping between them" />
 </picture>
 
 </div>
 
-**01** Ataleir · **02** Antarctic Navigation · **03** [Drishti](https://github.com/jiteeshghodke456-del/ruraldrushtiteam5idiots) · **04** [Plot Twist](https://github.com/jiteeshghodke456-del/awschallenge2026jiteeshghodke)
+**World 1, Ataleir.** A Windows overlay that gives spoiler-free hints for story games. It looks at one frame when you ask and tells you where the key is without telling you who dies. Version 1.0.6, private beta, and on its way to becoming a company, so the source stays private.
 
-**Ataleir** is a Windows overlay that gives spoiler-free hints for story games. It locks onto one game window, looks at a single frame when you ask it to, and tells you where the key is without telling you who dies. It is at version 1.0.6, it is in private beta, and it is currently being turned into a company, which is why the source is not here.
+**World 2, Antarctic Navigation.** Sea ice forecasting and route planning for polar research vessels, built for a Smart India Hackathon problem from the Ministry of Earth Sciences. Private for now. The ice moves faster than the schedule does.
 
-**Antarctic Navigation** forecasts sea ice concentration and plans routes for polar research vessels, built for a Smart India Hackathon problem set by the Ministry of Earth Sciences. It is private for now. The ice moves faster than the schedule does.
+**World 3, [Drishti](https://github.com/jiteeshghodke456-del/ruraldrushtiteam5idiots).** Voice-first cash-flow forecasting for rural micro-enterprises with no books to show a bank. Built for the NABARD hackathon at Global Fintech Fest. [Play the live demo](https://jiteeshghodke456-del.github.io/ruraldrushtiteam5idiots/).
 
-**Drishti** is voice-first cash-flow forecasting for rural micro-enterprises that have no books to show a bank. It was built for the NABARD hackathon at Global Fintech Fest and you can [open the live demo](https://github.com/jiteeshghodke456-del.github.io/ruraldrushtiteam5idiots/) right now.
+**World 4, [Plot Twist](https://github.com/jiteeshghodke456-del/awschallenge2026jiteeshghodke).** One line of premise becomes a short story, which then mutates on demand on Amazon Bedrock behind a Lambda. The chaos slider goes to ten. It probably should not.
 
-**Plot Twist** turns a single line of premise into a short story and then mutates it on demand, running on Amazon Bedrock behind a Lambda. The chaos slider goes to ten. It probably should not.
+<div align="center">
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/warp-3-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/warp-3.svg?v=11" alt="Warning, a boss is approaching" />
+</picture>
+</div>
 
-There is no fifth bay full of ideas labelled coming soon. Those live in a notes app, where they are not pretending to be work.
-
-## Codeforces, but it is Tetris
+## Boss fight: The Judge
 
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/tetris-mobile.svg?v=10" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/tetris.svg?v=10" alt="Codeforces submissions stacked as a Game Boy Tetris board, with rating and rank" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/tetris-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/tetris.svg?v=11" alt="Codeforces as a Game Boy Tetris boss fight: every submission falls as a block, accepted ones hit The Judge, the rating levels up, and a row clears" />
 </picture>
 
 </div>
 
-Here is how to read it. The well holds ten columns and each column is one Codeforces problem. Each block in a column is one submission I sent to that problem, stacked in the order I sent them. Green means the judge accepted it and violet means the judge disagreed, with the shade telling you how creatively.
+Codeforces, played as Tetris on a Game Boy. Each column is one problem and each block is one submission, replayed in the order I sent them. Green blocks are accepted and hit The Judge. Violet blocks are the judge disagreeing with me. The rating levels up along its real path, and every problem on the board has been attempted at least once, which is the one line I clear reliably.
 
-The readout on the right is the actual account. **Rating 832, rank newbie, across four contests.** SCORE counts every submission I have ever sent. LINES counts the ones that were accepted. LEVEL counts contests played. The rating has gone 376, then 608, then 749, then 832, and has not once gone down, which I am told is unusual and will not last.
+<div align="center">
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/warp-4-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/warp-4.svg?v=11" alt="Bonus stage, coins raining down" />
+</picture>
+</div>
 
-These are the ten problems that took the most attempts rather than the ten most recent, because the recent ones went in quietly and make for a very boring picture. The tallest column is problem 158A. It took thirteen attempts and eleven of them were wrong answers. I remember it fondly, in the way you remember an illness.
-
-The bottom row is full because every problem on the board was attempted at least once. That is the lowest bar in competitive programming and the only line I clear reliably.
-
-## The snake that eats my consistency
+## Bonus stage
 
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/snake-mobile.svg?v=10" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/snake.svg?v=10" alt="Nokia Snake eating a year of GitHub contributions" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/snake-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/snake.svg?v=11" alt="Bonus stage: Nokia Snake eating a year of GitHub contribution days, plus one per day" />
 </picture>
 
 </div>
 
-It grows one segment for every contribution day it eats. There are thirty of them, so it finishes rather quickly and then has to sit there.
+The snake eats one contribution day at a time and grows a segment for each. It follows a Hamiltonian cycle and only takes a shortcut when the shortcut provably cannot trap it, which is more forethought than went into most of the commits it is eating.
 
-It plans its route along a Hamiltonian cycle and only takes a shortcut when that shortcut provably cannot trap it. This is a great deal more forethought than went into most of the commits it is eating.
+<div align="center">
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/warp-5-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/warp-5.svg?v=11" alt="Saving progress, loot incoming" />
+</picture>
+</div>
 
-## What the code actually is
+## Inventory
 
 <div align="center">
 
 <picture>
-  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/stack-mobile.svg?v=10" />
-  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/stack.svg?v=10" alt="Language mix measured in bytes, plus current toolkit" />
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/inventory-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/inventory.svg?v=11" alt="Inventory: languages as loot with rarity tiers by bytes written, a locked slot, and a hotbar of tools" />
 </picture>
 
 </div>
 
-Measured in bytes on disk across every repository I own, rather than in languages I would enjoy being asked about in an interview. The gap between those two lists is the honest part of any profile.
+Loot is weighed in bytes on disk across every repository I own, not in languages I would enjoy being asked about in an interview. Rarity comes from the share of the bag. The locked slot is what I am learning next.
 
-## One action
-
-I am looking for a **software engineering internship**. If you have one, [open an issue on this repo](https://github.com/jiteeshghodke456-del/jiteeshghodke456-del/issues/new) or find me on [LinkedIn](https://www.linkedin.com/in/jiteesh-ghodke-642832398/). Both land in the same place and I answer both.
-
-Freelance work, open source, and unreasonably long conversations about system design are also welcome. Cofounding is a longer conversation and I would rather have that one slowly.
+## Credits
 
 <div align="center">
-<sub>Every image on this page is drawn by <a href="https://github.com/jiteeshghodke456-del/jiteeshghodke456-del/tree/main/scripts">a Python script in this repo</a>, with no badge services, no third-party stat cards and no dependencies. Type is rendered as vector outlines, so it looks the same on your machine as it does on mine. Rebuilt daily at 00:00 UTC.</sub>
+
+<picture>
+  <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/credits-mobile.svg?v=11" />
+  <img width="100%" src="https://raw.githubusercontent.com/jiteeshghodke456-del/jiteeshghodke456-del/output/credits.svg?v=11" alt="Player 2 wanted. Continue countdown, insert coin by opening an issue, end credits rolling, thanks for playing" />
+</picture>
+
+</div>
+
+**Player 2 wanted.** I am looking for a **software engineering internship**. Insert coin by [opening an issue on this repo](https://github.com/jiteeshghodke456-del/jiteeshghodke456-del/issues/new), or find me on [LinkedIn](https://www.linkedin.com/in/jiteesh-ghodke-642832398/). Both land in the same place and I answer both. Freelance work, open source and unreasonably long conversations about system design are also welcome.
+
+<details>
+<summary><b>SECRET LEVEL</b></summary>
+
+<br />
+
+**Problem 158A, Next Round.** It took me thirteen attempts. Eleven were wrong answers, one was a runtime error, and one was accepted. Every rerun felt like progress, and eleven of them were not.
+
+It is the tallest column on the Tetris board and I leave it there on purpose. I remember it fondly, in the way you remember an illness.
+
+</details>
+
+<div align="center">
+<sub>Every image here is drawn by <a href="https://github.com/jiteeshghodke456-del/jiteeshghodke456-del/tree/main/scripts">one Python script in this repo</a>, with no badge services, no third-party stat cards and no JavaScript. Type is rendered as vector outlines, motion is plain CSS, and everything holds still if your system asks for reduced motion. Rebuilt daily at 00:00 UTC.</sub>
 </div>

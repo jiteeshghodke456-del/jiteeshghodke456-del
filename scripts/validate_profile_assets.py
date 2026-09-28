@@ -14,13 +14,28 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 
-CARDS = ("nameplate", "cluster", "bays", "tetris", "snake", "stack")
+CARDS = ("boot", "player", "worlds", "tetris", "snake", "inventory", "credits")
+WARPS = tuple(f"warp-{index}" for index in range(1, 6))
 
-EXPECTED_ASSETS = {f"{name}{suffix}.svg" for name in CARDS for suffix in ("", "-mobile")}
+EXPECTED_ASSETS = {
+    f"{name}{suffix}.svg" for name in CARDS + WARPS for suffix in ("", "-mobile")
+}
 
-# Assets from the previous design. If one of these is still produced or still
+# Camo proxies images up to a few megabytes, but every chapter streams in as the reader
+# scrolls, so each one is held well under that.
+SIZE_BUDGET = 350 * 1024
+
+# Assets from the previous designs. If one of these is still produced or still
 # referenced, something was half-migrated.
 RETIRED_ASSETS = {
+    "nameplate.svg",
+    "nameplate-mobile.svg",
+    "cluster.svg",
+    "cluster-mobile.svg",
+    "bays.svg",
+    "bays-mobile.svg",
+    "stack.svg",
+    "stack-mobile.svg",
     "about-terminal.svg",
     "about-terminal-mobile.svg",
     "codeforces-tetris.svg",
@@ -89,6 +104,13 @@ def validate(asset_dir: pathlib.Path, readme_path: pathlib.Path) -> list[str]:
 
         if not any(colour in source for colour in PALETTE):
             errors.append(f"{name} contains none of the palette colours")
+
+        size = len(source.encode("utf-8"))
+        if size > SIZE_BUDGET:
+            errors.append(f"{name} is {size // 1024} KB, over the {SIZE_BUDGET // 1024} KB budget")
+
+        if "@keyframes" in source and "prefers-reduced-motion" not in source:
+            errors.append(f"{name} animates but has no reduced-motion fallback")
 
     for name in sorted(RETIRED_ASSETS):
         if (asset_dir / name).exists():

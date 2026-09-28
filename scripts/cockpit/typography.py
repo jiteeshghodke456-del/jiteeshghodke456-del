@@ -127,8 +127,14 @@ class TypeSetter:
         anchor: str = "start",
         opacity: float | None = None,
         extra: str = "",
+        cls_for=None,
     ) -> str:
-        """Return one ``<g>`` holding the run. ``y`` is the baseline."""
+        """Return one ``<g>`` holding the run. ``y`` is the baseline.
+
+        ``cls_for(index, char)`` puts a class on each glyph's ``<use>``, for runs whose
+        letters animate one at a time. ``index`` counts every character, spaces included,
+        so it lines up with positions in ``text``.
+        """
         if not text:
             return ""
 
@@ -145,13 +151,15 @@ class TypeSetter:
 
         parts: list[str] = []
         pen = 0
-        for char in text:
+        for index, char in enumerate(text):
             glyph = glyphs.get(char) or glyphs.get(FALLBACK)
             if glyph is None:
                 continue
             glyph_id = self._glyph_id(face, char)
             if glyph_id is not None:
-                parts.append(f'<use href="#{glyph_id}" x="{pen}"/>')
+                cls = cls_for(index, char) if cls_for is not None else None
+                class_attr = f' class="{cls}"' if cls else ""
+                parts.append(f'<use href="#{glyph_id}" x="{pen}"{class_attr}/>')
             pen += glyph["aw"] + tracking
 
         if not parts:

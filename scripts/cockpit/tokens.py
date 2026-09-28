@@ -25,6 +25,20 @@ TEXT = "#D6FFE4"
 MUTED = "#5E8570"
 DIM = "#38493F"
 
+# Night layers. The arcade is dark purple overhead and dark green underfoot, and
+# these are the only fills allowed to carry that mood. They are grounds, never
+# signals: nothing that means something is ever painted in one of these.
+FOREST = "#03170D"
+MOSS = "#0A3B1F"
+PLUM = "#0B0616"
+GRAPE = "#1A0B33"
+
+# Rare highlights. Each appears a handful of times per page -- a sun band, a
+# stamp, a legendary item -- and loses its punch the moment it is used for body
+# copy or a border that is always on.
+EMERALD = "#00E68A"
+HOT_VIOLET = "#D04BFF"
+
 # Back-compat aliases. The card modules were written against the rose/ice
 # names; keeping them pointed at the new pair means the palette rotates in one
 # place instead of scattering find-and-replace across every card.
@@ -117,7 +131,15 @@ TRACK_LABEL = 120
 # One sweep, then rest. Instruments settle; they do not idle at a wobble.
 SWEEP_DURATION = 1.6
 SWEEP_EASE = "0.16 0.9 0.2 1"
-TETRIS_CYCLE = 14.0
+TETRIS_CYCLE = 16.0
+
+# Every chapter carries the same two rails, inset the same distance from its
+# edges, so stacked images read as one strip with a signal running down it.
+RAIL_INSET = 12
+# The pulse on a rail moves at one speed on every card, whatever the card's
+# height or cycle, or the signal visibly changes pace between chapters.
+RAIL_SPEED = 170.0  # px per second
+HEADER_H = 58
 
 
 # --- colour maths ---------------------------------------------------------

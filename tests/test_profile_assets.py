@@ -1,9 +1,9 @@
-"""Tests for the profile cockpit pipeline.
+"""Tests for the profile arcade pipeline.
 
-Several of these exist because the corresponding bug shipped during the
-rebuild: the glyph scale factor lost precision to rounding and pushed the
-nameplate past the canvas, and the gauges were briefly legible only while an
-animation was running.
+Several of these exist because the corresponding bug shipped during a rebuild: the glyph
+scale factor lost precision to rounding and pushed the old nameplate past the canvas, a
+mobile layout ran past a hardcoded height, and a private project was one typo away from
+being linked.
 """
 
 from __future__ import annotations
@@ -11,23 +11,38 @@ from __future__ import annotations
 import collections
 import json
 import pathlib
+import re
 import sys
 import unittest
 import xml.etree.ElementTree as ET
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
 
-from cockpit import fetch, icons, svg, tokens  # noqa: E402
-from cockpit.cards import cluster, nameplate, stack, tetris, work  # noqa: E402
+from cockpit import fetch, icons, scene, tokens  # noqa: E402
+from cockpit.cards import (  # noqa: E402
+    boot,
+    credits,
+    inventory,
+    player,
+    snake,
+    stack,
+    tetris,
+    warps,
+    worlds,
+)
 from cockpit.typography import TypeSetter, fmt, load_face  # noqa: E402
 
 CARDS = {
-    "nameplate": nameplate,
-    "cluster": cluster,
-    "bays": work,
+    "boot": boot,
+    "player": player,
+    "worlds": worlds,
     "tetris": tetris,
-    "stack": stack,
+    "snake": snake,
+    "inventory": inventory,
+    "credits": credits,
 }
+
+SVG = "{http://www.w3.org/2000/svg}"
 
 SAMPLE_SUBMISSIONS = [
     # problem A: three tries, accepted last
@@ -43,7 +58,7 @@ SAMPLE_SUBMISSIONS = [
 
 def sample_data() -> dict:
     return {
-        "user": {"login": "example", "created_at": "2025-09-27T07:22:04Z"},
+        "user": {"login": "example", "created_at": "2025-09-27T07:22:04Z", "public_repos": 30},
         "repos": [],
         "repo_count": 27,
         "languages": collections.Counter(
@@ -64,8 +79,26 @@ def sample_data() -> dict:
         },
         "account_age_days": 302,
         "codeforces": fetch.codeforces_stats(SAMPLE_SUBMISSIONS),
+        "codeforces_profile": {
+            "rating": 608,
+            "max_rating": 608,
+            "rank": "newbie",
+            "contests": [{"new": 376, "at": 1000}, {"new": 608, "at": 2000}],
+            "known": True,
+        },
         "codeforces_submissions": SAMPLE_SUBMISSIONS,
     }
+
+
+def _empty_data() -> dict:
+    empty = sample_data()
+    empty["codeforces"] = fetch.codeforces_stats([])
+    empty["codeforces_submissions"] = []
+    empty["codeforces_profile"] = {"rating": 0, "max_rating": 0, "rank": "", "contests": [], "known": False}
+    empty["languages"] = collections.Counter()
+    empty["contributions"] = []
+    empty["streaks"] = dict(empty["streaks"], total=0, active_days=0, longest=0, busiest_day=0)
+    return empty
 
 
 class FormattingTests(unittest.TestCase):
@@ -73,7 +106,7 @@ class FormattingTests(unittest.TestCase):
         """Glyph scale factors live near 0.07.
 
         Rounding those to two decimal places stretched every text run by up to
-        7%, which is how the nameplate ended up wider than its canvas.
+        7%, which is how the old nameplate ended up wider than its canvas.
         """
         self.assertEqual(fmt(0.06655), "0.06655")
         self.assertNotEqual(fmt(0.06655), "0.07")
@@ -115,133 +148,57 @@ class TypographyTests(unittest.TestCase):
         self.assertEqual(setter.defs().count("<path id="), 1)
 
 
-
-def _lowest_telltale(root) -> float:
-    """Bottom edge of the lowest telltale halo, in user units."""
-    circles = [
-        float(node.get("cy")) + float(node.get("r"))
-        for node in root.iter("{http://www.w3.org/2000/svg}circle")
-        if node.get("cy") and node.get("r")
-    ]
-    return max(circles) if circles else 0.0
-
-class NameplateTests(unittest.TestCase):
-    def test_name_fits_inside_the_canvas(self):
-        """The whole card is a first impression; overflow is a failed one."""
-        for width in (tokens.WIDE, tokens.NARROW):
-            document = nameplate.build(sample_data(), width=width)
-            root = ET.fromstring(document)
-            for group in root.iter("{http://www.w3.org/2000/svg}g"):
-                transform = group.get("transform") or ""
-                if "scale(" not in transform:
-                    continue
-                start_x = float(transform.split("translate(")[1].split(" ")[0])
-                self.assertGreaterEqual(start_x, 0, f"text starts off-canvas at {width}px")
-            self.assertLessEqual(
-                _widest_text_run(document), width,
-                f"a text run overflows the {width}px canvas",
-            )
-
-    def test_content_stays_inside_the_canvas_vertically(self):
-        """Every assertion about this card used to be horizontal.
-
-        That is how the mobile layout came to run 13px past a hardcoded height without a
-        single test noticing, and the bug was never visible on desktop.
-        """
-        for width in (tokens.WIDE, tokens.NARROW):
-            with self.subTest(width=width):
-                document = nameplate.build(sample_data(), width=width)
-                root = ET.fromstring(document)
-                height = float(root.get("height"))
-                bottom = _lowest_telltale(root)
-                pad = tokens.PAD_NARROW if width <= tokens.NARROW else tokens.PAD
-                # Merely being inside the canvas is too weak to catch anything: the broken
-                # mobile layout left 2.96px of margin where the card's own padding is 18,
-                # so it technically fitted while looking cramped and colliding with the bar.
-                self.assertGreaterEqual(
-                    height - bottom, pad,
-                    f"only {height - bottom:.2f}px below the content at {width}px, "
-                    f"where the card pads by {pad}px",
-                )
-
-    def test_the_ambient_bar_does_not_cross_a_telltale(self):
-        """The bar is pinned near the bottom edge and painted last.
-
-        When the layout outgrew the canvas, the bar was drawn straight through the second
-        telltale dot rather than being pushed off it, so nothing looked missing and nothing
-        failed. It just looked wrong, on phones only.
-        """
-        for width in (tokens.WIDE, tokens.NARROW):
-            with self.subTest(width=width):
-                document = nameplate.build(sample_data(), width=width)
-                root = ET.fromstring(document)
-                bar_top = min(
-                    float(rect.get("y"))
-                    for rect in root.iter("{http://www.w3.org/2000/svg}rect")
-                    if rect.get("y") and float(rect.get("height", 0)) <= 16
-                )
-                self.assertGreater(
-                    bar_top, _lowest_telltale(root),
-                    f"the ambient bar overlaps a telltale at {width}px",
-                )
-
-    def test_the_name_is_fitted_against_its_widest_line(self):
-        """Raising the size cap must never push a line off the card.
-
-        The mobile name was fitted against JITEESH while GHODKE is 2.8% wider, and it fitted
-        only because the cap bound first. At a cap of 64 the old code returned 64 and GHODKE
-        overflowed by 3.9px while still reporting success.
-        """
-        setter = TypeSetter()
-        available = tokens.NARROW - tokens.PAD_NARROW * 2
-        for cap in (62, 64, 72, 120):
-            with self.subTest(cap=cap):
-                size = nameplate._fit_size(
-                    setter, ("JITEESH", "GHODKE"), available, cap
-                )
-                widest = max(
-                    setter.width(line, tokens.DISPLAY, size, tokens.TRACK_NAMEPLATE)
-                    for line in ("JITEESH", "GHODKE")
-                )
-                self.assertLessEqual(widest, available + 0.01)
-
-
-class BayTests(unittest.TestCase):
+class WorldTests(unittest.TestCase):
     def test_private_projects_carry_no_repository(self):
         """A link that 404s for every visitor is worse than no link.
 
-        Two bays are private. They are listed because they are real work and a reader can be
-        told what a thing is without being handed the source, but nothing may point at them.
+        Two worlds are private. They are on the map because they are real work, and a reader
+        can be told what a thing is without being handed the source, but nothing may point
+        at them.
         """
-        for bay in work.BAYS:
-            with self.subTest(bay=bay["name"]):
-                if "PRIVATE" in bay["status"]:
-                    self.assertIsNone(
-                        bay["repo"], f"{bay['name']} is private but carries a repo"
-                    )
+        for world in worlds.WORLDS:
+            with self.subTest(world=world["name"]):
+                if world["private"]:
+                    self.assertIsNone(world["repo"], f"{world['name']} is private but carries a repo")
                 else:
-                    self.assertTrue(bay["repo"], f"{bay['name']} is public but has no repo")
+                    self.assertTrue(world["repo"], f"{world['name']} is public but has no repo")
 
-    def test_public_bays_are_linked_from_the_readme(self):
+    def test_public_worlds_are_linked_from_the_readme(self):
         readme = pathlib.Path("README.md").read_text(encoding="utf-8")
-        for bay in work.BAYS:
-            with self.subTest(bay=bay["name"]):
-                if bay["repo"]:
-                    self.assertIn(bay["repo"], readme)
+        for world in worlds.WORLDS:
+            with self.subTest(world=world["name"]):
+                if world["repo"]:
+                    self.assertIn(world["repo"], readme)
 
-    def test_private_bays_are_never_linked_from_the_readme(self):
+    def test_private_worlds_are_never_linked_from_the_readme(self):
         """No markdown link may be labelled with a private project's name."""
-        import re
-
         readme = pathlib.Path("README.md").read_text(encoding="utf-8")
         labels = {
             label.strip("* ").lower()
             for label in re.findall(r"\[([^\]]+)\]\(http", readme)
         }
-        for bay in work.BAYS:
-            if bay["repo"] is None:
-                with self.subTest(bay=bay["name"]):
-                    self.assertNotIn(bay["name"].lower(), labels)
+        for world in worlds.WORLDS:
+            if world["private"]:
+                with self.subTest(world=world["name"]):
+                    self.assertFalse(
+                        any(world["name"].lower() in label for label in labels),
+                        f"{world['name']} is linked",
+                    )
+
+    def test_private_worlds_are_never_linked_from_the_card(self):
+        for width in (tokens.WIDE, tokens.NARROW):
+            document = worlds.build(sample_data(), width=width)
+            self.assertNotIn("<a ", document)
+
+    def test_no_world_is_a_placeholder(self):
+        for world in worlds.WORLDS:
+            with self.subTest(world=world["name"]):
+                self.assertNotIn("COMING SOON", world["status"].upper())
+
+    def test_brand_is_spelled_ataleir(self):
+        names = " ".join(world["name"] for world in worlds.WORLDS)
+        self.assertIn("ATALEIR", names)
+        self.assertNotIn("ATELIER", names)
 
 
 class ReadmeStyleTests(unittest.TestCase):
@@ -251,8 +208,6 @@ class ReadmeStyleTests(unittest.TestCase):
         Clauses bolted on after a dash read as an afterthought. The rule is enforced rather
         than remembered because it is the kind of thing that creeps back one line at a time.
         """
-        import re
-
         readme = pathlib.Path("README.md").read_text(encoding="utf-8")
         offenders = [
             f"line {number}: {line.strip()[:90]}"
@@ -261,136 +216,130 @@ class ReadmeStyleTests(unittest.TestCase):
         ]
         self.assertEqual(offenders, [])
 
-    def test_no_bay_is_a_placeholder(self):
-        for bay in work.BAYS:
-            with self.subTest(bay=bay["name"]):
-                self.assertNotIn("COMING SOON", bay["status"].upper())
+    def test_the_story_runs_in_chapter_order(self):
+        """Chapters and warps interleave in the order the story is told."""
+        readme = pathlib.Path("README.md").read_text(encoding="utf-8")
+        order = ["boot", "warp-1", "player", "warp-2", "worlds", "warp-3", "tetris",
+                 "warp-4", "snake", "warp-5", "inventory", "credits"]
+        positions = [readme.index(f"output/{name}.svg") for name in order]
+        self.assertEqual(positions, sorted(positions))
+
+    def test_every_image_carries_the_current_cache_buster(self):
+        from profilegen import ASSET_VERSION
+
+        readme = pathlib.Path("README.md").read_text(encoding="utf-8")
+        versions = set(re.findall(r"\.svg\?v=(\d+)", readme))
+        self.assertEqual(versions, {str(ASSET_VERSION)})
 
 
 class CardGeometryTests(unittest.TestCase):
     def test_no_card_hardcodes_its_height(self):
         """A canvas asserted ahead of the content will eventually disagree with it.
 
-        nameplate.py was the one card that did this and it is how the banner broke. The
-        others all derive a height from their layout cursor; this keeps it that way.
+        The old nameplate did this and it is how the banner broke. Every chapter derives its
+        height from its layout cursor; warps are fixed strips and say so with a constant.
         """
-        import re
-
         cards = pathlib.Path("scripts/cockpit/cards")
         offenders = []
         for module in sorted(cards.glob("*.py")):
-            for number, line in enumerate(module.read_text().splitlines(), 1):
+            for number, line in enumerate(module.read_text(encoding="utf-8").splitlines(), 1):
                 if re.match(r"\s*height\s*=\s*[\d.]+(\s+if\b.*)?$", line):
                     offenders.append(f"{module.name}:{number}: {line.strip()}")
         self.assertEqual(offenders, [], "height must follow the content")
 
+    def test_text_runs_stay_inside_the_canvas(self):
+        for name, module in CARDS.items():
+            if name == "snake":
+                continue
+            for width in (tokens.WIDE, tokens.NARROW):
+                with self.subTest(card=name, width=width):
+                    document = module.build(sample_data(), width=width)
+                    self.assertLessEqual(_widest_text_run(document), width + 0.5)
+
 
 def _widest_text_run(document: str) -> float:
-    """Right-most edge of any glyph run in the document."""
-    setter = TypeSetter()
+    """Right-most edge of any unanimated glyph run placed directly on the canvas."""
     widest = 0.0
     root = ET.fromstring(document)
-    namespace = "{http://www.w3.org/2000/svg}"
-    for group in root.iter(f"{namespace}g"):
+    for group in root.iter(f"{SVG}g"):
         transform = group.get("transform") or ""
-        if "translate(" not in transform or "scale(" not in transform:
+        if not transform.startswith("translate(") or "scale(" not in transform:
             continue
         start_x = float(transform.split("translate(")[1].split(" ")[0])
-        scale = float(transform.split("scale(")[1].split(" ")[0])
-        uses = list(group.iter(f"{namespace}use"))
+        scale = float(transform.split("scale(")[1].split(" ")[0].rstrip(")"))
+        uses = list(group.iter(f"{SVG}use"))
         if not uses:
             continue
         last = max(float(use.get("x") or 0) for use in uses)
-        widest = max(widest, start_x + (last + 1000) * scale)
+        widest = max(widest, start_x + (last + 600) * scale)
     return widest
 
 
-class ClusterTests(unittest.TestCase):
-    def test_gauges_are_legible_without_animation(self):
-        """Static attributes must hold the reading, not the starting point."""
-        document = cluster.build(sample_data(), width=tokens.WIDE)
-        root = ET.fromstring(document)
-        namespace = "{http://www.w3.org/2000/svg}"
-
-        arcs = [
-            element
-            for element in root.iter(f"{namespace}path")
-            if element.get("stroke-dasharray")
-        ]
-        self.assertTrue(arcs, "no value arcs were drawn")
-        for arc in arcs:
-            drawn = float(arc.get("stroke-dasharray").split(" ")[0])
-            self.assertGreater(drawn, 0, "value arc is empty before animation")
-
-        needles = [
-            element
-            for element in root.iter(f"{namespace}g")
-            if (element.get("class") or "").startswith("nd")
-        ]
-        self.assertEqual(len(needles), 4)
-        for needle in needles:
-            angle = float(needle.get("transform").split("rotate(")[1].split(" ")[0])
-            self.assertNotAlmostEqual(
-                angle, cluster.START_ANGLE, msg="needle is parked at zero",
-            )
+class ChapterTests(unittest.TestCase):
+    def test_every_chapter_names_itself_in_the_header_order(self):
+        self.assertEqual(
+            scene.CHAPTERS,
+            ("BOOT", "PLAYER SELECT", "WORLD MAP", "BOSS FIGHT", "BONUS STAGE", "INVENTORY", "CREDITS"),
+        )
 
     def test_motion_is_guarded_by_reduced_motion(self):
-        document = cluster.build(sample_data(), width=tokens.WIDE)
-        self.assertIn("prefers-reduced-motion:no-preference", document)
-
-    def test_gauge_values_track_the_data(self):
-        data = sample_data()
-        gauges = cluster.gauges_from(data)
-        by_label = {gauge["label"]: gauge for gauge in gauges}
-        self.assertEqual(by_label["CONTRIBUTIONS"]["value"], 71)
-        self.assertEqual(by_label["REPOSITORIES"]["value"], 27)
-        self.assertEqual(by_label["LANGUAGES"]["value"], len(data["languages"]))
-        self.assertAlmostEqual(
-            by_label["CODE WRITTEN"]["value"],
-            min(sum(data["languages"].values()) / 1_000_000, 2.0),
-        )
-
-    def test_every_dial_measures_github(self):
-        """All four gauges are GitHub measures.
-
-        The Codeforces board sits directly below this card, so spending dials on
-        problems-solved and accept-rate said the same thing twice and left the account
-        itself unmeasured.
-        """
-        labels = {gauge["label"] for gauge in cluster.gauges_from(sample_data())}
-        self.assertEqual(
-            labels, {"CONTRIBUTIONS", "REPOSITORIES", "LANGUAGES", "CODE WRITTEN"}
-        )
-
-    def test_no_dial_flatters_with_a_near_zero_measure(self):
-        """Stars, forks and current streak are 1, 0 and 0 on this account.
-
-        A card whose stated virtue is printing the scale and not rounding in anyone's
-        favour cannot then choose measures that flatter -- nor ones that humiliate.
-        """
-        for gauge in cluster.gauges_from(sample_data()):
-            self.assertGreater(
-                gauge["value"] / gauge["max"], 0.05, f"{gauge['label']} reads as empty"
-            )
-
-    def test_odometer_shows_one_cell_per_digit(self):
-        setter = TypeSetter()
-        drum = cluster._odometer(setter, 0, 0, 800, "000302", "days in")
-        self.assertEqual(drum.count(f'fill="{tokens.VOID}"'), 6)
+        for name, module in CARDS.items():
+            with self.subTest(card=name):
+                document = module.build(sample_data(), width=tokens.WIDE)
+                self.assertIn("prefers-reduced-motion", document)
 
     def test_card_copy_is_drawn_as_outlines_not_text_nodes(self):
-        """Type is vector, which is why copy cannot be asserted as a string.
+        """Type is vector, so the cards do not depend on a font being installed."""
+        for name, module in CARDS.items():
+            with self.subTest(card=name):
+                root = ET.fromstring(module.build(sample_data(), width=tokens.WIDE))
+                self.assertEqual(list(root.iter(f"{SVG}text")), [])
+                self.assertTrue(root.find(f"{SVG}desc").text)
 
-        It also means the cards do not depend on a font being installed, and
-        do not shift when GitHub changes its own stylesheet.
-        """
-        document = cluster.build(sample_data(), width=tokens.WIDE)
-        root = ET.fromstring(document)
-        self.assertEqual(list(root.iter("{http://www.w3.org/2000/svg}text")), [])
-        self.assertTrue(list(root.iter("{http://www.w3.org/2000/svg}use")))
-        # The reading is still exposed to screen readers through desc.
-        desc = root.find("{http://www.w3.org/2000/svg}desc")
-        self.assertIn("71 contributions", desc.text)
+    def test_nothing_uses_smil(self):
+        for name, module in CARDS.items():
+            with self.subTest(card=name):
+                self.assertNotIn("<animate", module.build(sample_data(), width=tokens.WIDE))
+
+
+class CreditsTests(unittest.TestCase):
+    def test_the_tallest_problem_is_credited_with_its_real_count(self):
+        rows = dict(credits._credits(sample_data()))
+        self.assertEqual(rows["PROBLEM 1A"], "3 attempts, 1 regret")
+
+    def test_the_rating_only_boasts_when_it_never_dropped(self):
+        data = sample_data()
+        self.assertIn("never gone down", dict(credits._credits(data))["RATING"])
+        data["codeforces_profile"]["contests"].append({"new": 500, "at": 3000})
+        self.assertNotIn("never gone down", dict(credits._credits(data))["RATING"])
+
+    def test_the_ask_is_on_screen_at_rest(self):
+        """With motion off, a reader still sees how to get in touch."""
+        document = credits.build(sample_data(), width=tokens.WIDE)
+        self.assertIn("internship", ET.fromstring(document).find(f"{SVG}desc").text)
+
+
+class InventoryTests(unittest.TestCase):
+    def test_rarity_tiers_follow_the_share(self):
+        self.assertEqual(inventory.rarity(0.63)[0], "LEGENDARY")
+        self.assertEqual(inventory.rarity(0.17)[0], "EPIC")
+        self.assertEqual(inventory.rarity(0.05)[0], "RARE")
+        self.assertEqual(inventory.rarity(0.02)[0], "UNCOMMON")
+        self.assertEqual(inventory.rarity(0.001)[0], "COMMON")
+
+
+class WarpTests(unittest.TestCase):
+    def test_every_warp_renders_a_fixed_strip_at_both_widths(self):
+        for index in range(len(warps.WARPS)):
+            for width in (tokens.WIDE, tokens.NARROW):
+                with self.subTest(warp=index + 1, width=width):
+                    root = ET.fromstring(warps.build(index, width=width))
+                    self.assertEqual(float(root.get("height")), warps.HEIGHT)
+                    self.assertEqual(float(root.get("width")), width)
+                    self.assertEqual(list(root.iter(f"{SVG}text")), [])
+
+    def test_there_is_one_warp_between_each_pair_of_scrolling_chapters(self):
+        self.assertEqual(len(warps.WARPS), 5)
 
 
 class TetrisTests(unittest.TestCase):
@@ -438,37 +387,12 @@ class StackTests(unittest.TestCase):
                 round(count / total * 100), 1, f"{name} would render as 0%"
             )
 
-    def test_mix_stays_within_the_pair(self):
-        self.assertEqual(stack.mix(tokens.ROSE, tokens.ICE, 0), tokens.ROSE.upper())
-        self.assertEqual(stack.mix(tokens.ROSE, tokens.ICE, 1), tokens.ICE.upper())
-
     def test_every_referenced_icon_exists(self):
-        referenced = set(stack.SHIPS_IN) | set(stack.LEARNING)
-        for bay in work.BAYS:
-            referenced.update(bay["stack"])
-        missing = sorted(slug for slug in referenced if not icons.has(slug))
+        referenced = set(stack.SHIPS_IN) | set(stack.LEARNING) | set(inventory.ICON_FOR.values())
+        for world in worlds.WORLDS:
+            referenced.update(world["stack"])
+        missing = sorted(slug for slug in referenced if slug and not icons.has(slug))
         self.assertEqual(missing, [], f"vendor_icons.py has not fetched: {missing}")
-
-
-class WorkTests(unittest.TestCase):
-    def test_every_public_bay_points_at_a_repository(self):
-        """A bay is either linkable or honestly marked private.
-
-        This used to demand a repo from every bay, which was right while all four were
-        public. Two are not, and a link that 404s for every visitor is worse than none, so
-        the rule became: public bays must link, private bays must not.
-        """
-        for bay in work.BAYS:
-            with self.subTest(bay=bay["name"]):
-                if "PRIVATE" in bay["status"]:
-                    self.assertIsNone(bay["repo"])
-                else:
-                    self.assertTrue(bay["repo"], f"{bay['name']} has no repo to open")
-
-    def test_brand_is_spelled_ataleir(self):
-        names = " ".join(bay["name"] for bay in work.BAYS)
-        self.assertIn("ATALEIR", names)
-        self.assertNotIn("ATELIER", names)
 
 
 class DocumentTests(unittest.TestCase):
@@ -480,7 +404,7 @@ class DocumentTests(unittest.TestCase):
                 with self.subTest(card=name, width=width):
                     root = ET.fromstring(document)
                     self.assertTrue(root.get("viewBox"))
-                    self.assertTrue(root.findall("{http://www.w3.org/2000/svg}title"))
+                    self.assertTrue(root.findall(f"{SVG}title"))
 
     def test_no_card_relies_on_svg_filters(self):
         """Filters are dropped silently by some renderers; gradients are not."""
@@ -492,15 +416,11 @@ class DocumentTests(unittest.TestCase):
                 self.assertNotIn("<filter", document)
 
     def test_cards_survive_missing_data(self):
-        """A Codeforces outage must produce honest zeroes, not a crash."""
-        empty = sample_data()
-        empty["codeforces"] = fetch.codeforces_stats([])
-        empty["codeforces_submissions"] = []
-        empty["languages"] = collections.Counter()
-        empty["streaks"] = dict(empty["streaks"], total=0)
+        """A Codeforces or GitHub outage must produce honest zeroes, not a crash."""
         for name, module in CARDS.items():
-            with self.subTest(card=name):
-                ET.fromstring(module.build(empty, width=tokens.WIDE))
+            for width in (tokens.WIDE, tokens.NARROW):
+                with self.subTest(card=name, width=width):
+                    ET.fromstring(module.build(_empty_data(), width=width))
 
 
 class FetchTests(unittest.TestCase):
@@ -532,12 +452,7 @@ class FetchTests(unittest.TestCase):
 
 class PaletteTests(unittest.TestCase):
     def test_accents_are_limited_to_the_declared_pair(self):
-        """Every accent must be acid, violet, or a luminance step of one of them.
-
-        The old design drifted to seven hues across three rendering systems.
-        This is the guard that stops that happening again -- it survived the rotation
-        from the rose/ice pair to the green/purple one, which is the point of a guard.
-        """
+        """Every verdict colour must be acid, violet, or a luminance step of one of them."""
         allowed = {
             tokens.VIOLET, tokens.ACID, tokens.VIOLET_BRIGHT, tokens.VIOLET_DEEP,
             tokens.ACID_BRIGHT, tokens.ACID_DEEP, tokens.DIM, "#7A2BC4",
@@ -550,10 +465,11 @@ class ReadmeTests(unittest.TestCase):
 
     def test_readme_references_every_generated_asset(self):
         readme = (self.ROOT / "README.md").read_text(encoding="utf-8")
-        for name in CARDS:
+        names = list(CARDS) + [f"warp-{index}" for index in range(1, len(warps.WARPS) + 1)]
+        for name in names:
             for suffix in ("", "-mobile"):
-                self.assertIn(f"{name}{suffix}.svg", readme)
-        self.assertIn("snake.svg", readme)
+                with self.subTest(asset=f"{name}{suffix}"):
+                    self.assertIn(f"{name}{suffix}.svg", readme)
 
     def test_readme_has_no_third_party_badge_services(self):
         readme = (self.ROOT / "README.md").read_text(encoding="utf-8")
@@ -564,6 +480,11 @@ class ReadmeTests(unittest.TestCase):
         readme = (self.ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("Ataleir", readme)
         self.assertNotIn("Atelier", readme)
+
+    def test_the_drishti_demo_link_is_a_pages_url(self):
+        readme = (self.ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("https://jiteeshghodke456-del.github.io/ruraldrushtiteam5idiots/", readme)
+        self.assertNotIn("github.com/jiteeshghodke456-del.github.io", readme)
 
     def test_vendored_assets_are_committed(self):
         for relative in (

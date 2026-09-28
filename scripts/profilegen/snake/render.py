@@ -79,7 +79,7 @@ def _cell_xy(col: int, row: int, pitch: int = PITCH) -> tuple[float, float]:
     return col * pitch, row * pitch
 
 
-def render(record: SnakeRecord, field, *, cell: int = CELL, font: int = FONT) -> str:
+def render(record: SnakeRecord, field, *, cell: int = CELL, font: int = FONT, pops: bool = True) -> str:
     """Return the markup for one snake panel."""
     pitch = cell + GAP
     grid_w = record.cols * pitch - GAP
@@ -236,6 +236,45 @@ def render(record: SnakeRecord, field, *, cell: int = CELL, font: int = FONT) ->
         )
     doc.add("".join(pulses))
 
+    # ---- +1 pop-ups -------------------------------------------------------
+    # One shared block, replayed per meal through a positive delay.  Before its first
+    # iteration an element shows its base style, which is hidden, so each pop stays invisible
+    # until the head actually reaches its cell and then recurs once per loop at that moment.
+    if pops and record.meals:
+        rise = pitch * 1.4
+        pop_frames = [
+            Keyframe(0.0, {"opacity": "1", "transform": "translate(0px,0px)"}),
+            Keyframe(0.45, {"opacity": "1", "transform": f"translate(0px,{n(-rise * 0.8)}px)"}),
+            Keyframe(0.7, {"opacity": "0", "transform": f"translate(0px,{n(-rise)}px)"}),
+            Keyframe(0.71, {"opacity": "0", "transform": "translate(0px,0px)"}),
+            Keyframe(record.duration, {"opacity": "0", "transform": "translate(0px,0px)"}),
+        ]
+        glyph_scale = max(1, font - 1)
+        glyph_w, glyph_h = pf.measure("+1", scale=glyph_scale)
+        pop_ref = doc.defs.add(
+            "plus",
+            '<g id="{id}">'
+            + pf.render_path("+1", -glyph_w / 2, -glyph_h, scale=glyph_scale, fill=tokens.NOKIA["snake"])
+            + "</g>",
+        )
+        first = None
+        pops_markup: list[str] = []
+        for meal in record.meals:
+            when = meal.step * record.step_dt
+            if first is None:
+                first = anim.add(pop_frames, easing="ease-out", delay=when, base={"opacity": "0"})
+                cls = first
+            else:
+                cls = anim.use(first, delay=when, base={"opacity": "0"})
+            x, y = _cell_xy(meal.col, meal.row, pitch)
+            pops_markup.append(
+                f'<g transform="translate({n(grid_x + x + cell / 2)} {n(grid_y + y - 2)})">'
+                f'<g class="{cls}">{use(pop_ref)}</g></g>'
+            )
+        pop_layer = "".join(pops_markup)
+    else:
+        pop_layer = ""
+
     # ---- the snake --------------------------------------------------------
     # A 7-row playfield means a long snake folds back on itself every seven cells, so a
     # 25-segment body packs adjacent columns solid.  Two things keep it readable: the cells
@@ -305,6 +344,7 @@ def render(record: SnakeRecord, field, *, cell: int = CELL, font: int = FONT) ->
             f'<g class="{visible}"><g class="{moving}">{use(shade_ref)}</g></g>'
         )
     doc.add("".join(segments))
+    doc.add(pop_layer)
 
     # ---- LCD grain --------------------------------------------------------
     scan = doc.defs.add(

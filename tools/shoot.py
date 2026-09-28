@@ -17,10 +17,16 @@ Two views are captured per asset:
 * phone width, because GitHub forces `max-width: 100%` on README images.  A 920px asset
   renders at roughly 0.45x on a phone, and that is where font sizes and tight layouts fail.
 
-Needs Playwright, which is deliberately kept out of the CI dependency set.  Run it with the
-dedicated interpreter:
+``--seek`` trades that fidelity for precision: it opens the SVG as a document, pauses every
+CSS animation and sets it to the exact second asked for, which is the only reliable way to
+inspect a loop seam or a single frame of a 16 second chapter.  ``--reduced`` renders with
+``prefers-reduced-motion: reduce`` to check the still frame.
 
-    /home/agent/.venvs/shoot/bin/python tools/shoot.py dist/tetris.svg
+Needs Playwright, which is deliberately kept out of the CI dependency set.  Run it with a
+dedicated interpreter, for example:
+
+    ~/.venvs/shoot/bin/python tools/shoot.py dist/tetris.svg
+    %USERPROFILE%\\.venvs\\shoot\\Scripts\\python.exe tools\\shoot.py dist\\tetris.svg --seek
 """
 
 from __future__ import annotations
@@ -30,6 +36,7 @@ import http.server
 import pathlib
 import re
 import socketserver
+import tempfile
 import threading
 
 PHONE_WIDTH = 414
@@ -76,7 +83,9 @@ def svg_size(path: pathlib.Path) -> tuple[int, int]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("svgs", nargs="+", type=pathlib.Path)
-    parser.add_argument("--out", default=pathlib.Path("/tmp/shots"), type=pathlib.Path)
+    parser.add_argument(
+        "--out", default=pathlib.Path(tempfile.gettempdir()) / "shots", type=pathlib.Path
+    )
     parser.add_argument(
         "--times",
         default=",".join(str(t) for t in DEFAULT_TIMES),
@@ -86,6 +95,13 @@ def main() -> int:
     parser.add_argument(
         "--phone-only", action="store_true", help="capture only the downscaled view"
     )
+    parser.add_argument(
+        "--seek", action="store_true",
+        help="open the SVG directly and seek every animation to each exact time",
+    )
+    parser.add_argument(
+        "--reduced", action="store_true", help="render with prefers-reduced-motion: reduce"
+    )
     args = parser.parse_args()
 
     try:
@@ -94,15 +110,41 @@ def main() -> int:
         raise SystemExit(
             "playwright is not installed for this interpreter.  This tool is local-only "
             "and intentionally absent from CI deps; run it with:\n"
-            "  /home/agent/.venvs/shoot/bin/python tools/shoot.py <svg>..."
+            "  ~/.venvs/shoot/bin/python tools/shoot.py <svg>..."
         ) from None
 
     times = [float(t) for t in args.times.split(",") if t.strip()]
     args.out.mkdir(parents=True, exist_ok=True)
     written: list[pathlib.Path] = []
+    motion = "reduce" if args.reduced else "no-preference"
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
+        if args.seek:
+            for svg in args.svgs:
+                svg = svg.resolve()
+                if not svg.exists():
+                    raise SystemExit(f"missing: {svg}")
+                width, height = svg_size(svg)
+                page = browser.new_page(viewport={"width": width, "height": height},
+                                        reduced_motion=motion)
+                page.goto(svg.as_uri(), wait_until="load")
+                for t in times:
+                    page.evaluate(
+                        "(t) => { for (const a of document.getAnimations()) {"
+                        " a.pause(); a.currentTime = t * 1000; } }",
+                        t,
+                    )
+                    page.wait_for_timeout(30)
+                    suffix = ".reduced" if args.reduced else ""
+                    shot = args.out / f"{svg.stem}.seek.t{t:g}s{suffix}.png"
+                    page.screenshot(path=str(shot))
+                    written.append(shot)
+                page.close()
+            browser.close()
+            for shot in written:
+                print(f"{shot}  ({shot.stat().st_size // 1024} KB)")
+            return 0
         for svg in args.svgs:
             svg = svg.resolve()
             if not svg.exists():
@@ -131,6 +173,7 @@ def main() -> int:
                             ),
                         },
                         device_scale_factor=2 if label == "phone" else 1,
+                        reduced_motion=motion,
                     )
                     # The page must be SERVED, not injected: a relative <img src> cannot
                     # resolve on about:blank, which is where set_content leaves you.

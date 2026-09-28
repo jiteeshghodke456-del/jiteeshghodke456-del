@@ -19,6 +19,6 @@ readers if this number moves in the same commit.
 
 from __future__ import annotations
 
-ASSET_VERSION = 8
+ASSET_VERSION = 11
 
 __all__ = ["ASSET_VERSION"]
